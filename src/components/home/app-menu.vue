@@ -6,12 +6,24 @@
     background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b">
+    <el-submenu
+      index="1">
+      <template slot="title">实时监控</template>
+      <el-menu-item
+        v-for='(item, index) in menus.arr.RealTimeMonitor.group'
+        :key='index'
+        :index="'1-'+index"
+        :route='goRoute(item.name)'
+        @click='handleRoute(item.name)'>{{item.title}}</el-menu-item>
+    </el-submenu>
     <el-menu-item
-      v-for='(item, index) in menus'
-      :index="index+''"
+      v-for='(item, index) in menus.single'
+      :index="index+2+''"
       :key='index'
-      ref='menuItem'>{{item.title}}
-      </el-menu-item>
+      :route='goRoute(item.name)'
+      ref='menuItem'
+      @click='handleRoute(item.name)'>{{item.title}}
+    </el-menu-item>
   </el-menu>
 </template>
 
@@ -20,17 +32,30 @@ export default {
   props: ['menus', 'mode'],
   data () {
     return {
-      activeIndex: '0'
+      activeIndex: '1-0'
+    }
+  },
+  methods: {
+    goRoute (name) {
+      console.log(name)
+      return {
+        name: name
+      }
+    },
+    handleRoute (name) {
+      this.$router.push({
+        name: name
+      })
+    },
+    handleRouteHead (name) {
+      console.log(1)
+      this.$router.push({
+        name: 'RealTimeLocation'
+      })
     }
   },
   mounted () {
-    this.$nextTick(() => {
-      if (!this.mode) {
-        this.$refs.menuItem.forEach(item => {
-          item.$el.style.width = 160 + 'px'
-        })
-      }
-    })
+    console.log(this.menus)
   }
 }
 </script>
