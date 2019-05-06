@@ -84,12 +84,12 @@ export default {
     },
     // 创建标记点位置
     drawArea () {
-      this.persons.forEach(item => {
-        this.drawMarker(item.lng, item.lat, item.type)
+      this.persons.forEach((item, index) => {
+        this.drawMarker(item.lng, item.lat, item.type, index)
       })
     },
     // 绘制icon
-    drawMarker (longitude, latitude, type) {
+    drawMarker (longitude, latitude, type, index) {
       var marker
       if (type === 'person') {
         marker = new AMap.Marker({
@@ -102,7 +102,30 @@ export default {
           position: [longitude, latitude]
         })
       }
+      // 鼠标点击marker弹出自定义的信息窗体
+      AMap.event.addListener(marker, 'click', () => {
+        // 获取用户信息
+        const info = this.persons[index]
+        console.log(info)
+        // 生成信息窗体
+        let hh = this.creatInfo(info)
+        hh.open(this.map, this.map.getCenter())
+      })
       this.map.add(marker)
+    },
+    // 生成信息窗体
+    creatInfo () {
+      let content = []
+      content.push('<img src="http://tpc.googlesyndication.com/simgad/5843493769827749134">地址：北京市朝阳区阜通东大街6号院3号楼东北8.3公里')
+      content.push('电话：010-64733333')
+      content.push('<a href="https://ditu.amap.com/detail/B000A8URXB?citycode=110105">详细信息</a>')
+      var infoWindow = new AMap.InfoWindow({
+        isCustom: true,
+        // 使用自定义窗体
+        content: content.join(''),
+        offset: new AMap.Pixel(16, -45)
+      })
+      return infoWindow
     }
     // 构造官方卫星、路网图层
     // initSatelliteLayer () {

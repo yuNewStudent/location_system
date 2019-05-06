@@ -1,5 +1,6 @@
 <template>
-  <div class="PersonManagement">
+  <div
+    class="PersonManagement">
     <el-row class="header">
       <div class="search">
         <input
@@ -44,25 +45,35 @@
               <span></span>
               <span></span>
               <div class="content" ref='content'>
-                <p>人员轨迹</p>
-                <p>删除</p>
-                <p>修改</p>
+                <p @click="handleShowLine">人员轨迹</p>
+                <p @click="handleDelPerson">删除</p>
+                <p @click="handleEditorPerson">修改</p>
               </div>
             </div>
           </div>
         </li>
       </ul>
-      <add-person
-        v-if='isShowAddPerson'></add-person >
+      <change-person
+        v-if='isShowAddPerson'
+        @changePerson='addPerson'
+        :type='type.add'></change-person >
+      <change-person
+        v-if='isShowEditorPerson'
+        :type='type.editor'
+        @changePerson='editorPerson'></change-person >
     </el-main>
   </div>
 </template>
 
 <script>
-import AddPerson from '@/components/PersonManagement/AddPerson'
+import ChangePerson from '@/components/PersonManagement/changePerson'
 export default {
   data () {
     return {
+      type: {
+        add: '新增人员',
+        editor: '修改人员'
+      },
       persons: [
         {
           name: 'yujj',
@@ -208,11 +219,12 @@ export default {
           headImg: require('@/assets/img/icon/定位icon.png')
         }
       ],
-      isShowAddPerson: false
+      isShowAddPerson: false,
+      isShowEditorPerson: false
     }
   },
   components: {
-    AddPerson
+    ChangePerson
   },
   methods: {
     // 显示操作栏
@@ -231,6 +243,36 @@ export default {
     // 新增人员
     handleAddPerson () {
       this.isShowAddPerson = true
+    },
+    addPerson () {
+      this.isShowAddPerson = false
+    },
+    // 修改人员
+    handleEditorPerson () {
+      this.isShowEditorPerson = true
+    },
+    editorPerson () {
+      this.isShowEditorPerson = false
+    },
+    // 展示人员轨迹
+    handleShowLine () {},
+    // 删除人员
+    handleDelPerson () {
+      this.$confirm('此操作将永久删除该人员, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
@@ -299,13 +341,13 @@ export default {
     }
   }
   .el-main {
-    padding: 0;
+    padding: 10px 0;
     .cards {
       .card {
         margin: 10px 0 10px 20px;
         padding: 10px 15px;
         float: left;
-        width: 270px;
+        width: 220px;
         display: flex;
         flex: 1;
         flex-direction: column ;
@@ -313,7 +355,9 @@ export default {
         border-radius: 10px;
         position: relative;
         >p {
-          line-height: 30px;
+          color: white;
+          line-height: 18px;
+          padding: 5px 0;
           font-size: 14px;
         }
         .userInfo {
@@ -321,8 +365,8 @@ export default {
           flex-direction: column ;
           align-items: center;
           .headImg {
-            width: 50px;
-            height: 50px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
           }
           > p {
@@ -334,7 +378,7 @@ export default {
           }
           .sex {
             color: #5789F0;
-            font-size: 12px;
+            font-size: 14px;
           }
         }
         .menu {
@@ -351,22 +395,26 @@ export default {
               border-radius: 4px;
               width: 8px;
               height: 8px;
-              margin: 3px 0;
+              margin: 5px 0;
             }
             .content {
+              color: white;
               width: 70px;
               cursor: pointer;
               display: none;
               position: absolute;
               background: #737373;
-              right: -80px;
-              top: 35px;
+              right: -60px;
+              top: 37px;
               z-index: 2;
-              padding: 10px 15px;
+              padding: 10px 10px;
               border-radius: 5px;
-              font-size: 14px;
+              font-size: 16px;
               p {
-                line-height: 20px;
+                line-height: 25px;
+                &:hover {
+                  color: #F8BF12;
+                }
               }
             }
           }
