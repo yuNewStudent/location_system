@@ -58,6 +58,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang='scss' scoped>
 .el-container {
+  height: 100%;
   .el-header {
     display: flex;
     padding: 0 20px;
@@ -100,6 +101,8 @@ export default {
   .el-container {
     .el-aside {}
     .el-main {
+      width: 100vh;
+      width: 100vw;
       background: #010101;
     }
   }

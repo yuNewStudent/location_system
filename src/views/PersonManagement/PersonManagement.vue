@@ -1,6 +1,5 @@
 <template>
-  <div
-    class="PersonManagement">
+  <div class="PersonManagement">
     <el-row class="header">
       <div class="search">
         <input
@@ -34,7 +33,7 @@
           <p class="phone">手机号: {{item.phone}}</p>
           <p class="device_id">设备ID: {{item.deviceId}}</p>
           <p class="address">家庭地址: {{item.address}}</p>
-          <p class="birth">出生日期: {{item.birth}}</p>
+          <p class="birth">出生日期: {{item.birth}}<span class='age'>{{getAge(item.birth)}}</span></p>
           <p class="emergencyContact">紧急联系人: {{item.emergencyContact}}</p>
           <p class="emergencyPhone">紧急联系电话: {{item.emergencyPhone}}</p>
           <div class="menu"
@@ -80,7 +79,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1967-04-16',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -91,7 +90,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1976-04-04',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -102,7 +101,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1960-04-01',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -113,7 +112,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1958-04-12',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -124,7 +123,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1967-07-08',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -135,7 +134,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1983-04-19',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -146,7 +145,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1923-04-28',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -157,7 +156,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1934-04-15',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -168,7 +167,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1989-04-06',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -179,7 +178,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1951-04-05',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -190,7 +189,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1988-04-02',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -201,7 +200,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1949-05-21',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -212,7 +211,7 @@ export default {
           sex: '男',
           phone: '18222222',
           deviceId: '12',
-          birth: '1950-04',
+          birth: '1973-04-11',
           address: '四川省成都市锦江区信息路',
           emergencyContact: 'jjjj',
           emergencyPhone: '2111ss22',
@@ -273,6 +272,17 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    // 计算年龄
+    getAge (str) {
+      var r = str.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/)
+      if (r === null) return false
+      var d = new Date(r[1], r[3] - 1, r[4])
+      if (d.getFullYear() === r[1] && (d.getMonth() + 1) === r[3] && d.getDate() === r[4]) {
+        var Y = new Date().getFullYear()
+        return Y - r[1] + '岁'
+      }
+      return '输入的日期格式错误!'
     }
   }
 }
@@ -359,6 +369,13 @@ export default {
           line-height: 18px;
           padding: 5px 0;
           font-size: 14px;
+        }
+        .age {
+          margin-left: 10px;
+          color: #F8BF12;
+          font-size: 12px;
+          position: relative;
+          top: 1px;
         }
         .userInfo {
           display: flex;

@@ -116,13 +116,12 @@ export default {
     // 生成信息窗体
     creatInfo () {
       let content = []
-      content.push('<img src="http://tpc.googlesyndication.com/simgad/5843493769827749134">地址：北京市朝阳区阜通东大街6号院3号楼东北8.3公里')
+      content.push("<img src='http://tpc.googlesyndication.com/simgad/5843493769827749134'>地址：北京市朝阳区阜通东大街6号院3号楼东北8.3公里")
       content.push('电话：010-64733333')
-      content.push('<a href="https://ditu.amap.com/detail/B000A8URXB?citycode=110105">详细信息</a>')
+      content.push("<a href='https://ditu.amap.com/detail/B000A8URXB?citycode=110105'>详细信息</a>")
       var infoWindow = new AMap.InfoWindow({
         isCustom: true,
-        // 使用自定义窗体
-        content: content.join(''),
+        content: content.join('<br/>'),
         offset: new AMap.Pixel(16, -45)
       })
       return infoWindow
@@ -158,6 +157,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang='scss' scoped>
+@import url('https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css');
 .amap {
   position: relative;
   #container {
