@@ -17,7 +17,7 @@
     </el-row>
     <el-main>
       <el-table
-        :data="tableData"
+        :data="cars"
         border
         style="width: 100%"
         :row-style="tableRowStyle"
@@ -70,7 +70,7 @@ export default {
         add: '新增车辆',
         editor: '修改车辆'
       },
-      tableData: [
+      cars: [
         {
           carModel: '路虎X89',
           carNum: '12345',
@@ -128,6 +128,26 @@ export default {
     },
     editorCar () {
       this.isShowEditorCar = false
+    },
+    // 删除车辆
+    handleDeleteCar (index, row) {
+      console.log(index, row)
+      this.$confirm(`此操作将永久删除该车辆, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.cars.splice(index, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }

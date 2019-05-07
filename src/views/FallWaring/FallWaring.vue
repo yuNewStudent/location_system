@@ -1,58 +1,51 @@
 <template>
   <div class="FallWaring">
-    <el-row class="header">
-      <div class="search">
-        <input
-          type="text"
-          placeholder="请输入人名或车辆编号"
-          class="searchInput">
-        <span class="searchBtn"><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
-      </div>
-    </el-row>
-    <el-main>
-      <el-table
-        :data="tableData"
-        border
-        style="width: 100%"
-        :row-style="tableRowStyle"
-        :header-cell-style="tableHeaderColor"
-        size='mini'>
-        <el-table-column
-          prop="warningPerson"
-          label="报警人">
-        </el-table-column>
-        <el-table-column
-          prop="deviceId"
-          label="设备ID">
-        </el-table-column>
-        <el-table-column
-          prop="warningTime"
-          label="报警时间">
-        </el-table-column>
-        <el-table-column
-          prop="contactPhone"
-          label="联系电话">
-        </el-table-column>
-        <el-table-column
-          prop="warningAddress"
-          label="报警地点">
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button
-              size="mini"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-main>
+    <div>
+      <el-row class="header">
+        <div class="search">
+          <input
+            type="text"
+            placeholder="请输入人名或车辆编号"
+            class="searchInput">
+          <span class="searchBtn"><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
+        </div>
+      </el-row>
+      <el-main>
+        <el-table
+          :data="tableData"
+          border
+          style="width: 100%"
+          @row-click='handleRow'
+          size='mini'>
+          <el-table-column
+            prop="warningPerson"
+            label="报警人">
+          </el-table-column>
+          <el-table-column
+            prop="deviceId"
+            label="设备ID">
+          </el-table-column>
+          <el-table-column
+            prop="warningTime"
+            label="报警时间">
+          </el-table-column>
+          <el-table-column
+            prop="contactPhone"
+            label="联系电话">
+          </el-table-column>
+          <el-table-column
+            prop="warningAddress"
+            label="报警地点">
+          </el-table-column>
+        </el-table>
+      </el-main>
+    </div>
+    <waring-info v-if='isShowWarningInfo'></waring-info>
   </div>
 </template>
 
 <script>
+import WaringInfo from '@/components/FallWaring/FallWaringInfo'
 export default {
   data () {
     return {
@@ -85,7 +78,17 @@ export default {
           contactPhone: '12345678912',
           warningAddress: '四川省成都市锦江区华为路'
         }
-      ]
+      ],
+      isShowWarningInfo: false
+    }
+  },
+  components: {
+    WaringInfo
+  },
+  methods: {
+    handleRow (row, column) {
+      console.log(row, column)
+      this.isShowWarningInfo = true
     }
   }
 }

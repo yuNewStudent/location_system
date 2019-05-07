@@ -54,7 +54,11 @@ export default {
   },
   methods: {
     changeDevice (bol) {
-      console.log(bol, this.deviceInfo)
+      for (let k in this.deviceInfo) {
+        if (!this.deviceInfo[k]) {
+          this.$message.error('')
+        }
+      }
       // 新增设备
       if (!this.selectDevice) {
         this.$emit('addDevice', bol, this.deviceInfo)
