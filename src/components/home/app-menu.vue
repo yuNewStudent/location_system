@@ -6,7 +6,7 @@
     background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b">
-    <el-submenu
+    <!-- <el-submenu
       index="1">
       <template slot="title">实时监控</template>
       <el-menu-item
@@ -15,10 +15,10 @@
         :index="'1-'+index"
         :route='goRoute(item.name)'
         @click='handleRoute(item.name)'>{{item.title}}</el-menu-item>
-    </el-submenu>
+    </el-submenu> -->
     <el-menu-item
       v-for='(item, index) in menus.single'
-      :index="index+2+''"
+      :index="index + ''"
       :key='index'
       :route='goRoute(item.name)'
       ref='menuItem'
@@ -32,7 +32,7 @@ export default {
   props: ['menus', 'mode'],
   data () {
     return {
-      activeIndex: '1-0'
+      activeIndex: '0'
     }
   },
   methods: {

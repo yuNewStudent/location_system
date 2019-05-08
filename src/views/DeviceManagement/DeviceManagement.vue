@@ -126,6 +126,11 @@ export default {
     },
     addDevice (bol, deviceInfo) {
       if (bol) {
+        for (let k in deviceInfo) {
+          if (!deviceInfo[k]) {
+            return this.$message.error('所填信息不能为空')
+          }
+        }
         deviceInfo.status = '离线'
         this.devices.push(deviceInfo)
       }

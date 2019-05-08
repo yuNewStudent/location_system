@@ -1,12 +1,12 @@
 <template>
   <div class="amap">
+    <div id="container"></div>
     <div v-if='!isSetSafe'>
-      <div id="container"></div>
       <!-- <button @click='handleSatelliteLayer'>卫星图层</button>
       <button @click='handleStandLayer'>标准图层</button>
       <button @click='handleSetSafe'>设置安全区域</button> -->
     </div>
-    <set-safe v-else></set-safe>
+    <!-- <set-safe v-else></set-safe> -->
   </div>
 </template>
 
@@ -26,7 +26,7 @@ export default {
       persons: [
         {
           lng: 104.06406,
-          lat: 30.54311,
+          lat: 30.55311,
           id: 0,
           type: 'car'
         },
@@ -37,25 +37,25 @@ export default {
           type: 'car'
         },
         {
-          lng: 104.06606,
+          lng: 104.07606,
           lat: 30.54111,
           id: 2,
           type: 'car'
         },
         {
-          lng: 104.06306,
+          lng: 104.06006,
           lat: 30.54311,
           id: 1,
           type: 'person'
         },
         {
           lng: 104.06206,
-          lat: 30.54311,
+          lat: 30.54911,
           id: 2,
           type: 'person'
         },
         {
-          lng: 104.06406,
+          lng: 104.06906,
           lat: 30.54611,
           id: 3,
           type: 'person'
@@ -75,7 +75,7 @@ export default {
         // 设置中心点
         center: [104.06406, 30.54311],
         // 地图显示范围
-        zoom: 16
+        zoom: 15
       })
       // 添加缩放标尺控件
       AMap.plugin(['AMap.Scale'], () => {
@@ -102,29 +102,48 @@ export default {
           position: [longitude, latitude]
         })
       }
+      this.map.add(marker)
       // 鼠标点击marker弹出自定义的信息窗体
-      AMap.event.addListener(marker, 'click', () => {
+      AMap.event.addListener(marker, 'click', (event) => {
         // 获取用户信息
         const info = this.persons[index]
-        console.log(info)
         // 生成信息窗体
         let hh = this.creatInfo(info)
-        hh.open(this.map, this.map.getCenter())
+        hh.open(this.map, marker.getPosition())
       })
-      this.map.add(marker)
     },
     // 生成信息窗体
     creatInfo () {
-      let content = []
-      content.push("<img src='http://tpc.googlesyndication.com/simgad/5843493769827749134'>地址：北京市朝阳区阜通东大街6号院3号楼东北8.3公里")
-      content.push('电话：010-64733333')
-      content.push("<a href='https://ditu.amap.com/detail/B000A8URXB?citycode=110105'>详细信息</a>")
+      var warning = require('@/assets/img/icon/报警次数IC.png')
+      var line = require('@/assets/img/icon/行动轨迹IC.png')
+      var info = `<div style = 'padding: 5px 0 0; font-size: 15px;'>
+        <h1 style = 'font-size: 18px; color: #FFBF05; line-height: 30px; margin-bottom: 10px;'>人员信息</h1>
+        <p style = 'line-height: 25px'>姓名：苏老大</p>
+        <p style = 'line-height: 25px'>年龄：57</p>
+        <p style = 'line-height: 25px'>所在位置：四川成都锦江区春熙路</p>
+        <p style = 'line-height: 25px'>所在时长：2h20min</p>
+        <p style = 'line-height: 25px; text-align: right'>
+          <span style = "display: inline-block; margin-right: 10px" onclick = "${getLngLat(event, this)}">
+            <img style = "width:12px" src="${line}"/>
+          </span>
+          <span style="display:inline-block">
+            <img style = "width: 16px" src="${warning}"/>
+          </span>
+        </p>
+      </div>`
+      function getLngLat (event, self) {
+        self.$emit('showPersonLine')
+      }
+      // width:30px;height:30px;border-radius:50%;text-align:center;
       var infoWindow = new AMap.InfoWindow({
-        isCustom: true,
-        content: content.join('<br/>'),
-        offset: new AMap.Pixel(16, -45)
+        // 使用默认信息窗体框样式，显示信息内容
+        content: info,
+        offset: new AMap.Pixel(0, -30)
       })
       return infoWindow
+    },
+    ggg () {
+      console.log(1)
     }
     // 构造官方卫星、路网图层
     // initSatelliteLayer () {
@@ -145,11 +164,11 @@ export default {
     //   this.isSetSafe = true
     // }
   },
-  mounted () {
-    this.$nextTick(() => {
+  async mounted () {
+    await this.$nextTick(() => {
       this.initMap()
-      this.drawArea()
     })
+    this.drawArea()
     // this.timer = setInterval(this.getData, 2000)
   }
 }
@@ -157,12 +176,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang='scss' scoped>
-@import url('https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css');
 .amap {
   position: relative;
+  height: 100%;
   #container {
     width: 100%;
-    height: 80vh;
+    height: 100%;
+    position: relative;
+    z-index: 2;
   }
 }
 </style>

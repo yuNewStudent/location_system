@@ -20,26 +20,42 @@
       </div>
     </el-row>
     <el-main>
-      <map-page></map-page>
+      <map-page @showPersonLine='showPersonLine'></map-page>
     </el-main>
+    <person-line
+      v-if='isPersonLine'
+      @close='close'></person-line>
   </div>
 </template>
 
 <script>
 import MapPage from '@/components/Amap'
+import PersonLine from '@/components/PersonLine'
 export default {
   data () {
     return {
+      isPersonLine: false
+    }
+  },
+  methods: {
+    showPersonLine () {
+      this.isPersonLine = true
+    },
+    close () {
+      this.isPersonLine = false
     }
   },
   components: {
-    MapPage
+    MapPage,
+    PersonLine
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .RealTimeLocation {
+  position: relative;
+  height: 100%;
   .header {
     >div {
       display: inline-block;
@@ -101,7 +117,11 @@ export default {
   }
   .el-main {
     padding: 0;
-    margin: 10px auto;
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+    left: 0;
+    right: 0px;
   }
 }
 </style>

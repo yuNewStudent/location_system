@@ -16,19 +16,19 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home,
-      redirect: '/realTimemonitor/realTimelocation',
+      redirect: '/RealTimeMonitor',
       children: [
         // 实时监控
         {
-          path: '/realTimemonitor/realTimelocation',
-          name: 'RealTimeLocation',
+          path: '/RealTimeMonitor',
+          name: 'RealTimeMonitor',
           component: RealTimeMonitor('RealTimeLocation')
         },
-        {
-          path: '/realTimemonitor/MonitoringFence',
-          name: 'MonitoringFence',
-          component: RealTimeMonitor('MonitoringFence')
-        },
+        // {
+        //   path: '/realTimemonitor/MonitoringFence',
+        //   name: 'MonitoringFence',
+        //   component: RealTimeMonitor('MonitoringFence')
+        // },
         // 人员管理
         {
           path: '/PersonManagement',

@@ -1,6 +1,10 @@
 const menus = {
   single: [
     {
+      title: '实时监控',
+      name: 'RealTimeMonitor'
+    },
+    {
       title: '人员管理',
       name: 'PersonManagement'
     },

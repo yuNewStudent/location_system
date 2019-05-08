@@ -99,10 +99,9 @@ export default {
     }
   }
   .el-container {
-    .el-aside {}
     .el-main {
-      width: 100vh;
       width: 100vw;
+      height: 100%;
       background: #010101;
     }
   }

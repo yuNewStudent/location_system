@@ -9,12 +9,12 @@
         <span class="searchBtn"><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
         <span class="total">共<span>222</span>条</span>
       </div>
-      <div class="legends">
+      <!-- <div class="legends">
         <span @click='handleAddPerson'>
           <img src="@/assets/img/icon/新增IC.png" alt="">
           新增
         </span>
-      </div>
+      </div> -->
     </el-row>
     <el-main>
       <ul class="cards">
@@ -36,7 +36,7 @@
           <p class="birth">出生日期: {{item.birth}}<span class='age'>{{getAge(item.birth)}}</span></p>
           <p class="emergencyContact">紧急联系人: {{item.emergencyContact}}</p>
           <p class="emergencyPhone">紧急联系电话: {{item.emergencyPhone}}</p>
-          <div class="menu"
+          <!-- <div class="menu"
             @click='handleShowMenu(index)'
             @mouseleave='handleHideMenu(index)'>
             <div class="menu_wrapper">
@@ -49,7 +49,7 @@
                 <p @click="handleEditorPerson">修改</p>
               </div>
             </div>
-          </div>
+          </div> -->
         </li>
       </ul>
       <change-person
@@ -278,10 +278,10 @@ export default {
       var r = str.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/)
       if (r === null) return false
       var d = new Date(r[1], r[3] - 1, r[4])
-      if (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4]) {
+      if (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4]) {//eslint-disable-line
         var Y = new Date().getFullYear()
         return Y - r[1] + '岁'
-      }//eslint-disable-line
+      }
       return '输入的日期格式错误!'
     }
   }

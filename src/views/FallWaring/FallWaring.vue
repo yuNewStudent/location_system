@@ -40,7 +40,7 @@
         </el-table>
       </el-main>
     </div>
-    <waring-info v-if='isShowWarningInfo'></waring-info>
+    <waring-info @close='isShowWarningInfo = !isShowWarningInfo' v-if='isShowWarningInfo'></waring-info>
   </div>
 </template>
 
