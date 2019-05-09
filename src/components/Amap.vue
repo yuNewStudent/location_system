@@ -7,6 +7,21 @@
       <button @click='handleSetSafe'>设置安全区域</button> -->
     </div>
     <!-- <set-safe v-else></set-safe> -->
+    <div ref='info' class='windowinfo'>
+      <h1>人员信息</h1>
+      <p>姓名：苏老大</p>
+      <p>年龄：57</p>
+      <p>所在位置：四川成都锦江区春熙路</p>
+      <p>所在时长：2h20min</p>
+      <p class="icon">
+        <span style="margin-right: 10px" @click="getLngLat">
+          <img src="@/assets/img/icon/行动轨迹IC.png"/>
+        </span>
+        <!-- <span>
+          <img style = "width: 16px" src="@/assets/img/icon/报警次数IC.png"/>
+        </span> -->
+      </p>
+    </div>
   </div>
 </template>
 
@@ -28,19 +43,19 @@ export default {
           lng: 104.06406,
           lat: 30.55311,
           id: 0,
-          type: 'car'
+          type: 'person'
         },
         {
           lng: 104.06306,
           lat: 30.54411,
           id: 1,
-          type: 'car'
+          type: 'person'
         },
         {
           lng: 104.07606,
           lat: 30.54111,
           id: 2,
-          type: 'car'
+          type: 'person'
         },
         {
           lng: 104.06006,
@@ -59,6 +74,44 @@ export default {
           lat: 30.54611,
           id: 3,
           type: 'person'
+        }
+      ],
+      cars: [
+        {
+          lng: 104.06106,
+          lat: 30.55111,
+          id: 0,
+          type: 'car'
+        },
+        {
+          lng: 104.06706,
+          lat: 30.54611,
+          id: 1,
+          type: 'car'
+        },
+        {
+          lng: 104.07406,
+          lat: 30.54311,
+          id: 2,
+          type: 'car'
+        },
+        {
+          lng: 104.06206,
+          lat: 30.54411,
+          id: 1,
+          type: 'car'
+        },
+        {
+          lng: 104.06106,
+          lat: 30.54811,
+          id: 2,
+          type: 'car'
+        },
+        {
+          lng: 104.06806,
+          lat: 30.54711,
+          id: 3,
+          type: 'car'
         }
       ]
     }
@@ -84,7 +137,12 @@ export default {
     },
     // 创建标记点位置
     drawArea () {
+      // 绘制人员
       this.persons.forEach((item, index) => {
+        this.drawMarker(item.lng, item.lat, item.type, index)
+      })
+      // 绘制车辆
+      this.cars.forEach((item, index) => {
         this.drawMarker(item.lng, item.lat, item.type, index)
       })
     },
@@ -98,13 +156,13 @@ export default {
         })
       } else {
         marker = new AMap.Marker({
-          icon: require('@/assets/img/icon/定位icon.png'),
+          icon: require('@/assets/img/icon/车辆IC.png'),
           position: [longitude, latitude]
         })
       }
       this.map.add(marker)
       // 鼠标点击marker弹出自定义的信息窗体
-      AMap.event.addListener(marker, 'click', (event) => {
+      marker.on('click', (event) => {
         // 获取用户信息
         const info = this.persons[index]
         // 生成信息窗体
@@ -114,36 +172,16 @@ export default {
     },
     // 生成信息窗体
     creatInfo () {
-      var warning = require('@/assets/img/icon/报警次数IC.png')
-      var line = require('@/assets/img/icon/行动轨迹IC.png')
-      var info = `<div style = 'padding: 5px 0 0; font-size: 15px;'>
-        <h1 style = 'font-size: 18px; color: #FFBF05; line-height: 30px; margin-bottom: 10px;'>人员信息</h1>
-        <p style = 'line-height: 25px'>姓名：苏老大</p>
-        <p style = 'line-height: 25px'>年龄：57</p>
-        <p style = 'line-height: 25px'>所在位置：四川成都锦江区春熙路</p>
-        <p style = 'line-height: 25px'>所在时长：2h20min</p>
-        <p style = 'line-height: 25px; text-align: right'>
-          <span style = "display: inline-block; margin-right: 10px" onclick = "${getLngLat(event, this)}">
-            <img style = "width:12px" src="${line}"/>
-          </span>
-          <span style="display:inline-block">
-            <img style = "width: 16px" src="${warning}"/>
-          </span>
-        </p>
-      </div>`
-      function getLngLat (event, self) {
-        self.$emit('showPersonLine')
-      }
-      // width:30px;height:30px;border-radius:50%;text-align:center;
+      this.$refs.info.style.display = 'block'
       var infoWindow = new AMap.InfoWindow({
         // 使用默认信息窗体框样式，显示信息内容
-        content: info,
+        content: this.$refs.info,
         offset: new AMap.Pixel(0, -30)
       })
       return infoWindow
     },
-    ggg () {
-      console.log(1)
+    getLngLat () {
+      this.$emit('showPersonLine')
     }
     // 构造官方卫星、路网图层
     // initSatelliteLayer () {
@@ -184,6 +222,37 @@ export default {
     height: 100%;
     position: relative;
     z-index: 2;
+  }
+  .windowinfo {
+    display: none;
+    padding: 5px 0 0;
+    font-size: 15px;
+    z-index: 6;
+    h1 {
+      font-size: 18px;
+      color: #FFBF05;
+      line-height: 30px;
+      margin-bottom: 10px;
+    }
+    p {
+      line-height: 25px;
+    }
+    .icon {
+      text-align: right;
+      >span {
+        display: inline-block;
+        text-align: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 1px solid #3393A3;
+        img {
+          margin-top: 7px;
+          width: 12px;
+          height: 15px;
+        }
+      }
+    }
   }
 }
 </style>

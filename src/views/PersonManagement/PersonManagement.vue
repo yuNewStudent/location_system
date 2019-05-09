@@ -291,6 +291,7 @@ export default {
 <style lang="scss" scoped>
 .PersonManagement{
   .header {
+    padding: 0 20px;
     >div {
       display: inline-block;
     }

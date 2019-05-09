@@ -1,7 +1,8 @@
 <template>
-  <div class='MessageBox' @click='handleClose'>
-    <div class='add_user_wrapper' @click.stop>
+  <div class='MessageBox'>
+    <div class='add_user_wrapper'>
       <div id='Amap'></div>
+      <el-button @click='handleClose' type="danger" icon="el-icon-close" circle></el-button>
     </div>
   </div>
 </template>
@@ -61,7 +62,7 @@ export default {
         // 设置中心点
         center: [104.06406, 30.54311],
         // 地图显示范围
-        zoom: 16
+        zoom: 15
       })
       // 添加缩放标尺控件
       AMap.plugin(['AMap.Scale'], () => {
@@ -82,12 +83,12 @@ export default {
       })
       var polyline = new AMap.Polyline({
         path: path,
-        strokeColor: "#3366FF", 
+        strokeColor: '#3366FF',
         strokeWeight: 4,
         strokeDasharray: [10, 5],
         lineJoin: 'round',
         lineCap: 'round',
-        zIndex: 50,
+        zIndex: 50
       })
       this.map.add(polyline)
     })
@@ -110,8 +111,15 @@ export default {
     color: white;
     #Amap {
       width: 95vw;
-      height: 94vh;
-      margin: 3vh auto;
+      height: 92vh;
+      margin: 7vh auto 3vh;
+    }
+    .el-button {
+      position: absolute;
+      top: -15px;
+      right: 15px;
+      padding: 6px;
+      font-size: 30px;
     }
   }
 }

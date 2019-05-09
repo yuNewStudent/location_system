@@ -12,8 +12,7 @@
       <el-row>
         <label for="">车辆编号</label>
         <input
-          v-model="carInfo.carNum"
-          type="date">
+          v-model="carInfo.carNum">
       </el-row>
       <el-row>
         <label for="">使用单位</label>
@@ -70,7 +69,7 @@ export default {
       input {
         flex: 1;
         outline: none;
-        border-bottom: 2px solid rgb(231,231,231);
+        border-bottom: 1px solid rgb(231,231,231);
       }
     }
   }

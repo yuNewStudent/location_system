@@ -66,11 +66,13 @@ export default {
     transform: translate(-50%, -50%);
     border-radius: 10px;
     background: white;
-    padding: 20px 0;
+    padding: 0 0 20px;
     .header {
-      font-size: 20px;
+      font-size: 18px;
       color: black;
-      padding: 0 30px 10px;
+      padding: 15px 50px 15px;
+      border-radius: 10px 10px 0 0;
+      background: rgb(242, 242, 242);
       span {
         float: right;
         cursor: pointer;
@@ -78,10 +80,11 @@ export default {
     }
     .footer {
       text-align: right;
-      padding: 0px 30px;
+      margin-top: 10px;
+      padding: 0 30px;
       .el-button {
         background: transparent;
-        border: 2px solid #F8BF12;
+        border: 1px solid #F8BF12;
         color: black;
         font-size: 16px;
       }

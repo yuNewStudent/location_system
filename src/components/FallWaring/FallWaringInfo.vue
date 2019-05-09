@@ -1,6 +1,6 @@
 <template>
-  <div class='MessageBox' @click='handleClose'>
-    <div class='add_user_wrapper' @click.stop>
+  <div class='MessageBox'>
+    <div class='add_user_wrapper'>
       <div class="user">
         <header><img src="@/assets/img/icon/人员信息IC.png" alt=""> 人员信息</header>
         <div class="userInfo">
@@ -54,7 +54,9 @@
       </div>
       <div class="map">
         <div id="container"></div>
+        <el-button type='warning' size='mini' @click="hnadleRanging">测距</el-button>
       </div>
+      <el-button @click='handleClose' type="danger" icon="el-icon-close" circle></el-button>
     </div>
     <person-line
       v-if='isPersonLine'
@@ -69,6 +71,7 @@ export default {
   data () {
     return {
       map: null,
+      ranging: null,
       isPersonLine: false,
       person: {
         lng: 104.06406,
@@ -133,6 +136,8 @@ export default {
       AMap.plugin(['AMap.Scale'], () => {
         this.map.addControl(new AMap.Scale())
       })
+      // 默认样式测距
+      this.ranging = new AMap.RangingTool(this.map)
     },
     // 关闭窗口
     handleClose () {
@@ -163,7 +168,7 @@ export default {
         })
       } else {
         marker = new AMap.Marker({
-          icon: require('@/assets/img/icon/定位icon.png'),
+          icon: require('@/assets/img/icon/车辆IC.png'),
           position: [longitude, latitude]
         })
       }
@@ -171,7 +176,11 @@ export default {
     },
     // 附近车辆
     handleNeberCar () {
-      const nebercar = this.cars.slice()
+      // const nebercar = this.cars.slice()
+    },
+    // 测距
+    hnadleRanging () {
+      this.ranging.turnOn()
     }
   },
   mounted () {
@@ -199,18 +208,24 @@ export default {
     margin: 60px 30px 0;
     border-radius: 10px;
     background: black;
-    padding: 20px 0;
-    color: white;
+    padding: 20px 10px;
     display: flex;
+    >.el-button {
+      position: absolute;
+      top: 3px;
+      right: -7px;
+      padding: 6px;
+      font-size: 30px;
+    }
     .user {
+      color: white;
       font-size: 14px;
       width: 400px;
       background-color: rgb(84, 92, 100);
-      padding: 10px;
+      padding: 5px 10px 0;
       .userInfo {
         padding: 10px 50px 20px 20px;
         border-bottom: 2px solid #3F3F3F;
-        margin-bottom: 10px;
         p {
           display: flex;
           line-height: 30px;
@@ -263,7 +278,7 @@ export default {
         }
       }
       .contact {
-        padding: 10px 50px 20px 20px;
+        padding: 10px 50px 10px 20px;
         p {
           line-height: 30px;
           display: flex;
@@ -276,6 +291,7 @@ export default {
         }
       }
       header {
+        padding-top: 5px;
         font-size: 16px;
         color: #FFBF05;
         line-height: 30px;
@@ -287,8 +303,14 @@ export default {
     }
     .map {
       flex: 1;
+      position: relative;
       #container {
         height: 80vh;
+      }
+      .el-button {
+        position: absolute;
+        top: 10px;
+        left: 10px;
       }
     }
   }

@@ -9,9 +9,14 @@
         <span class="searchBtn"><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
       </div>
       <div class="radio">
-        <!-- <el-radio v-model="radio2" label="1" border size="medium">全部</el-radio>
-        <el-radio v-model="radio2" label="1" border size="medium">离线</el-radio>
-        <el-radio v-model="radio2" label="2" border size="medium">在线</el-radio> -->
+        <div
+          v-for='(item, index) in selects'
+          :key='index'
+          :class="{active:currentStatu===index+1}"
+          @click='handleSelect(index)'>
+          <span class="radius"></span>
+          <span class="title all">{{item.title}}</span>
+        </div>
       </div>
       <div class="legends">
         <span @click='handleAddDevice'>
@@ -113,7 +118,22 @@ export default {
       selectDevice: {
         index: '',
         row: []
-      }
+      },
+      selects: [
+        {
+          title: '全部',
+          statu: 1
+        },
+        {
+          title: '离线',
+          statu: 2
+        },
+        {
+          title: '在线',
+          statu: 3
+        }
+      ],
+      currentStatu: 1
     }
   },
   components: {
@@ -166,6 +186,10 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    // 筛选状态
+    handleSelect (index) {
+      this.currentStatu = index + 1
     }
   }
 }
@@ -174,43 +198,67 @@ export default {
 <style lang="scss" scoped>
 .DeviceManagement {
   .header {
+    padding: 0 20px;
     >div {
       display: inline-block;
     }
-    .searchInput {
-      box-sizing: border-box;
-      font-size: 16px;
-      width: 250px;
-      height: 40px;
-      border-radius: 40px;
-      outline: none;
-      background: transparent;
-      border: 2px solid #313131;
-      padding: 0 10px;
-      color: white;
-    }
-    .searchBtn {
-      display: inline-block;
-      width: 50px;
-      line-height: 40px;
-      text-align: center;
-      border-radius: 0 40px 40px 0;
-      color: red;
-      background: #313131;
-      vertical-align: top;
-      margin-left: -50px;
-      img {
-        width: 24px;
-        height: 20px;
-        position: relative;
-        top: 3px;
+    .search {
+      .searchInput {
+        box-sizing: border-box;
+        font-size: 16px;
+        width: 250px;
+        height: 40px;
+        border-radius: 40px;
+        outline: none;
+        background: transparent;
+        border: 2px solid #313131;
+        padding: 0 10px;
+        color: white;
+      }
+      .searchBtn {
+        display: inline-block;
+        width: 50px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 0 40px 40px 0;
+        color: red;
+        background: #313131;
+        vertical-align: top;
+        margin-left: -50px;
+        img {
+          width: 24px;
+          height: 20px;
+          position: relative;
+          top: 3px;
+        }
       }
     }
-    .total {
-      font-size: 14px;
-      color: #7E7E7E;
-      >span {
-        color: white;
+    .radio {
+      color: white;
+      width: 300px;
+      margin-left: 200px;
+      > div {
+        display: inline-block;
+        cursor: pointer;
+      }
+      .active {
+        background: #F8BF12;
+        border-radius: 20px;
+        color: black;
+        .radius {
+          border: 2px solid black;
+          display: inline-block;
+          border-radius: 50%;
+          width: 5px;
+          height: 5px;
+          background: white;
+        }
+      }
+      >div {
+        width: 90px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
       }
     }
     .legends {

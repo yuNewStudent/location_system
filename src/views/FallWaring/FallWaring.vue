@@ -97,6 +97,7 @@ export default {
 <style lang="scss" scoped>
 .FallWaring {
   .header {
+    padding: 0 20px;
     >div {
       display: inline-block;
     }

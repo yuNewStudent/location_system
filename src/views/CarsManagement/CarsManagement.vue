@@ -156,6 +156,7 @@ export default {
 <style lang="scss" scoped>
 .CarsManagement{
   .header {
+    padding: 0 20px;
     >div {
       display: inline-block;
     }

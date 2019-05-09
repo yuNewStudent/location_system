@@ -5,41 +5,59 @@
     :btns='btns'
     @closeMessageBox='changeDevice'>
     <el-main>
-      <el-row>
-        <label for="">设备ID</label>
-        <input
-          type="text"
-          v-model="deviceInfo.deviceID">
-      </el-row>
-      <el-row>
-        <label for="">佩戴人</label>
-        <input v-model="deviceInfo.WearerPerson" type="text">
-      </el-row>
-      <el-row>
-        <label for="">性别</label>
-        <el-radio v-model="deviceInfo.sex" label="1">男</el-radio>
-        <el-radio v-model="deviceInfo.sex" label="2">女</el-radio>
-      </el-row>
-      <el-row>
-        <label for="">出生日期</label>
-        <input
-          v-model="deviceInfo.birth"
-          type="date">
-      </el-row>
-      <el-row>
-        <label for="">家庭住址</label>
-        <input v-model="deviceInfo.address" type="text">
-      </el-row>
-      <el-row>
-        <label for="">激活时间</label>
-        <input
-          v-model="deviceInfo.activeTime"
-          type="date">
-      </el-row>
-      <el-row>
-        <label for="">联系电话</label>
-        <input v-model="deviceInfo.emergencyCall" type="text">
-      </el-row>
+      <div class="user">
+        <el-row>
+          <label for="">设备ID</label>
+          <input
+            type="text"
+            v-model="deviceInfo.deviceID">
+        </el-row>
+        <el-row>
+          <label for="">佩戴人</label>
+          <input v-model="deviceInfo.WearerPerson" type="text">
+        </el-row>
+        <el-row>
+          <label for="">性别</label>
+          <el-radio v-model="deviceInfo.sex" label="1">男</el-radio>
+          <el-radio v-model="deviceInfo.sex" label="2">女</el-radio>
+        </el-row>
+        <el-row>
+          <label for="">出生日期</label>
+          <input
+            v-model="deviceInfo.birth"
+            type="date">
+        </el-row>
+        <el-row>
+          <label for="">家庭住址</label>
+          <input v-model="deviceInfo.address" type="text">
+        </el-row>
+      </div>
+      <div class="contact">
+        <el-row>
+          <label for="">紧急联系人1</label>
+          <input v-model="deviceInfo.activeTime" type="text">
+        </el-row>
+        <el-row>
+          <label for="">联系电话</label>
+          <input v-model="deviceInfo.emergencyCall" type="text">
+        </el-row>
+        <el-row>
+          <label for=""></label>
+          <input v-model="deviceInfo.emergencyCall" type="text">
+        </el-row>
+        <el-row>
+          <label for="">紧急联系人2</label>
+          <input v-model="deviceInfo.activeTime" type="text">
+        </el-row>
+        <el-row>
+          <label for="">联系电话</label>
+          <input v-model="deviceInfo.emergencyCall" type="text">
+        </el-row>
+        <el-row>
+          <label for=""></label>
+          <input v-model="deviceInfo.emergencyCall" type="text">
+        </el-row>
+      </div>
     </el-main>
   </message-box>
 </template>
@@ -98,10 +116,20 @@ export default {
 <style lang="scss" scoped>
 .add_person {
   .el-main {
-    padding: 0 30px;
+    padding: 0;
+    .user {
+      padding: 0 50px 10px;
+      border-bottom: 1px solid rgb(231,231,231);
+    }
+    .contact {
+      padding: 10px 50px 0;
+    }
     .el-row {
       display: flex;
-      padding: 10px 0;
+      padding: 8px 0;
+      height: 35px;
+      box-sizing: border-box;
+      font-size: 15px;
       label  {
         display: inline-block;
         width: 100px;
@@ -109,7 +137,7 @@ export default {
       input {
         flex: 1;
         outline: none;
-        border-bottom: 2px solid rgb(231,231,231);
+        border-bottom: 1px solid rgb(211,211,211);
       }
     }
   }

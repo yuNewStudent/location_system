@@ -57,6 +57,7 @@ export default {
   position: relative;
   height: 100%;
   .header {
+    padding: 0 20px;
     >div {
       display: inline-block;
     }
@@ -116,7 +117,7 @@ export default {
     }
   }
   .el-main {
-    padding: 0;
+    padding: 0 20px;
     position: absolute;
     top: 60px;
     bottom: 0;
