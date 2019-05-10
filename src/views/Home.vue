@@ -4,8 +4,8 @@
       <span class="name">防丢失系统</span>
       <app-menu class="menu" :menus='menus' :mode='mode.row'></app-menu>
       <div class="header_right">
-        <img src="@/assets/img/userImg.png" alt="">
-        <span class="user_name">{{user.name||'余建'}}</span>
+        <!-- <img src="@/assets/img/userImg.png" alt=""> -->
+        <span class="user_name" @click='handleResetPassword'>{{user.name||'余建'}}</span>
         <span class="dividing_line"></span>
         <span class="exit" @click="handleExit">退出</span>
       </div>
@@ -15,11 +15,16 @@
         <router-view/>
       </el-main>
     </el-container>
+    <reset-password
+      :type='type'
+      v-if='isShowResetPassword'
+      @resetPassword='resetPassword'></reset-password>
   </el-container>
 </template>
 
 <script>
 import AppMenu from '@/components/home/app-menu'
+import ResetPassword from '@/components/home/ResetPassword'
 import menus from '@/assets/js/menu.js'
 export default {
   name: 'home',
@@ -31,7 +36,9 @@ export default {
         row: 'horizontal',
         colum: ''
       },
-      menusGroup: []
+      menusGroup: [],
+      isShowResetPassword: false,
+      type: '修改密码'
     }
   },
   methods: {
@@ -40,10 +47,25 @@ export default {
       console.log(res.data)
     },
     // 退出
-    handleExit () {}
+    handleExit () {
+      // 退出页面，删除本地的用户信息
+      this.$router.push({
+        name: 'Login'
+      })
+    },
+    // 修改密码
+    handleResetPassword () {
+      console.log(1)
+      this.isShowResetPassword = true
+    },
+    resetPassword (bol, accountInfo) {
+      console.log(bol, accountInfo)
+      this.isShowResetPassword = false
+    }
   },
   components: {
-    AppMenu
+    AppMenu,
+    ResetPassword
   },
   created () {
     // this.timer = setInterval(this.getData, 2000)
@@ -61,10 +83,11 @@ export default {
   height: 100%;
   .el-header {
     display: flex;
-    padding: 0 20px;
+    padding: 0 40px;
     line-height: 60px;
     background-color: rgb(84, 92, 100);
     justify-content: space-between;
+    font-size: 16px;
     .name {
       vertical-align: top;
       color: white;
@@ -76,19 +99,22 @@ export default {
       float: right;
       line-height: 60px;
       height: 60px;
-      font-size: 14px;
       color: white;
-      img {
-        width: 65px;
-        height: 60px;
-        border-radius: 50%;
-        vertical-align: top;
-        cursor:pointer
-      }
-      .user_role {
-        color: rgb(181,181,181);
-        font-size: 13px;
-        cursor: pointer
+      // img {
+      //   width: 65px;
+      //   height: 60px;
+      //   border-radius: 50%;
+      //   vertical-align: top;
+      //   cursor:pointer
+      // }
+      .dividing_line {
+        display: inline-block;
+        width: 2px;
+        height: 25px;
+        background: #A0A0A0;
+        position: relative;
+        top: 6px;
+        margin: 0 2px;
       }
       .user_name{
         cursor: pointer

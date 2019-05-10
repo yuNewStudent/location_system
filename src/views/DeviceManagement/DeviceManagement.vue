@@ -27,7 +27,7 @@
     </el-row>
     <el-main>
       <el-table
-        :data="devices"
+        :data="paginationData"
         border
         style="width: 100%"
         size='mini'><el-table-column
@@ -61,6 +61,13 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-count='devices.length/5'
+        :page-size='pageSize'
+        layout="total, prev, pager, next, jumper"
+        :total="devices.length"></el-pagination>
     </el-main>
     <change-device
       :type='type.add'
@@ -111,6 +118,20 @@ export default {
           activeTime: '2018-08-09',
           emergencyCall: 13418854312,
           status: '离线'
+        },
+        {
+          WearerPerson: '苏大爷',
+          deviceID: '1234',
+          activeTime: '2018-08-09',
+          emergencyCall: 13418854312,
+          status: '离线'
+        },
+        {
+          WearerPerson: '苏大爷',
+          deviceID: '1234',
+          activeTime: '2018-08-09',
+          emergencyCall: 13418854312,
+          status: '离线'
         }
       ],
       isShowAddDevice: false,
@@ -133,13 +154,26 @@ export default {
           statu: 3
         }
       ],
-      currentStatu: 1
+      currentStatu: 1,
+      // 分页
+      currentPage: 1,
+      paginationData: [],
+      pageSize: 5
     }
   },
   components: {
     ChangeDevice
   },
+  created () {
+    this.getDevices()
+  },
   methods: {
+    // 获取设备
+    getDevices () {
+      // 服务器获取信息
+      // 分页
+      this.handleCurrentChange(this.currentPage)
+    },
     // 新增设备
     handleAddDevice () {
       this.isShowAddDevice = true
@@ -153,6 +187,9 @@ export default {
         }
         deviceInfo.status = '离线'
         this.devices.push(deviceInfo)
+        // 分页
+        this.currentPage = 1
+        this.handleCurrentChange(this.currentPage)
       }
       this.isShowAddDevice = false
     },
@@ -176,6 +213,9 @@ export default {
         type: 'warning'
       }).then(() => {
         this.devices.splice(index, 1)
+        // 分页
+        this.currentPage = 1
+        this.handleCurrentChange(this.currentPage)
         this.$message({
           type: 'success',
           message: '删除成功!'
@@ -190,6 +230,17 @@ export default {
     // 筛选状态
     handleSelect (index) {
       this.currentStatu = index + 1
+    },
+    // 分页
+    getPaginationData (pageIndex) {
+      const start = (pageIndex - 1) * this.pageSize
+      const end = pageIndex * this.pageSize
+      this.paginationData = this.devices.slice(start, end)
+    },
+    // 跳转至对应分页
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.getPaginationData(val)
     }
   }
 }
@@ -279,6 +330,12 @@ export default {
           margin-right: 6px;
         }
       }
+    }
+  }
+  .el-main {
+    .el-pagination {
+      text-align: right;
+      margin-top: 10px;
     }
   }
 }

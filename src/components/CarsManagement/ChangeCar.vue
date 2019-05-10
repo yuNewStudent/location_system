@@ -7,20 +7,23 @@
     <el-main>
       <el-row>
         <label for="">车辆型号</label>
-        <input v-model="carInfo.carModel" type="text">
+        <input
+          v-model="carInfo.carModel"
+          :disabled='selectCar'>
       </el-row>
       <el-row>
         <label for="">车辆编号</label>
         <input
-          v-model="carInfo.carNum">
+          v-model="carInfo.carNum"
+          :disabled='selectCar'>
       </el-row>
       <el-row>
         <label for="">使用单位</label>
-        <input v-model="carInfo.useCompany" type="text">
+        <input v-model="carInfo.useCompany">
       </el-row>
       <el-row>
         <label for="">联系电话</label>
-        <input v-model="carInfo.emergencyCall" type="text">
+        <input v-model="carInfo.emergencyCall">
       </el-row>
     </el-main>
   </message-box>
@@ -29,7 +32,7 @@
 <script>
 import MessageBox from '@/components/MessageBox'
 export default {
-  props: ['type'],
+  props: ['type', 'selectCar'],
   data () {
     return {
       btns: {
@@ -37,10 +40,10 @@ export default {
         cancel: '取消'
       },
       carInfo: {
-        carModel: '路虎X89',
-        carNum: '12345',
-        useCompany: '上海市XX科技有限公司',
-        emergencyCall: '12345678912'
+        carModel: '',
+        carNum: '',
+        useCompany: '',
+        emergencyCall: ''
       }
     }
   },
@@ -49,7 +52,18 @@ export default {
   },
   methods: {
     changeCar (bol) {
-      this.$emit('changeCar')
+      if (!this.selectCar) {
+        // 新增车辆
+        this.$emit('addCar', bol, this.carInfo)
+      } else {
+        // 修改车辆
+        this.$emit('editorCar', bol, this.carInfo)
+      }
+    }
+  },
+  created () {
+    if (this.selectCar) {
+      this.carInfo = this.selectCar
     }
   }
 }
@@ -58,13 +72,14 @@ export default {
 <style lang="scss" scoped>
 .add_person {
   .el-main {
-    padding: 0 30px;
+    padding: 0 50px;
     .el-row {
+      font-size: 15px;
       display: flex;
       padding: 10px 0;
       label  {
         display: inline-block;
-        width: 100px;
+        width: 80px;
       }
       input {
         flex: 1;

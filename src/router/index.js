@@ -9,6 +9,7 @@ const PersonManagement = name => () => import('@/views/PersonManagement/' + name
 const FallWaring = name => () => import('@/views/FallWaring/' + name)
 const CarsManagement = name => () => import('@/views/CarsManagement/' + name)
 const DeviceManagement = name => () => import('@/views/DeviceManagement/' + name)
+const AccountManagement = name => () => import('@/views/AccountManagement/' + name)
 
 export default new Router({
   routes: [
@@ -16,11 +17,11 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home,
-      redirect: '/RealTimeMonitor',
+      redirect: '/realTimeMonitor',
       children: [
         // 实时监控
         {
-          path: '/RealTimeMonitor',
+          path: '/realTimeMonitor',
           name: 'RealTimeMonitor',
           component: RealTimeMonitor('RealTimeLocation')
         },
@@ -31,27 +32,33 @@ export default new Router({
         // },
         // 人员管理
         {
-          path: '/PersonManagement',
+          path: '/personManagement',
           name: 'PersonManagement',
           component: PersonManagement('PersonManagement')
         },
         // 设备管理
         {
-          path: '/DeviceManagement',
+          path: '/deviceManagement',
           name: 'DeviceManagement',
           component: DeviceManagement('DeviceManagement')
         },
         // 车辆管理
         {
-          path: '/CarsManagement',
+          path: '/carsManagement',
           name: 'CarsManagement',
           component: CarsManagement('CarsManagement')
         },
         // 摔倒预警
         {
-          path: '/FallWaring',
+          path: '/fallWaring',
           name: 'FallWaring',
           component: FallWaring('FallWaring')
+        },
+        // 账号管理
+        {
+          path: '/accountManagement',
+          name: 'AccountManagement',
+          component: AccountManagement('AccountManagement')
         }
       ]
     },

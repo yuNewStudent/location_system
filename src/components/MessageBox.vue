@@ -70,7 +70,7 @@ export default {
     .header {
       font-size: 18px;
       color: black;
-      padding: 15px 50px 15px;
+      padding: 15px 40px 15px;
       border-radius: 10px 10px 0 0;
       background: rgb(242, 242, 242);
       span {
@@ -81,6 +81,7 @@ export default {
     .footer {
       text-align: right;
       margin-top: 10px;
+      margin-right: 20px;
       padding: 0 30px;
       .el-button {
         background: transparent;

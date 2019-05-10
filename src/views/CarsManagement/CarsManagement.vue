@@ -4,9 +4,10 @@
       <div class="search">
         <input
           type="text"
-          placeholder="请输入人名或车辆编号"
-          class="searchInput">
-        <span class="searchBtn"><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
+          placeholder="车辆编号"
+          class="searchInput"
+          v-model="carQuery">
+        <span class="searchBtn" @click='handleSearch'><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
       </div>
       <div class="legends">
         <span @click='handleAddCar'>
@@ -17,7 +18,7 @@
     </el-row>
     <el-main>
       <el-table
-        :data="cars"
+        :data="paginationData"
         border
         style="width: 100%"
         :row-style="tableRowStyle"
@@ -49,15 +50,24 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-count='cars.length/5'
+        :page-size='pageSize'
+        layout="total, prev, pager, next, jumper"
+        :total="cars.length"
+      ></el-pagination>
     </el-main>
     <change-car
       :type='type.add'
       v-if='isShowAddCar'
-      @changeCar='addCar'></change-car>
+      @addCar='addCar'></change-car>
     <change-car
       :type='type.editor'
+      :selectCar='selectCar.row'
       v-if='isShowEditorCar'
-      @changeCar='editorCar'></change-car>
+      @editorCar='editorCar'></change-car>
   </div>
 </template>
 
@@ -70,7 +80,20 @@ export default {
         add: '新增车辆',
         editor: '修改车辆'
       },
+      carQuery: '',
       cars: [
+        {
+          carModel: '路虎X89',
+          carNum: '12345',
+          useCompany: '上海市XX科技有限公司',
+          emergencyCall: '12345678912'
+        },
+        {
+          carModel: '路虎X89',
+          carNum: '12345',
+          useCompany: '上海市XX科技有限公司',
+          emergencyCall: '12345678912'
+        },
         {
           carModel: '路虎X89',
           carNum: '12345',
@@ -96,14 +119,31 @@ export default {
           emergencyCall: '12345678912'
         }
       ],
+      selectCar: {
+        index: '',
+        row: []
+      },
       isShowAddCar: false,
-      isShowEditorCar: false
+      isShowEditorCar: false,
+      // 分页
+      currentPage: 1,
+      paginationData: [],
+      pageSize: 5
     }
   },
   components: {
     ChangeCar
   },
+  created () {
+    this.getCars()
+  },
   methods: {
+    // 获取车辆
+    getCars () {
+      // 服务器获取车辆
+      // 刚打开页面时加载前5项、且自动生成分页数量
+      this.getPaginationData(this.currentPage)
+    },
     // 修改table tr行的背景色
     tableRowStyle ({row, rowIndex}) {
       return 'background-color: black; color: white'
@@ -115,29 +155,50 @@ export default {
       }
     },
     // 新增车辆
-    addCar () {
+    addCar (bol, carInfo) {
+      for (var k in carInfo) {
+        if (!carInfo[k]) {
+          return this.$message({
+            showClose: true,
+            message: '信息不能为空',
+            type: 'error'
+          })
+        }
+      }
+      this.cars.unshift(carInfo)
+      // 刚打开页面时加载前5项、且自动生成分页数量
+      this.currentPage = 1
+      this.getPaginationData(this.currentPage)
       this.isShowAddCar = false
     },
     handleAddCar () {
-      console.log(0)
       this.isShowAddCar = true
     },
     // 修改车辆
-    handleEditorCar () {
+    handleEditorCar (index, row) {
+      this.selectCar.index = index
+      this.selectCar.row = row
       this.isShowEditorCar = true
     },
-    editorCar () {
+    editorCar (bol, carInfo) {
+      this.cars.splice(this.selectCar.index, 1, carInfo)
+      this.$message({
+        type: 'success',
+        message: '修改成功!'
+      })
       this.isShowEditorCar = false
     },
     // 删除车辆
     handleDeleteCar (index, row) {
-      console.log(index, row)
       this.$confirm(`此操作将永久删除该车辆, 是否继续?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         this.cars.splice(index, 1)
+        // 刚打开页面时加载前5项、且自动生成分页数量
+        this.currentPage = 1
+        this.getPaginationData(this.currentPage)
         this.$message({
           type: 'success',
           message: '删除成功!'
@@ -148,6 +209,20 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    // 过滤器
+    handleSearch () {
+    },
+    // 分页
+    getPaginationData (pageIndex) {
+      const start = (pageIndex - 1) * this.pageSize
+      const end = pageIndex * this.pageSize
+      this.paginationData = this.cars.slice(start, end)
+    },
+    // 跳转至对应分页
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.getPaginationData(val)
     }
   }
 }
@@ -214,6 +289,12 @@ export default {
           margin-right: 6px;
         }
       }
+    }
+  }
+  .el-main {
+    .el-pagination {
+      text-align: right;
+      margin-top: 10px;
     }
   }
 }

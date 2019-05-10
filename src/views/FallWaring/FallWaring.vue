@@ -1,7 +1,7 @@
 <template>
   <div class="FallWaring">
     <div>
-      <el-row class="header">
+      <!-- <el-row class="header">
         <div class="search">
           <input
             type="text"
@@ -9,10 +9,10 @@
             class="searchInput">
           <span class="searchBtn"><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
         </div>
-      </el-row>
+      </el-row> -->
       <el-main>
         <el-table
-          :data="tableData"
+          :data="paginationData"
           border
           style="width: 100%"
           @row-click='handleRow'
@@ -38,6 +38,13 @@
             label="报警地点">
           </el-table-column>
         </el-table>
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-count='fallWarnings.length/5'
+          :page-size='pageSize'
+          layout="total, prev, pager, next, jumper"
+          :total="fallWarnings.length"></el-pagination>
       </el-main>
     </div>
     <waring-info @close='isShowWarningInfo = !isShowWarningInfo' v-if='isShowWarningInfo'></waring-info>
@@ -49,7 +56,21 @@ import WaringInfo from '@/components/FallWaring/FallWaringInfo'
 export default {
   data () {
     return {
-      tableData: [
+      fallWarnings: [
+        {
+          warningPerson: '谢老大',
+          deviceId: '12345',
+          warningTime: '2018-05-06-10:20',
+          contactPhone: '12345678912',
+          warningAddress: '四川省成都市锦江区华为路'
+        },
+        {
+          warningPerson: '谢老大',
+          deviceId: '12345',
+          warningTime: '2018-05-06-10:20',
+          contactPhone: '12345678912',
+          warningAddress: '四川省成都市锦江区华为路'
+        },
         {
           warningPerson: '谢老大',
           deviceId: '12345',
@@ -79,7 +100,11 @@ export default {
           warningAddress: '四川省成都市锦江区华为路'
         }
       ],
-      isShowWarningInfo: false
+      isShowWarningInfo: false,
+      // 分页
+      currentPage: 1,
+      paginationData: [],
+      pageSize: 5
     }
   },
   components: {
@@ -87,9 +112,26 @@ export default {
   },
   methods: {
     handleRow (row, column) {
-      console.log(row, column)
       this.isShowWarningInfo = true
+    },
+    // 获取摔倒预警
+    getFallWarnings () {
+      this.handleCurrentChange(this.currentPage)
+    },
+    // 分页
+    getPaginationData (pageIndex) {
+      const start = (pageIndex - 1) * this.pageSize
+      const end = pageIndex * this.pageSize
+      this.paginationData = this.fallWarnings.slice(start, end)
+    },
+    // 跳转至对应分页
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.getPaginationData(val)
     }
+  },
+  created () {
+    this.getFallWarnings()
   }
 }
 </script>
@@ -155,6 +197,12 @@ export default {
           margin-right: 6px;
         }
       }
+    }
+  }
+  .el-main {
+    .el-pagination {
+      text-align: right;
+      margin-top: 10px;
     }
   }
 }

@@ -19,24 +19,28 @@ const menus = {
     {
       title: '设备管理',
       name: 'DeviceManagement'
+    },
+    {
+      title: '账号管理',
+      name: 'AccountManagement'
     }
-  ],
-  arr: {
-    RealTimeMonitor: {
-      title: '实时监控',
-      name: 'RealTimeMonitor',
-      group: [
-        {
-          title: '实时定位',
-          name: 'RealTimeLocation'
-        },
-        {
-          title: '监控围栏',
-          name: 'MonitoringFence'
-        }
-      ]
-    }
-  }
+  ]
+  // arr: {
+  //   RealTimeMonitor: {
+  //     title: '实时监控',
+  //     name: 'RealTimeMonitor',
+  //     group: [
+  //       {
+  //         title: '实时定位',
+  //         name: 'RealTimeLocation'
+  //       },
+  //       {
+  //         title: '监控围栏',
+  //         name: 'MonitoringFence'
+  //       }
+  //     ]
+  //   }
+  // }
 }
 
 export default menus
