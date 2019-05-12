@@ -16,6 +16,8 @@
           border
           style="width: 100%"
           @row-click='handleRow'
+          :row-style="tableRowStyle"
+          :header-cell-style="tableHeaderColor"
           size='mini'>
           <el-table-column
             prop="warningPerson"
@@ -118,6 +120,16 @@ export default {
     getFallWarnings () {
       this.handleCurrentChange(this.currentPage)
     },
+    // 修改table tr行的背景色
+    tableRowStyle (row, rowIndex) {
+      return 'background-color: black;'
+    },
+    // 修改table header的背景色
+    tableHeaderColor ({row, column, rowIndex, columnIndex}) {
+      if (rowIndex === 0) {
+        return 'background-color: black; color: white'
+      }
+    },
     // 分页
     getPaginationData (pageIndex) {
       const start = (pageIndex - 1) * this.pageSize
@@ -200,6 +212,10 @@ export default {
     }
   }
   .el-main {
+    .el-table {
+      color: #606266;
+      font-size: 13px;
+    }
     .el-pagination {
       text-align: right;
       margin-top: 10px;

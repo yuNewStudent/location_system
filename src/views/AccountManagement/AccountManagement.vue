@@ -13,6 +13,8 @@
         :data="accounts"
         border
         style="width: 100%"
+        :row-style="tableRowStyle"
+        :header-cell-style="tableHeaderColor"
         size='mini'>
         <el-table-column
           type='index'
@@ -33,15 +35,12 @@
           <template slot-scope="scope">
             <el-button
               size='mini'
-              @click="handleEditorAccount(scope.row, scope.$index)"
-              type="text">修改</el-button>
+              @click="handleEditorAccount(scope.row, scope.$index)">修改</el-button>
             <el-button
               size='mini'
-              type="text"
               @click="handleDelAccount(scope.row.name, scope.$index)">删除</el-button>
             <el-button
               size='mini'
-              type="text"
               @click="handleResetPassword(scope.row, scope.$index)">重置密码</el-button>
           </template>
         </el-table-column>
@@ -158,6 +157,16 @@ export default {
         })
       })
     },
+    // 修改table tr行的背景色
+    tableRowStyle (row, rowIndex) {
+      return 'background-color: black;'
+    },
+    // 修改table header的背景色
+    tableHeaderColor ({row, column, rowIndex, columnIndex}) {
+      if (rowIndex === 0) {
+        return 'background-color: black; color: white'
+      }
+    },
     // 重置密码
     handleResetPassword (row, index) {
       // 服务器重置
@@ -219,6 +228,10 @@ export default {
   }
   .el-main {
     padding-top: 0;
+    .el-table {
+      color: #606266;
+      font-size: 13px;
+    }
   }
 }
 </style>

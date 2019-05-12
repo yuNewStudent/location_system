@@ -145,8 +145,8 @@ export default {
       this.getPaginationData(this.currentPage)
     },
     // 修改table tr行的背景色
-    tableRowStyle ({row, rowIndex}) {
-      return 'background-color: black; color: white'
+    tableRowStyle (row, rowIndex) {
+      return 'background-color: black;'
     },
     // 修改table header的背景色
     tableHeaderColor ({row, column, rowIndex, columnIndex}) {
@@ -295,6 +295,10 @@ export default {
     .el-pagination {
       text-align: right;
       margin-top: 10px;
+    }
+    .el-table {
+      color: #606266;
+      font-size: 13px;
     }
   }
 }
