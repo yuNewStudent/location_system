@@ -1,3 +1,3 @@
 var config = {
-  httpBaseUrl: 'http://172.16.201.27:8000'
+  httpBaseUrl: 'http://175.152.118.215:8181'
 }

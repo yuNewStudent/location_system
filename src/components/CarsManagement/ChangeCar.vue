@@ -8,22 +8,22 @@
       <el-row>
         <label for="">车辆型号</label>
         <input
-          v-model="carInfo.carModel"
+          v-model="carInfo.vehiclesTypeof"
           :disabled='selectCar'>
       </el-row>
       <el-row>
         <label for="">车辆编号</label>
         <input
-          v-model="carInfo.carNum"
+          v-model="carInfo.vehiclesNumBering"
           :disabled='selectCar'>
       </el-row>
       <el-row>
         <label for="">使用单位</label>
-        <input v-model="carInfo.useCompany">
+        <input v-model="carInfo.vehiclesUseunit">
       </el-row>
       <el-row>
         <label for="">联系电话</label>
-        <input v-model="carInfo.emergencyCall">
+        <input v-model="carInfo.vehiclesNsumber">
       </el-row>
     </el-main>
   </message-box>
@@ -40,10 +40,10 @@ export default {
         cancel: '取消'
       },
       carInfo: {
-        carModel: '',
-        carNum: '',
-        useCompany: '',
-        emergencyCall: ''
+        vehiclesTypeof: '',
+        vehiclesNsumber: '',
+        vehiclesUseunit: '',
+        vehiclesNumBering: ''
       }
     }
   },

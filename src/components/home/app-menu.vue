@@ -22,7 +22,8 @@
       :key='index'
       :route='goRoute(item.name)'
       ref='menuItem'
-      @click='handleRoute(item.name)'>{{item.title}}
+      @click='handleRoute(item.name)'>
+      <span>{{item.title}}</span>
     </el-menu-item>
   </el-menu>
 </template>
@@ -37,7 +38,6 @@ export default {
   },
   methods: {
     goRoute (name) {
-      console.log(name)
       return {
         name: name
       }
@@ -48,14 +48,12 @@ export default {
       })
     },
     handleRouteHead (name) {
-      console.log(1)
       this.$router.push({
         name: 'RealTimeLocation'
       })
     }
   },
   mounted () {
-    console.log(this.menus)
   }
 }
 </script>

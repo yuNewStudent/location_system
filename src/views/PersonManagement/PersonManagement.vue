@@ -4,17 +4,12 @@
       <div class="search">
         <input
           type="text"
-          placeholder="请输入人名或车辆编号"
-          class="searchInput">
-        <span class="searchBtn"><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
-        <span class="total">共<span>222</span>条</span>
+          placeholder="请输入人名或设备ID"
+          class="searchInput"
+          v-model="queryPerson">
+        <span class="searchBtn" @click='handleSearchPerson'><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
+        <span class="total">共<span>{{persons.length}}</span>条</span>
       </div>
-      <!-- <div class="legends">
-        <span @click='handleAddPerson'>
-          <img src="@/assets/img/icon/新增IC.png" alt="">
-          新增
-        </span>
-      </div> -->
     </el-row>
     <el-main>
       <ul class="cards">
@@ -24,32 +19,30 @@
           class="card">
           <div class="userInfo">
             <img
-              :src="item.headImg"
+              :src="item.userAvatar"
               class="headImg"
               alt="">
-              <p class="name">{{item.name}}</p>
-              <p class="sex">{{item.sex}}</p>
+              <p class="name">{{item.userName}}</p>
+              <p class="sex male" v-if='item.userGender===1'>男</p>
+              <p class="sex female" v-else>女</p>
           </div>
-          <p class="phone">手机号: {{item.phone}}</p>
-          <p class="device_id">设备ID: {{item.deviceId}}</p>
-          <p class="address">家庭地址: {{item.address}}</p>
-          <p class="birth">出生日期: {{item.birth}}<span class='age'>{{getAge(item.birth)}}</span></p>
-          <p class="emergencyContact">紧急联系人: {{item.emergencyContact}}</p>
-          <p class="emergencyPhone">紧急联系电话: {{item.emergencyPhone}}</p>
-          <!-- <div class="menu"
-            @click='handleShowMenu(index)'
-            @mouseleave='handleHideMenu(index)'>
-            <div class="menu_wrapper">
-              <span></span>
-              <span></span>
-              <span></span>
-              <div class="content" ref='content'>
-                <p @click="handleShowLine">人员轨迹</p>
-                <p @click="handleDelPerson">删除</p>
-                <p @click="handleEditorPerson">修改</p>
+          <p class="phone">手机号: {{item.userNumber}}</p>
+          <p class="device_id">设备ID: {{item.userDeviceId}}</p>
+          <p class="address">家庭地址: {{item.userBirth}}</p>
+          <p class="birth">出生日期: {{item.userBirth||2011-10-20}}<span class='age'>{{getAge(item.birth||'2011-10-20')}}</span></p>
+          <div class="emergencyContact">
+            <span v-if='item.emergencycs.length'>紧急联系人: {{item.emergencycs[0].emergencycsName}}({{item.emergencycs[0].emergencycsRelationShip}})</span>
+            <span v-else>紧急联系人: 无</span>
+            <div class="moreEmergencyContact" v-if='item.emergencycs.length>0'>
+              <img v-if='item.emergencycs[1]' src="@/assets/img/icon/多个紧急联系人IC.png" alt="">
+              <div class="wrapper" v-if='item.emergencycs[1]'>
+                <p><span>紧急联系人:</span>{{item.emergencycs[1].emergencycsName}}({{item.emergencycs[1].emergencycsRelationShip}})</p>
+                <p class="emergencyPhone"><span>紧急电话:</span> {{item.emergencycs[1].emergencycsNumber}}</p>
+                <p class="emergencyPhone"><span></span> {{item.emergencycs[1].emergencycrsNumber1}}</p>
               </div>
             </div>
-          </div> -->
+          </div>
+          <p class="emergencyPhone">紧急电话: {{item.emergencycs.length?item.emergencycs[0].emergencycsNumber:'无'}}</p>
         </li>
       </ul>
       <change-person
@@ -73,151 +66,8 @@ export default {
         add: '新增人员',
         editor: '修改人员'
       },
-      persons: [
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1967-04-16',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        },
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1976-04-04',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        },
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1960-04-01',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        },
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1958-04-12',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        },
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1967-07-08',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        },
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1983-04-19',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        },
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1923-04-28',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        },
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1934-04-15',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        },
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1989-04-06',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        },
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1951-04-05',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        },
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1988-04-02',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        },
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1949-05-21',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        },
-        {
-          name: 'yujj',
-          sex: '男',
-          phone: '18222222',
-          deviceId: '12',
-          birth: '1973-04-11',
-          address: '四川省成都市锦江区信息路',
-          emergencyContact: 'jjjj',
-          emergencyPhone: '2111ss22',
-          headImg: require('@/assets/img/icon/定位icon.png')
-        }
-      ],
+      queryPerson: '',
+      persons: [],
       isShowAddPerson: false,
       isShowEditorPerson: false
     }
@@ -225,52 +75,24 @@ export default {
   components: {
     ChangePerson
   },
+  created () {
+    // 获取所有人员
+    this.getPersons()
+  },
+  watch: {
+    queryPerson (value) {
+      if (!value) {
+        this.getPersons()
+      }
+    }
+  },
   methods: {
-    // 显示操作栏
-    handleShowMenu (index) {
-      this.$refs.content.forEach(item => {
-        item.style.display = 'none'
-      })
-      this.$refs.content[index].style.display = 'block'
-    },
-    // 隐藏操作栏
-    handleHideMenu () {
-      this.$refs.content.forEach(item => {
-        item.style.display = 'none'
-      })
-    },
-    // 新增人员
-    handleAddPerson () {
-      this.isShowAddPerson = true
-    },
-    addPerson () {
-      this.isShowAddPerson = false
-    },
-    // 修改人员
-    handleEditorPerson () {
-      this.isShowEditorPerson = true
-    },
-    editorPerson () {
-      this.isShowEditorPerson = false
-    },
-    // 展示人员轨迹
-    handleShowLine () {},
-    // 删除人员
-    handleDelPerson () {
-      this.$confirm('此操作将永久删除该人员, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
+    getPersons () {
+      // 获取所有人员
+      this.$http.get(`${config.httpBaseUrl}/user/getAll`).then((res) => {
+        if (res.code === 200) {
+          this.persons = res.date.users
+        }
       })
     },
     // 计算年龄
@@ -283,6 +105,24 @@ export default {
         return Y - r[1] + '岁'
       }
       return '输入的日期格式错误!'
+    },
+    // 搜索某个人
+    handleSearchPerson () {
+      this.$http.get(`${config.httpBaseUrl}/user/get`, {
+        params: {
+          userDeviceId: this.queryPerson
+        }
+      }).then((res) => {
+        if (res.date.user.length) {
+          this.persons = res.date.user
+        } else {
+          this.$message({
+            showClose: true,
+            type: 'info',
+            message: '没有相关的人员'
+          })
+        }
+      })
     }
   }
 }
@@ -395,8 +235,53 @@ export default {
             font-size: 16px;
           }
           .sex {
-            color: #5789F0;
             font-size: 14px;
+            &.male {
+              color: #5789f0;
+            }
+            &.female {
+              color: #ED3BA8;
+            }
+          }
+        }
+        .emergencyContact {
+          color: white;
+          line-height: 18px;
+          padding: 5px 0;
+          font-size: 14px;
+          display: flex;
+          .moreEmergencyContact {
+            position: relative;
+            &:hover {
+              .wrapper {
+                display: block;
+              }
+            }
+            img {
+              width: 12px;
+              position: absolute;
+              margin-left: 5px;
+              top: 3px;
+            }
+            .wrapper {
+              width: 170px;
+              padding: 5px;
+              background:rgba(85,85,85,1);
+              border-radius: 5px;
+              position: absolute;
+              right:-185px;
+              top: 10px;
+              z-index: 5;
+              display: none;
+              p {
+                span {
+                  display: inline-block;
+                  width: 70px;
+                }
+                line-height: 20px;
+                font-size: 13px;
+              }
+            }
           }
         }
         .menu {

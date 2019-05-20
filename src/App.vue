@@ -1,12 +1,22 @@
 <template>
   <div id="app">
-    <router-view/>
+    <keep-alive>
+      <router-view/>
+    </keep-alive>
   </div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
-  name: 'App'
+  name: 'App',
+  created () {
+    const userInfo = JSON.parse(this.$cookie.get('user'))
+    this.setUser(userInfo)
+  },
+  methods: {
+    ...mapMutations(['setUser'])
+  }
 }
 </script>
 
@@ -14,5 +24,8 @@ export default {
 @import './assets/css/reset.css';
 html,body,#app{
   height: 100%;
+}
+.el-table__body tr:hover>td{
+  color: black;
 }
 </style>

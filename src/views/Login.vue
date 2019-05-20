@@ -5,10 +5,10 @@
         <div class="login">
           <header>社区定位系统</header>
           <h3>欢迎回来</h3>
-          <el-input placeholder="请输入账号" v-model="user.account">
+          <el-input placeholder="请输入账号" v-model="user.administratorAccount">
             <template slot="prepend"><img src="@/assets/img/icon/账号IC.png" alt=""></template>
           </el-input>
-          <el-input placeholder="请输入密码" v-model="user.password">
+          <el-input placeholder="请输入密码" v-model="user.administratorPassword" type='password'>
             <template slot="prepend"><img src="@/assets/img/icon/矢量智能对象.png" alt=""></template>
           </el-input>
           <el-button type="warning" @click='handleLogin'>登录</el-button>
@@ -19,17 +19,19 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   name: 'login',
   data () {
     return {
       user: {
-        account: '',
-        password: ''
+        administratorAccount: '',
+        administratorPassword: ''
       }
     }
   },
   methods: {
+    ...mapMutations(['setUser']),
     // 登录
     handleLogin () {
       // 判断账号和密码不能为空
@@ -43,11 +45,35 @@ export default {
         }
       }
       // 向后台登录,登录成功将用户信息存在本地
-      // 登录成功跳转子页面
-      this.$router.push({
-        name: 'Home'
+      this.$http.post(`${config.httpBaseUrl}/admin/login`, this.user).then(res => {
+        if (res.code === 200) {
+          this.$message({
+            showClose: true,
+            message: '登陆成功',
+            type: 'success'
+          })
+          // 将用户信息存至本地
+          const userInfo = {
+            token: res.date.ok,
+            ...this.user
+          }
+          this.$cookie.set('user', JSON.stringify(userInfo))
+          this.setUser(userInfo)
+          // 登录成功跳转子页面
+          this.$router.push({
+            name: 'Home'
+          })
+        } else {
+          this.$message({
+            showClose: true,
+            message: '账号或密码错误',
+            type: 'error'
+          })
+        }
       })
     }
+  },
+  computed: {
   }
 }
 </script>

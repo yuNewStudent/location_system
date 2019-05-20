@@ -7,20 +7,24 @@
       <button @click='handleSetSafe'>设置安全区域</button> -->
     </div>
     <!-- <set-safe v-else></set-safe> -->
-    <div ref='info' class='windowinfo'>
+    <div ref='personInfo' class='windowinfo'>
       <h1>人员信息</h1>
-      <p>姓名：苏老大</p>
-      <p>年龄：57</p>
-      <p>所在位置：四川成都锦江区春熙路</p>
-      <p>所在时长：2h20min</p>
+      <p>姓名：{{personInfo.name}}</p>
+      <p>年龄：{{personInfo.age}}</p>
+      <p>所在位置：{{personInfo.address}}</p>
+      <!-- <p>所在时长：2h20min</p> -->
       <p class="icon">
         <span style="margin-right: 10px" @click="getLngLat">
           <img src="@/assets/img/icon/行动轨迹IC.png"/>
         </span>
-        <!-- <span>
-          <img style = "width: 16px" src="@/assets/img/icon/报警次数IC.png"/>
-        </span> -->
       </p>
+    </div>
+    <div ref='carInfo' class='windowinfo'>
+      <h1>车辆信息</h1>
+      <p>车辆型号：{{carInfo.carModel}}</p>
+      <p>车辆编号：{{carInfo.carNum}}</p>
+      <p>紧急呼叫：{{carInfo.phone}}</p>
+      <p>所在位置：{{carInfo.address}}</p>
     </div>
   </div>
 </template>
@@ -30,6 +34,7 @@ import AMap from 'AMap'
 import SetSafe from './SetSafeArea'
 export default {
   name: 'amap',
+  props: ['persons', 'cars', 'center'],
   data () {
     return {
       map: null,
@@ -37,83 +42,19 @@ export default {
       satelliteLayer: null,
       // 路网图层
       roadNetLayer: null,
+      geocoder: null,
       isSetSafe: false,
-      persons: [
-        {
-          lng: 104.06406,
-          lat: 30.55311,
-          id: 0,
-          type: 'person'
-        },
-        {
-          lng: 104.06306,
-          lat: 30.54411,
-          id: 1,
-          type: 'person'
-        },
-        {
-          lng: 104.07606,
-          lat: 30.54111,
-          id: 2,
-          type: 'person'
-        },
-        {
-          lng: 104.06006,
-          lat: 30.54311,
-          id: 1,
-          type: 'person'
-        },
-        {
-          lng: 104.06206,
-          lat: 30.54911,
-          id: 2,
-          type: 'person'
-        },
-        {
-          lng: 104.06906,
-          lat: 30.54611,
-          id: 3,
-          type: 'person'
-        }
-      ],
-      cars: [
-        {
-          lng: 104.06106,
-          lat: 30.55111,
-          id: 0,
-          type: 'car'
-        },
-        {
-          lng: 104.06706,
-          lat: 30.54611,
-          id: 1,
-          type: 'car'
-        },
-        {
-          lng: 104.07406,
-          lat: 30.54311,
-          id: 2,
-          type: 'car'
-        },
-        {
-          lng: 104.06206,
-          lat: 30.54411,
-          id: 1,
-          type: 'car'
-        },
-        {
-          lng: 104.06106,
-          lat: 30.54811,
-          id: 2,
-          type: 'car'
-        },
-        {
-          lng: 104.06806,
-          lat: 30.54711,
-          id: 3,
-          type: 'car'
-        }
-      ]
+      personInfo: {
+        name: '',
+        age: '',
+        address: ''
+      },
+      carInfo: {
+        carModel: '',
+        carNum: '',
+        phone: '',
+        address: ''
+      }
     }
   },
   components: {
@@ -126,13 +67,19 @@ export default {
         // 调整窗口大小
         resizeEnable: true,
         // 设置中心点
-        center: [104.06406, 30.54311],
+        center: this.center,
         // 地图显示范围
         zoom: 15
       })
       // 添加缩放标尺控件
       AMap.plugin(['AMap.Scale'], () => {
         this.map.addControl(new AMap.Scale())
+      })
+      AMap.plugin(['AMap.Geocoder'], () => {
+        this.geocoder = new AMap.Geocoder({
+          radius: 1000,
+          extensions: 'all'
+        })
       })
     },
     // 创建标记点位置
@@ -163,25 +110,67 @@ export default {
       this.map.add(marker)
       // 鼠标点击marker弹出自定义的信息窗体
       marker.on('click', (event) => {
-        // 获取用户信息
-        const info = this.persons[index]
         // 生成信息窗体
-        let hh = this.creatInfo(info)
-        hh.open(this.map, marker.getPosition())
+        // 改变中心点
+        // this.map.setZoomAndCenter(15, [longitude, latitude])
+        const address = this.getAddress(longitude, latitude)
+        address.then(data => {
+          let hh = this.creatInfo(type, index, data)
+          hh.open(this.map, marker.getPosition())
+        })
       })
     },
     // 生成信息窗体
-    creatInfo () {
-      this.$refs.info.style.display = 'block'
-      var infoWindow = new AMap.InfoWindow({
-        // 使用默认信息窗体框样式，显示信息内容
-        content: this.$refs.info,
-        offset: new AMap.Pixel(0, -30)
-      })
+    creatInfo (type, index, address) {
+      var infoWindow
+      if (type === 'person') {
+        // 获取用户信息
+        const info = this.persons[index]
+        this.personInfo = {
+          name: info.name,
+          age: info.age,
+          address
+        }
+        this.$refs.personInfo.style.display = 'block'
+        infoWindow = new AMap.InfoWindow({
+          // 使用默认信息窗体框样式，显示信息内容
+          content: this.$refs.personInfo,
+          offset: new AMap.Pixel(5, -30)
+        })
+      } else {
+        // 获取车辆信息
+        const info = this.cars[index]
+        this.carInfo = {
+          carModel: info.carModel,
+          carNum: info.carNum,
+          phone: info.phone,
+          address
+        }
+        this.$refs.carInfo.style.display = 'block'
+        infoWindow = new AMap.InfoWindow({
+          // 使用默认信息窗体框样式，显示信息内容
+          content: this.$refs.carInfo,
+          offset: new AMap.Pixel(5, -30)
+        })
+      }
       return infoWindow
     },
     getLngLat () {
       this.$emit('showPersonLine')
+    },
+    // 根据经纬度获取地址
+    getAddress (lng, lat) {
+      const lnglat = [lng, lat]
+      return new Promise((resolve, reject) => {
+        this.geocoder.getAddress(lnglat, (status, result) => {
+          if (status === 'complete' && result.regeocode) {
+            // address = result.regeocode.formattedAddress
+            resolve(result.regeocode.formattedAddress)
+          } else {
+            alert(JSON.stringify(result))
+          }
+        })
+      })
     }
     // 构造官方卫星、路网图层
     // initSatelliteLayer () {
@@ -202,11 +191,17 @@ export default {
     //   this.isSetSafe = true
     // }
   },
+  watch: {
+    // center变化，地图中心改变
+    center (value) {
+      this.map.setZoomAndCenter(18, value)
+    }
+  },
   async mounted () {
     await this.$nextTick(() => {
       this.initMap()
+      this.drawArea()
     })
-    this.drawArea()
     // this.timer = setInterval(this.getData, 2000)
   }
 }

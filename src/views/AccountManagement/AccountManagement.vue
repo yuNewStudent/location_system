@@ -21,24 +21,24 @@
           label="序号">
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="administratorName"
           label="姓名"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="phone"
+          prop="administratorAccount"
           label="电话号码"
           width="180">
         </el-table-column>
         <el-table-column
           label="操作">
           <template slot-scope="scope">
+            <!-- <el-button
+              size='mini'
+              @click="handleEditorAccount(scope.row, scope.$index)">修改</el-button> -->
             <el-button
               size='mini'
-              @click="handleEditorAccount(scope.row, scope.$index)">修改</el-button>
-            <el-button
-              size='mini'
-              @click="handleDelAccount(scope.row.name, scope.$index)">删除</el-button>
+              @click="handleDelAccount(scope.row.administratorAccount, scope.$index)">删除</el-button>
             <el-button
               size='mini'
               @click="handleResetPassword(scope.row, scope.$index)">重置密码</el-button>
@@ -55,32 +55,29 @@
       :selectAccount='selectAccount.row'
       v-if='isShowEditorAccount'
       @editorAccount='editorAccount'></change-account>
-    <!-- <reset-password
-      :type='type.resetPassword'
-      v-if='isShowResetPassword'
-      @resetPassword='resetPassword'></reset-password> -->
   </div>
 </template>
 
 <script>
 // import ResetPassword from '@/components/home/ResetPassword'
+import { mapGetters } from 'vuex'
 import ChangeAccount from '@/components/AccountManagement/changeAccount'
 export default {
   data () {
     return {
       accounts: [
-        {
-          name: 'sccdqq',
-          phone: '1234'
-        },
-        {
-          name: 'hhjj',
-          phone: 'wer'
-        },
-        {
-          name: 'ujjj',
-          phone: '678w'
-        }
+        // {
+        //   name: 'sccdqq',
+        //   phone: '1234'
+        // },
+        // {
+        //   name: 'hhjj',
+        //   phone: 'wer'
+        // },
+        // {
+        //   name: 'ujjj',
+        //   phone: '678w'
+        // }
       ],
       type: {
         add: '新增子账号',
@@ -104,6 +101,9 @@ export default {
     ChangeAccount
     // ResetPassword
   },
+  computed: {
+    ...mapGetters(['getUser'])
+  },
   methods: {
     // 新增账号
     handleAddAccount () {
@@ -112,30 +112,33 @@ export default {
     addAccount (bol, accountInfo) {
       // 新增账号成功
       if (bol) {
-        this.accounts.push(accountInfo)
-        this.$message({
-          type: 'success',
-          message: '新增账号成功!'
+        for (var k in accountInfo) {
+          if (!accountInfo[k]) {
+            return this.$message({
+              showClose: true,
+              message: '信息不能为空',
+              type: 'error'
+            })
+          }
+        }
+        const data = {
+          administratorName: accountInfo.administratorName,
+          administratorAccount: accountInfo.administratorAccount
+        }
+        this.$http.get(`${config.httpBaseUrl}/admin/insertAdmin`, {
+          params: data
+        }).then(res => {
+          if (res.code === 200) {
+            this.accounts.push(accountInfo)
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '新增账号成功!'
+            })
+          }
         })
       }
       this.isShowAddAccount = false
-    },
-    // 修改账号
-    handleEditorAccount (row, index) {
-      this.selectAccount.index = index
-      this.selectAccount.row = row
-      this.isShowEditorAccount = true
-    },
-    editorAccount (bol, accountInfo) {
-      // 修改成功
-      if (bol) {
-        this.accounts.splice(this.selectAccount.index, 1, accountInfo)
-        this.$message({
-          type: 'success',
-          message: '账号信息修改成功!'
-        })
-      }
-      this.isShowEditorAccount = false
     },
     // 删除账号
     handleDelAccount (name, index) {
@@ -144,14 +147,25 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.accounts.splice(index, 1)
+        const data = {
+          acne: name
+        }
         // 服务器删除
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
+        this.$http.get(`${config.httpBaseUrl}/admin/deleteAdmin`, {
+          params: data
+        }).then(res => {
+          if (res.code === 200) {
+            this.accounts.splice(index, 1)
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '删除成功!'
+            })
+          }
         })
       }).catch(() => {
         this.$message({
+          showClose: true,
           type: 'info',
           message: '已取消删除'
         })
@@ -175,9 +189,19 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '重置密码成功!'
+        const data = {
+          acne: row.administratorAccount
+        }
+        this.$http.get(`${config.httpBaseUrl}/admin/updateAdmin`, {
+          params: data
+        }).then(res => {
+          if (res.code === 200) {
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '重置密码成功!'
+            })
+          }
         })
       }).catch(() => {
         this.$message({
@@ -185,19 +209,12 @@ export default {
           message: '取消重置密码'
         })
       })
-    },
-    resetPassword (bol, accountInfo) {
-      if (bol) {
-        // 本地修改
-        this.accounts.splice(this.resetAccount.index, 1, accountInfo)
-        // 服务器修改
-        this.$message({
-          type: 'success',
-          message: '重置密码成功!'
-        })
-      }
-      this.isShowResetPassword = false
     }
+  },
+  mounted () {
+    this.$http.get(`${config.httpBaseUrl}/admin/getAllaAdmin`).then(res => {
+      this.accounts = res.date.administrators
+    })
   }
 }
 </script>

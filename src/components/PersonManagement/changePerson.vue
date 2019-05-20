@@ -11,8 +11,8 @@
       </el-row>
       <el-row>
         <label for="">性别</label>
-        <el-radio v-model="userInfo.sex" label="1">男</el-radio>
-        <el-radio v-model="userInfo.sex" label="2">女</el-radio>
+        <el-radio v-model="userInfo.userGender" label="1">男</el-radio>
+        <el-radio v-model="userInfo.userGender" label="0">女</el-radio>
       </el-row>
       <el-row>
         <label for="">出生日期</label>

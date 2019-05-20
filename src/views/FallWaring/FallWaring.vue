@@ -20,23 +20,23 @@
           :header-cell-style="tableHeaderColor"
           size='mini'>
           <el-table-column
-            prop="warningPerson"
+            prop="fallNpeople"
             label="报警人">
           </el-table-column>
           <el-table-column
-            prop="deviceId"
+            prop="fallUserid"
             label="设备ID">
           </el-table-column>
           <el-table-column
-            prop="warningTime"
+            prop="fallTime"
             label="报警时间">
           </el-table-column>
           <el-table-column
-            prop="contactPhone"
+            prop="fall_number"
             label="联系电话">
           </el-table-column>
           <el-table-column
-            prop="warningAddress"
+            prop="fallAddress"
             label="报警地点">
           </el-table-column>
         </el-table>
@@ -60,53 +60,18 @@ export default {
     return {
       fallWarnings: [
         {
-          warningPerson: '谢老大',
-          deviceId: '12345',
-          warningTime: '2018-05-06-10:20',
-          contactPhone: '12345678912',
-          warningAddress: '四川省成都市锦江区华为路'
-        },
-        {
-          warningPerson: '谢老大',
-          deviceId: '12345',
-          warningTime: '2018-05-06-10:20',
-          contactPhone: '12345678912',
-          warningAddress: '四川省成都市锦江区华为路'
-        },
-        {
-          warningPerson: '谢老大',
-          deviceId: '12345',
-          warningTime: '2018-05-06-10:20',
-          contactPhone: '12345678912',
-          warningAddress: '四川省成都市锦江区华为路'
-        },
-        {
-          warningPerson: '谢老大',
-          deviceId: '12345',
-          warningTime: '2018-05-06-10:20',
-          contactPhone: '12345678912',
-          warningAddress: '四川省成都市锦江区华为路'
-        },
-        {
-          warningPerson: '谢老大',
-          deviceId: '12345',
-          warningTime: '2018-05-06-10:20',
-          contactPhone: '12345678912',
-          warningAddress: '四川省成都市锦江区华为路'
-        },
-        {
-          warningPerson: '谢老大',
-          deviceId: '12345',
-          warningTime: '2018-05-06-10:20',
-          contactPhone: '12345678912',
-          warningAddress: '四川省成都市锦江区华为路'
+          fallNpeople: '谢老大',
+          fallUserid: '12345',
+          fallTime: '2018-05-06-10:20',
+          fall_number: '12345678912',
+          fallAddress: '四川省成都市锦江区华为路'
         }
       ],
       isShowWarningInfo: false,
       // 分页
       currentPage: 1,
       paginationData: [],
-      pageSize: 5
+      pageSize: 8
     }
   },
   components: {
@@ -118,6 +83,13 @@ export default {
     },
     // 获取摔倒预警
     getFallWarnings () {
+      this.$http.get(`${config.httpBaseUrl}/fall/getAll`).then((res) => {
+        if (res.code === 200) {
+          this.fallWarnings = res.date.falls
+          // 刚打开页面时加载前5项、且自动生成分页数量
+          this.getPaginationData(this.currentPage)
+        }
+      })
       this.handleCurrentChange(this.currentPage)
     },
     // 修改table tr行的背景色
@@ -213,7 +185,7 @@ export default {
   }
   .el-main {
     .el-table {
-      color: #606266;
+      color: #fff;
       font-size: 13px;
     }
     .el-pagination {

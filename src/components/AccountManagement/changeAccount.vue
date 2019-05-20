@@ -7,13 +7,13 @@
       <el-row>
         <label>姓名</label>
         <el-input
-          v-model="accountInfo.name"
+          v-model="accountInfo.administratorName"
           placeholder="请输入账号"
-          :disabled="selectAccount"></el-input>
+          :disabled="selectAccount && true"></el-input>
       </el-row>
       <el-row>
         <label>电话号码</label>
-        <el-input v-model="accountInfo.phone" placeholder="请输入密码"></el-input>
+        <el-input v-model="accountInfo.administratorAccount" placeholder="请输入密码"></el-input>
       </el-row>
     </el-main>
   </message-box>
@@ -30,8 +30,8 @@ export default {
         cancel: '取消'
       },
       accountInfo: {
-        name: '',
-        phone: ''
+        administratorName: '',
+        administratorAccount: ''
       }
     }
   },
@@ -44,14 +44,15 @@ export default {
       if (!this.selectAccount) {
         this.$emit('addAccount', bol, this.accountInfo)
       } else {
+        // 修改账户
         this.$emit('editorAccount', bol, this.accountInfo)
       }
     }
   },
   created () {
-    if (this.selectAccount) {
-      this.accountInfo = this.selectAccount
-    }
+    // if (this.selectAccount) {
+    //   this.accountInfo = this.selectAccount
+    // }
   }
 }
 </script>

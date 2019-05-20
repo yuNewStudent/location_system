@@ -6,11 +6,11 @@
     <el-main>
       <el-row>
         <label>旧密码</label>
-        <el-input placeholder="请输入原密码"></el-input>
+        <el-input placeholder="请输入原密码" v-model="accountInfo.paword"></el-input>
       </el-row>
       <el-row>
         <label>新密码</label>
-        <el-input placeholder="请输入新密码"></el-input>
+        <el-input placeholder="请输入新密码" v-model="accountInfo.password"></el-input>
       </el-row>
     </el-main>
   </message-box>
@@ -27,8 +27,8 @@ export default {
         cancel: '取消'
       },
       accountInfo: {
-        oldPassword: '',
-        newPassword: ''
+        paword: '',
+        password: ''
       }
     }
   },

@@ -4,9 +4,10 @@
       <div class="search">
         <input
           type="text"
-          placeholder="请输入人名或车辆编号"
-          class="searchInput">
-        <span class="searchBtn"><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
+          placeholder="请输入人名设备ID"
+          class="searchInput"
+          v-model='deviceQuery'>
+        <span class="searchBtn" @click='handleSearchDevice'><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
       </div>
       <div class="radio">
         <div
@@ -33,24 +34,26 @@
         :row-style="tableRowStyle"
         :header-cell-style="tableHeaderColor"
         size='mini'><el-table-column
-          prop="WearerPerson"
+          prop="userName"
           label="佩戴人">
         </el-table-column>
         <el-table-column
-          prop="deviceID"
+          prop="userDeviceId"
           label="设备ID">
         </el-table-column>
         <el-table-column
-          prop="activeTime"
+          prop="userActivationtime"
           label="激活时间">
         </el-table-column>
         <el-table-column
-          prop="emergencyCall"
+          prop="userNumber"
           label="联系电话">
         </el-table-column>
         <el-table-column
-          prop="status"
           label="状态">
+          <template slot-scope="scope">
+            <span>{{scope.row.userStatus==0?'离线':'在线'}}</span>
+          </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -59,7 +62,7 @@
               @click="handleEditorDevice(scope.$index, scope.row)">编辑</el-button>
             <el-button
               size="mini"
-              @click="handleDeleteDevice(scope.$index, scope.row)">删除</el-button>
+              @click="handleDeleteDevice(scope.$index, scope.row.userDeviceId)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -92,49 +95,32 @@ export default {
         add: '新增设备',
         editor: '修改设备'
       },
+      deviceQuery: '',
       devices: [
-        {
-          WearerPerson: '苏大爷',
-          deviceID: '1234',
-          activeTime: '2018-08-09',
-          emergencyCall: 13418854312,
-          status: '离线'
-        },
-        {
-          WearerPerson: '苏大爷',
-          deviceID: '1234',
-          activeTime: '2018-08-09',
-          emergencyCall: 13418854312,
-          status: '离线'
-        },
-        {
-          WearerPerson: '苏大爷',
-          deviceID: '1234',
-          activeTime: '2018-08-09',
-          emergencyCall: 13418854312,
-          status: '离线'
-        },
-        {
-          WearerPerson: '苏大爷',
-          deviceID: '1234',
-          activeTime: '2018-08-09',
-          emergencyCall: 13418854312,
-          status: '离线'
-        },
-        {
-          WearerPerson: '苏大爷',
-          deviceID: '1234',
-          activeTime: '2018-08-09',
-          emergencyCall: 13418854312,
-          status: '离线'
-        },
-        {
-          WearerPerson: '苏大爷',
-          deviceID: '1234',
-          activeTime: '2018-08-09',
-          emergencyCall: 13418854312,
-          status: '离线'
-        }
+        // {
+        //   activeTime: '2018-08-09',
+        //   status: '离线',
+        //   userName: '苏大爷',
+        //   userDeviceId: '1222',
+        //   userGender: '',
+        //   userNumber: '1222',
+        //   userBirth: '',
+        //   userAddress: '',
+        //   emergencycs: [
+        //     {
+        //       emergencycsName: '',
+        //       emergencycsRelationShip: '',
+        //       emergencycsNumber: '',
+        //       emergencycrsNumber1: ''
+        //     },
+        //     {
+        //       emergencycsName: '',
+        //       emergencycsRelationShip: '',
+        //       emergencycsNumber: '',
+        //       emergencycrsNumber1: ''
+        //     }
+        //   ]
+        // }
       ],
       isShowAddDevice: false,
       isShowEditorDevice: false,
@@ -160,7 +146,7 @@ export default {
       // 分页
       currentPage: 1,
       paginationData: [],
-      pageSize: 5
+      pageSize: 8
     }
   },
   components: {
@@ -169,12 +155,24 @@ export default {
   created () {
     this.getDevices()
   },
+  watch: {
+    deviceQuery (value) {
+      if (!value) {
+        this.getDevices()
+      }
+    }
+  },
   methods: {
     // 获取设备
     getDevices () {
       // 服务器获取信息
-      // 分页
-      this.handleCurrentChange(this.currentPage)
+      this.$http.get(`${config.httpBaseUrl}/user/getAll`).then((res) => {
+        if (res.code === 200) {
+          this.devices = res.date.users
+          // 分页
+          this.handleCurrentChange(this.currentPage)
+        }
+      })
     },
     // 新增设备
     handleAddDevice () {
@@ -182,16 +180,26 @@ export default {
     },
     addDevice (bol, deviceInfo) {
       if (bol) {
-        for (let k in deviceInfo) {
-          if (!deviceInfo[k]) {
-            return this.$message.error('所填信息不能为空')
+        // for (let k in deviceInfo) {
+        //   if (!deviceInfo[k]) {
+        //     return this.$message({
+        //       showClose: true,
+        //       type: 'error',
+        //       message: '所填信息不能为空!'
+        //     })
+        //   }
+        // }
+        this.$http.post(`${config.httpBaseUrl}/user/insertuser`, deviceInfo
+        ).then((res) => {
+          if (res.code === 200) {
+            this.getDevices()
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '添加设备成功!'
+            })
           }
-        }
-        deviceInfo.status = '离线'
-        this.devices.push(deviceInfo)
-        // 分页
-        this.currentPage = 1
-        this.handleCurrentChange(this.currentPage)
+        })
       }
       this.isShowAddDevice = false
     },
@@ -199,31 +207,64 @@ export default {
     handleEditorDevice (index, row) {
       this.selectDevice.index = index
       this.selectDevice.row = row
+      delete this.selectDevice.row.userAvatar
+      delete this.selectDevice.row.maplocation
+      delete this.selectDevice.row.userActivationtime
+      delete this.selectDevice.row.userId
+      delete this.selectDevice.row.userStatus
       this.isShowEditorDevice = true
     },
     editorDevice (bol, deviceInfo) {
-      if (bol) {
-        this.devices.splice(this.selectDevice.index, 1, deviceInfo)
-      }
       this.isShowEditorDevice = false
+      if (!bol) {
+        return
+      }
+      for (let k in deviceInfo) {
+        if (!deviceInfo[k]) {
+          return this.$message({
+            showClose: true,
+            type: 'error',
+            message: '所填信息不能为空!'
+          })
+        }
+      }
+      this.$http.post(`${config.httpBaseUrl}/user/update`, deviceInfo)
+        .then(res => {
+          if (res.code === 200) {
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '修改成功!'
+            })
+            this.getDevices()
+          }
+        })
     },
     // 删除设备
-    handleDeleteDevice (index, row) {
+    handleDeleteDevice (index, userDeviceId) {
       this.$confirm(`此操作将永久删除该设备, 是否继续?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.devices.splice(index, 1)
-        // 分页
-        this.currentPage = 1
-        this.handleCurrentChange(this.currentPage)
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
+        this.$http.get(`${config.httpBaseUrl}/user/deleteUser`, {
+          params: {
+            userDeviceId
+          }
+        }).then(res => {
+          this.devices.splice(index, 1)
+          // 分页
+          this.currentPage = 1
+          this.handleCurrentChange(this.currentPage)
+          this.$message({
+            showClose: true,
+            type: 'success',
+            message: '删除成功!'
+          })
         })
       }).catch(() => {
         this.$message({
+          showClose: true,
           type: 'info',
           message: '已取消删除'
         })
@@ -232,6 +273,25 @@ export default {
     // 筛选状态
     handleSelect (index) {
       this.currentStatu = index + 1
+    },
+    handleSearchDevice () {
+      this.$http.get(`${config.httpBaseUrl}/user/get`, {
+        params: {
+          userDeviceId: this.deviceQuery
+        }
+      }).then((res) => {
+        if (res.date.user.length) {
+          this.devices = res.date.user
+          // 分页
+          this.handleCurrentChange(this.currentPage)
+        } else {
+          this.$message({
+            showClose: true,
+            type: 'info',
+            message: '没有相关的设备'
+          })
+        }
+      })
     },
     // 修改table tr行的背景色
     tableRowStyle (row, rowIndex) {
@@ -346,7 +406,7 @@ export default {
   }
   .el-main {
     .el-table {
-      color: #606266;
+      color: white;
       font-size: 13px;
     }
     .el-pagination {

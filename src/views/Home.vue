@@ -5,7 +5,7 @@
       <app-menu class="menu" :menus='menus' :mode='mode.row'></app-menu>
       <div class="header_right">
         <!-- <img src="@/assets/img/userImg.png" alt=""> -->
-        <span class="user_name" @click='handleResetPassword'>{{user.name||'余建'}}</span>
+        <span class="user_name" @click='handleResetPassword'>{{user.administratorAccount}}</span>
         <span class="dividing_line"></span>
         <span class="exit" @click="handleExit">退出</span>
       </div>
@@ -26,6 +26,7 @@
 import AppMenu from '@/components/home/app-menu'
 import ResetPassword from '@/components/home/ResetPassword'
 import menus from '@/assets/js/menu.js'
+import { mapGetters } from 'vuex'
 export default {
   name: 'home',
   data () {
@@ -41,26 +42,51 @@ export default {
       type: '修改密码'
     }
   },
+  computed: {
+    ...mapGetters(['getUser'])
+  },
   methods: {
-    async getData () {
-      const res = await this.$http.get('http://jsonplaceholder.typicode.com/posts')
-      console.log(res.data)
-    },
     // 退出
     handleExit () {
       // 退出页面，删除本地的用户信息
+      this.$cookie.delete('user')
       this.$router.push({
         name: 'Login'
       })
     },
     // 修改密码
     handleResetPassword () {
-      console.log(1)
       this.isShowResetPassword = true
     },
     resetPassword (bol, accountInfo) {
-      console.log(bol, accountInfo)
+      if (bol) {
+        const data = {
+          acne: this.getUser.administratorAccount,
+          ...accountInfo
+        }
+        this.$http.get(`${config.httpBaseUrl}/admin/updatepassword`, {
+          params: data
+        }).then(res => {
+          if (res.code === 200) {
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '密码修改成功，请重新登录!'
+            })
+            // 退出页面，删除本地的用户信息
+            this.$cookie.delete('user')
+            this.$router.push({
+              name: 'Login'
+            })
+          }
+        })
+      }
       this.isShowResetPassword = false
+    }
+  },
+  watch: {
+    getUser (value) {
+      this.user = value
     }
   },
   components: {
@@ -68,7 +94,7 @@ export default {
     ResetPassword
   },
   created () {
-    // this.timer = setInterval(this.getData, 2000)
+    this.user = this.getUser
     this.menus = menus
   },
   beforeDestroy () {

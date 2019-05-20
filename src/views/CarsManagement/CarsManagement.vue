@@ -24,19 +24,19 @@
         :row-style="tableRowStyle"
         :header-cell-style="tableHeaderColor"
         size='mini'><el-table-column
-          prop="carModel"
+          prop="vehiclesTypeof"
           label="车辆型号">
         </el-table-column>
         <el-table-column
-          prop="carNum"
+          prop="vehiclesNumBering"
           label="车辆编号">
         </el-table-column>
         <el-table-column
-          prop="useCompany"
+          prop="vehiclesUseunit"
           label="使用单位">
         </el-table-column>
         <el-table-column
-          prop="emergencyCall"
+          prop="vehiclesNsumber"
           label="紧急电话">
         </el-table-column>
         <el-table-column label="操作">
@@ -82,42 +82,13 @@ export default {
       },
       carQuery: '',
       cars: [
-        {
-          carModel: '路虎X89',
-          carNum: '12345',
-          useCompany: '上海市XX科技有限公司',
-          emergencyCall: '12345678912'
-        },
-        {
-          carModel: '路虎X89',
-          carNum: '12345',
-          useCompany: '上海市XX科技有限公司',
-          emergencyCall: '12345678912'
-        },
-        {
-          carModel: '路虎X89',
-          carNum: '12345',
-          useCompany: '上海市XX科技有限公司',
-          emergencyCall: '12345678912'
-        },
-        {
-          carModel: '路虎X89',
-          carNum: '12345',
-          useCompany: '上海市XX科技有限公司',
-          emergencyCall: '12345678912'
-        },
-        {
-          carModel: '路虎X89',
-          carNum: '12345',
-          useCompany: '上海市XX科技有限公司',
-          emergencyCall: '12345678912'
-        },
-        {
-          carModel: '路虎X89',
-          carNum: '12345',
-          useCompany: '上海市XX科技有限公司',
-          emergencyCall: '12345678912'
-        }
+        // {
+        //   vehiclesTypeof: '路虎X89',
+        //   vehiclesNumBering: '12345',
+        //   vehiclesUseunit: '上海市XX科技有限公司',
+        //   vehiclesNsumber: '12345678912',
+        //   vehiclesId: 23
+        // }
       ],
       selectCar: {
         index: '',
@@ -128,7 +99,7 @@ export default {
       // 分页
       currentPage: 1,
       paginationData: [],
-      pageSize: 5
+      pageSize: 8
     }
   },
   components: {
@@ -137,12 +108,24 @@ export default {
   created () {
     this.getCars()
   },
+  watch: {
+    carQuery (value) {
+      if (!value) {
+        this.getCars()
+      }
+    }
+  },
   methods: {
     // 获取车辆
     getCars () {
       // 服务器获取车辆
-      // 刚打开页面时加载前5项、且自动生成分页数量
-      this.getPaginationData(this.currentPage)
+      this.$http.get(`${config.httpBaseUrl}/vehucle/getAllVehucle`).then((res) => {
+        if (res.code === 200) {
+          this.cars = res.date.vhucles
+          // 刚打开页面时加载前5项、且自动生成分页数量
+          this.getPaginationData(this.currentPage)
+        }
+      })
     },
     // 修改table tr行的背景色
     tableRowStyle (row, rowIndex) {
@@ -156,19 +139,32 @@ export default {
     },
     // 新增车辆
     addCar (bol, carInfo) {
-      for (var k in carInfo) {
-        if (!carInfo[k]) {
-          return this.$message({
-            showClose: true,
-            message: '信息不能为空',
-            type: 'error'
-          })
+      if (bol) {
+        for (var k in carInfo) {
+          if (!carInfo[k]) {
+            return this.$message({
+              showClose: true,
+              message: '信息不能为空',
+              type: 'error'
+            })
+          }
         }
+        // 服务器添加车辆
+        this.$http.post(`${config.httpBaseUrl}/vehucle/insertVehucle`, carInfo
+        ).then((res) => {
+          if (res.code === 200) {
+            this.cars.push(carInfo)
+            // 刚打开页面时加载前5项、且自动生成分页数量
+            this.currentPage = 1
+            this.getPaginationData(this.currentPage)
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '添加车辆成功!'
+            })
+          }
+        })
       }
-      this.cars.unshift(carInfo)
-      // 刚打开页面时加载前5项、且自动生成分页数量
-      this.currentPage = 1
-      this.getPaginationData(this.currentPage)
       this.isShowAddCar = false
     },
     handleAddCar () {
@@ -181,11 +177,28 @@ export default {
       this.isShowEditorCar = true
     },
     editorCar (bol, carInfo) {
-      this.cars.splice(this.selectCar.index, 1, carInfo)
-      this.$message({
-        type: 'success',
-        message: '修改成功!'
-      })
+      if (bol) {
+        for (var k in carInfo) {
+          if (!carInfo[k]) {
+            return this.$message({
+              showClose: true,
+              message: '信息不能为空',
+              type: 'error'
+            })
+          }
+        }
+        // 服务器修改
+        this.$http.post(`${config.httpBaseUrl}/vehucle/updateVehucle`, carInfo).then((res) => {
+          if (res.code === 200) {
+            this.cars.splice(this.selectCar.index, 1, carInfo)
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '修改成功!'
+            })
+          }
+        })
+      }
       this.isShowEditorCar = false
     },
     // 删除车辆
@@ -195,16 +208,27 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.cars.splice(index, 1)
-        // 刚打开页面时加载前5项、且自动生成分页数量
-        this.currentPage = 1
-        this.getPaginationData(this.currentPage)
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
+        // 服务器删除
+        this.$http.get(`${config.httpBaseUrl}/vehucle/deleteVehucle`, {
+          params: {
+            vehiclesNumBering: row.vehiclesNumBering
+          }
+        }).then((res) => {
+          if (res.code === 200) {
+            this.cars.splice(index, 1)
+            // 刚打开页面时加载前5项、且自动生成分页数量
+            this.currentPage = 1
+            this.getPaginationData(this.currentPage)
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '删除成功!'
+            })
+          }
         })
       }).catch(() => {
         this.$message({
+          showClose: true,
           type: 'info',
           message: '已取消删除'
         })
@@ -212,6 +236,24 @@ export default {
     },
     // 过滤器
     handleSearch () {
+      this.$http.get(`${config.httpBaseUrl}/vehucle/getVehucle`, {
+        params: {
+          vehiclesNumBering: this.carQuery
+        }
+      }).then((res) => {
+        if (res.date.vhucles) {
+          this.cars = [res.date.vhucles]
+          // 刚打开页面时加载前5项、且自动生成分页数量
+          this.currentPage = 1
+          this.getPaginationData(this.currentPage)
+        } else {
+          this.$message({
+            showClose: true,
+            type: 'info',
+            message: '没有找到该车辆'
+          })
+        }
+      })
     },
     // 分页
     getPaginationData (pageIndex) {
@@ -297,7 +339,7 @@ export default {
       margin-top: 10px;
     }
     .el-table {
-      color: #606266;
+      color: #fff;
       font-size: 13px;
     }
   }

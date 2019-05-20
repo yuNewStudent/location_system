@@ -1,8 +1,29 @@
 <template>
   <div class='MessageBox'>
     <div class='add_user_wrapper'>
+      <div class="header">
+        <label for="">时间段查询</label>
+        <el-date-picker
+          v-model="timeLine.date"
+          type="date"
+          size='small'
+          placeholder="选择日期">
+        </el-date-picker>
+        <el-time-picker
+          is-range
+          size='small'
+          v-model="timeLine.time"
+          range-separator="至"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
+          placeholder="选择时间范围">
+        </el-time-picker>
+        <el-button
+          size='small'
+          @click='handlepersonLine'>搜索</el-button>
+        <el-button @click='handleClose' type="danger" icon="el-icon-close" circle class="close"></el-button>
+      </div>
       <div id='Amap'></div>
-      <el-button @click='handleClose' type="danger" icon="el-icon-close" circle></el-button>
     </div>
   </div>
 </template>
@@ -50,7 +71,11 @@ export default {
           id: 3,
           type: 'person'
         }
-      ]
+      ],
+      timeLine: {
+        date: '',
+        time: ''
+      }
     }
   },
   methods: {
@@ -72,11 +97,13 @@ export default {
     // 关闭窗口
     handleClose () {
       this.$emit('close')
-    }
-  },
-  mounted () {
-    this.$nextTick(() => {
-      this.initMap()
+    },
+    // 搜索时间段内的路径
+    handlepersonLine () {
+      console.log(this.timeLine)
+    },
+    // 绘制路径
+    drawLine () {
       var path = []
       this.lines.forEach(item => {
         path.push(new AMap.LngLat(item.lng, item.lat))
@@ -85,12 +112,40 @@ export default {
         path: path,
         strokeColor: '#3366FF',
         strokeWeight: 4,
-        strokeDasharray: [10, 5],
         lineJoin: 'round',
-        lineCap: 'round',
-        zIndex: 50
+        lineCap: 'round'
       })
       this.map.add(polyline)
+    },
+    // 绘制起点坐标
+    drawStartMark () {
+      var marker
+      const longitude = this.lines[0].lng
+      const latitude = this.lines[0].lat
+      marker = new AMap.Marker({
+        icon: require('@/assets/img/icon/起点IC.png'),
+        position: [longitude, latitude]
+      })
+      this.map.add(marker)
+    },
+    // 绘制终点坐标
+    drawEndMark () {
+      var marker
+      const longitude = this.lines.slice(-1)[0].lng
+      const latitude = this.lines.slice(-1)[0].lat
+      marker = new AMap.Marker({
+        icon: require('@/assets/img/icon/终点IC.png'),
+        position: [longitude, latitude]
+      })
+      this.map.add(marker)
+    }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.initMap()
+      this.drawLine()
+      this.drawStartMark()
+      this.drawEndMark()
     })
   }
 }
@@ -107,19 +162,28 @@ export default {
   z-index: 5;
   border-radius: 10px;
   .add_user_wrapper {
-    position: relative;
+    margin: 2vh 2vw 0;
     color: white;
+    .header {
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.9);
+      width: 95vw;
+      .el-input {
+        width: 200px;
+      }
+      .close {
+        position: absolute;
+        top: 10px;
+        right: 30px;
+        padding: 4px;
+        font-size: 30px;
+        z-index: 2;
+      }
+    }
     #Amap {
+      margin-top: 5px;
       width: 95vw;
       height: 92vh;
-      margin: 7vh auto 3vh;
-    }
-    .el-button {
-      position: absolute;
-      top: -15px;
-      right: 15px;
-      padding: 6px;
-      font-size: 30px;
     }
   }
 }

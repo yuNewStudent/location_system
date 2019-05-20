@@ -34,12 +34,12 @@
               </span>
               <p>报警次数</p>
             </div>
-            <div class="nearby_cars" @click='handleNeberCar'>
+            <!-- <div class="nearby_cars" @click='handleNeberCar'>
               <span>
                 <img src="@/assets/img/icon/最近车辆IC.png" alt="">
               </span>
               <p>附近车辆</p>
-            </div>
+            </div> -->
           </div>
         </div>
         <header><img src="@/assets/img/icon/人员信息IC.png" alt=""> 紧急联系人</header>
