@@ -31,47 +31,11 @@
 <script>
 import AMap from 'AMap'
 export default {
+  props: ['userDeviceId'],
   data () {
     return {
       map: null,
-      lines: [
-        {
-          lng: 104.06406,
-          lat: 30.55311,
-          id: 0,
-          type: 'car'
-        },
-        {
-          lng: 104.06306,
-          lat: 30.54411,
-          id: 1,
-          type: 'car'
-        },
-        {
-          lng: 104.07606,
-          lat: 30.54111,
-          id: 2,
-          type: 'car'
-        },
-        {
-          lng: 104.06006,
-          lat: 30.54311,
-          id: 1,
-          type: 'person'
-        },
-        {
-          lng: 104.06206,
-          lat: 30.54911,
-          id: 2,
-          type: 'person'
-        },
-        {
-          lng: 104.06906,
-          lat: 30.54611,
-          id: 3,
-          type: 'person'
-        }
-      ],
+      lines: [],
       timeLine: {
         date: '',
         time: ''
@@ -100,52 +64,96 @@ export default {
     },
     // 搜索时间段内的路径
     handlepersonLine () {
-      console.log(this.timeLine)
+      this.getLines()
     },
     // 绘制路径
     drawLine () {
       var path = []
       this.lines.forEach(item => {
-        path.push(new AMap.LngLat(item.lng, item.lat))
+        this.translateGps(item.longitude, item.latitude).then(data => {
+          path.push(new AMap.LngLat(data[0].lng, data[0].lat))
+        })
       })
-      var polyline = new AMap.Polyline({
-        path: path,
-        strokeColor: '#3366FF',
-        strokeWeight: 4,
-        lineJoin: 'round',
-        lineCap: 'round'
-      })
-      this.map.add(polyline)
+      setTimeout(() => {
+        this.polyline = new AMap.Polyline({
+          path: path,
+          strokeColor: '#3366FF',
+          strokeWeight: 4,
+          lineJoin: 'round',
+          lineCap: 'round'
+        })
+        this.map.add(this.polyline)
+      }, 3000)
     },
     // 绘制起点坐标
     drawStartMark () {
       var marker
-      const longitude = this.lines[0].lng
-      const latitude = this.lines[0].lat
-      marker = new AMap.Marker({
-        icon: require('@/assets/img/icon/起点IC.png'),
-        position: [longitude, latitude]
+      const longitude = this.lines[0].longitude
+      const latitude = this.lines[0].latitude
+      this.translateGps(longitude, latitude).then(data => {
+        marker = new AMap.Marker({
+          icon: require('@/assets/img/icon/起点IC.png'),
+          position: [data[0].lng, data[0].lat]
+        })
+        this.map.add(marker)
+        this.map.setZoomAndCenter(14, [data[0].lng, data[0].lat])
       })
-      this.map.add(marker)
     },
     // 绘制终点坐标
     drawEndMark () {
       var marker
-      const longitude = this.lines.slice(-1)[0].lng
-      const latitude = this.lines.slice(-1)[0].lat
-      marker = new AMap.Marker({
-        icon: require('@/assets/img/icon/终点IC.png'),
-        position: [longitude, latitude]
+      const longitude = this.lines.slice(-1)[0].longitude
+      const latitude = this.lines.slice(-1)[0].latitude
+      this.translateGps(longitude, latitude).then(data => {
+        marker = new AMap.Marker({
+          icon: require('@/assets/img/icon/终点IC.png'),
+          position: [data[0].lng, data[0].lat]
+        })
+        this.map.add(marker)
       })
-      this.map.add(marker)
+    },
+    // 获取路线
+    getLines () {
+      const data = {
+        startTime: this.moment(this.timeLine.time[0]).format('HH'),
+        endTime: this.moment(this.timeLine.time[1]).format('HH'),
+        date: this.moment(this.timeLine.date).format('YYYY-MM-DD'),
+        userId: this.userDeviceId
+      }
+      this.$http.get(`${config.httpBaseUrl}/map/getAll`, {
+        params: data
+      }).then(res => {
+        if (res.code === 200 && res.date.maplocations) {
+          this.lines = res.date.maplocations
+          this.map && this.map.clearMap()
+          this.polyline && this.map.remove(this.polyline)
+          this.drawLine()
+          this.drawStartMark()
+          this.drawEndMark()
+        } else {
+          this.$message({
+            showClose: true,
+            message: '没有查询到数据',
+            type: 'error'
+          })
+        }
+      })
+    },
+    // gps转高德坐标
+    translateGps (lng, lat) {
+      const gps = [lng, lat]
+      return new Promise((resolve, reject) => {
+        AMap.convertFrom(gps, 'gps', (status, result) => {
+          if (result.info === 'ok') {
+            resolve(result.locations)
+          }
+        })
+      })
     }
   },
   mounted () {
     this.$nextTick(() => {
       this.initMap()
-      this.drawLine()
-      this.drawStartMark()
-      this.drawEndMark()
     })
   }
 }

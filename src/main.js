@@ -31,6 +31,9 @@ Axios.interceptors.request.use(config => {
   if (user) {
     if (!config.params) {
       config.params = { token: user.token }
+    } else if (config.url.indexOf('map/getAll') > -1) {
+      config.params.userdecid = 9512494471
+      config.params.token = user.token
     } else {
       config.params.token = user.token
     }
@@ -41,7 +44,7 @@ Axios.interceptors.request.use(config => {
 // 请求返回拦截
 Axios.interceptors.response.use(
   res => {
-    console.log(res)
+    // console.log(res)
     if (res.data.code === 400) {
       // app &&
       //   app.$message({

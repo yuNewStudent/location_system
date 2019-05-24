@@ -49,7 +49,7 @@
           :total="fallWarnings.length"></el-pagination>
       </el-main>
     </div>
-    <waring-info @close='isShowWarningInfo = !isShowWarningInfo' v-if='isShowWarningInfo'></waring-info>
+    <waring-info :currentDeviceId='currentDeviceId' @close='isShowWarningInfo = !isShowWarningInfo' v-if='isShowWarningInfo'></waring-info>
   </div>
 </template>
 
@@ -71,7 +71,8 @@ export default {
       // 分页
       currentPage: 1,
       paginationData: [],
-      pageSize: 8
+      pageSize: 8,
+      currentDeviceId: ''
     }
   },
   components: {
@@ -80,6 +81,7 @@ export default {
   methods: {
     handleRow (row, column) {
       this.isShowWarningInfo = true
+      this.currentDeviceId = row.fallUserid
     },
     // 获取摔倒预警
     getFallWarnings () {

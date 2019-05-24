@@ -31,7 +31,7 @@ export default {
   name: 'home',
   data () {
     return {
-      user: {},
+      user: [],
       menus: [],
       mode: {
         row: 'horizontal',

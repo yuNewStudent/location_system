@@ -246,7 +246,7 @@ export default {
   .el-main {
     padding-top: 0;
     .el-table {
-      color: #606266;
+      color: white;
       font-size: 13px;
     }
   }

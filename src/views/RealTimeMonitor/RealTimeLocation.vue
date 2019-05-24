@@ -27,13 +27,12 @@
     <el-main>
       <map-page
         @showPersonLine='showPersonLine'
-        :persons='persons'
-        :center='currentCenter'
-        :cars='cars'></map-page>
+        :center='currentCenter'></map-page>
     </el-main>
     <person-line
       v-if='isPersonLine'
-      @close='closePersonLine'></person-line>
+      @close='closePersonLine'
+      :userDeviceId='userDeviceId'></person-line>
   </div>
 </template>
 
@@ -44,115 +43,10 @@ export default {
   data () {
     return {
       isPersonLine: false,
-      persons: [
-        {
-          name: 'yujian',
-          age: '23',
-          lng: 104.06406,
-          lat: 30.55311,
-          id: 0,
-          type: 'person'
-        },
-        {
-          name: 'ss',
-          age: '23',
-          lng: 104.06306,
-          lat: 30.54411,
-          id: 1,
-          type: 'person'
-        },
-        {
-          name: 'ff',
-          age: '23',
-          lng: 104.07606,
-          lat: 30.54111,
-          id: 2,
-          type: 'person'
-        },
-        {
-          name: 'ggg',
-          age: '23',
-          lng: 104.06006,
-          lat: 30.54311,
-          id: 1,
-          type: 'person'
-        },
-        {
-          name: '是是',
-          age: '23',
-          lng: 104.06206,
-          lat: 30.54911,
-          id: 2,
-          type: 'person'
-        },
-        {
-          name: '日日日',
-          age: '23',
-          lng: 104.06906,
-          lat: 30.54611,
-          id: 3,
-          type: 'person'
-        }
-      ],
-      cars: [
-        {
-          carModel: '大众33',
-          carNum: '1223',
-          phone: '12455',
-          lng: 104.06106,
-          lat: 30.55111,
-          id: 0,
-          type: 'car'
-        },
-        {
-          carModel: '夏普33',
-          carNum: '2344',
-          phone: '12455',
-          lng: 104.06706,
-          lat: 30.54611,
-          id: 1,
-          type: 'car'
-        },
-        {
-          carModel: '大众33',
-          carNum: '456',
-          phone: '12455',
-          lng: 104.07406,
-          lat: 30.54311,
-          id: 2,
-          type: 'car'
-        },
-        {
-          carModel: '大众33',
-          carNum: '789',
-          phone: '12455',
-          lng: 104.06206,
-          lat: 30.54411,
-          id: 1,
-          type: 'car'
-        },
-        {
-          carModel: '大众33',
-          carNum: '451',
-          phone: '12455',
-          lng: 104.06106,
-          lat: 30.54811,
-          id: 2,
-          type: 'car'
-        },
-        {
-          carModel: '大众33',
-          carNum: '2543',
-          phone: '12455',
-          lng: 104.06806,
-          lat: 30.54711,
-          id: 3,
-          type: 'car'
-        }
-      ],
-      currentCenter: [104.06406, 30.54311],
+      currentCenter: [104.0574050, 30.540512],
       filterQuery: '',
-      websock: null
+      websock: null,
+      userDeviceId: ''
     }
   },
   created () {
@@ -165,7 +59,8 @@ export default {
   },
   methods: {
     // 展示人员路径页面
-    showPersonLine () {
+    showPersonLine (userDeviceId) {
+      this.userDeviceId = userDeviceId
       this.isPersonLine = true
     },
     // 关闭人员路径页面
@@ -188,39 +83,6 @@ export default {
         })
       }
     }
-    // 初始化weosocket
-    // initWebSocket () {
-    //   // ws地址
-    //   this.websock = new WebSocket('ws://localhost:5000/ifc/user')
-    //   console.log(this.websock)
-    //   this.websocket.onopen = this.websocketonopen()
-    //   this.websocket.onerror = this.websocketonerror()
-    //   this.websock.onmessage = this.websocketonmessage()
-    //   this.websock.onclose = this.websocketclose
-    // },
-    // websocketonopen () {
-    //   console.log('WebSocket连接成功')
-    // },
-    // // 错误
-    // websocketonerror (e) {
-    //   console.log('WebSocket连接发生错误')
-    // },
-    // // 数据接收
-    // websocketonmessage (e) {
-    //   const redata = JSON.parse(e.data)
-    //   // 注意：长连接我们是后台直接1秒推送一条数据
-    //   // 但是点击某个列表时，会发送给后台一个标识，后台根据此标识返回相对应的数据，
-    //   // 这个时候数据就只能从一个出口出，所以让后台加了一个键，例如键为1时，是每隔1秒推送的数据，为2时是发送标识后再推送的数据，以作区分
-    //   console.log(redata.value)
-    // },
-    // // 数据发送
-    // websocketsend (agentData) {
-    //   this.websock.send(agentData)
-    // },
-    // // 关闭
-    // websocketclose (e) {
-    //   console.log('connection closed (" + e.code + ")')
-    // }
   },
   components: {
     MapPage,

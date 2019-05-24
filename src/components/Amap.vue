@@ -14,7 +14,7 @@
       <p>所在位置：{{personInfo.address}}</p>
       <!-- <p>所在时长：2h20min</p> -->
       <p class="icon">
-        <span style="margin-right: 10px" @click="getLngLat">
+        <span style="margin-right: 10px" @click="getLngLat(personInfo.userDeviceId)">
           <img src="@/assets/img/icon/行动轨迹IC.png"/>
         </span>
       </p>
@@ -34,9 +34,10 @@ import AMap from 'AMap'
 import SetSafe from './SetSafeArea'
 export default {
   name: 'amap',
-  props: ['persons', 'cars', 'center'],
+  props: ['center'],
   data () {
     return {
+      timer: null,
       map: null,
       // 卫星图层
       satelliteLayer: null,
@@ -47,14 +48,36 @@ export default {
       personInfo: {
         name: '',
         age: '',
-        address: ''
+        address: '',
+        personInfo: ''
       },
       carInfo: {
         carModel: '',
         carNum: '',
         phone: '',
         address: ''
-      }
+      },
+      persons: [
+        // {
+        //   name: 'yujian',
+        //   age: '23',
+        //   lng: 104.06406,
+        //   lat: 30.55311,
+        //   id: 0,
+        //   type: 'person'
+        // }
+      ],
+      cars: [
+        // {
+        //   carModel: '大众33',
+        //   carNum: '1223',
+        //   phone: '12455',
+        //   lng: 104.06106,
+        //   lat: 30.55111,
+        //   id: 0,
+        //   type: 'car'
+        // }
+      ]
     }
   },
   components: {
@@ -86,11 +109,15 @@ export default {
     drawArea () {
       // 绘制人员
       this.persons.forEach((item, index) => {
-        this.drawMarker(item.lng, item.lat, item.type, index)
+        this.translateGps(item.locationBean.longitude, item.locationBean.latitude).then(data => {
+          this.drawMarker(data[0].lng, data[0].lat, 'person', index)
+        })
       })
       // 绘制车辆
       this.cars.forEach((item, index) => {
-        this.drawMarker(item.lng, item.lat, item.type, index)
+        this.translateGps(item.locationBean.longitude, item.locationBean.latitude).then(data => {
+          this.drawMarker(data[0].lng, data[0].lat, 'car', index)
+        })
       })
     },
     // 绘制icon
@@ -127,8 +154,9 @@ export default {
         // 获取用户信息
         const info = this.persons[index]
         this.personInfo = {
-          name: info.name,
-          age: info.age,
+          name: info.user.userName,
+          age: this.getAge(info.user.userBirth),
+          userDeviceId: info.user.userDeviceId,
           address
         }
         this.$refs.personInfo.style.display = 'block'
@@ -141,9 +169,9 @@ export default {
         // 获取车辆信息
         const info = this.cars[index]
         this.carInfo = {
-          carModel: info.carModel,
-          carNum: info.carNum,
-          phone: info.phone,
+          carModel: info.vehiclesTypeof,
+          carNum: info.vehiclesNumBering,
+          phone: info.vehiclesNsumber,
           address
         }
         this.$refs.carInfo.style.display = 'block'
@@ -155,8 +183,8 @@ export default {
       }
       return infoWindow
     },
-    getLngLat () {
-      this.$emit('showPersonLine')
+    getLngLat (userDeviceId) {
+      this.$emit('showPersonLine', userDeviceId)
     },
     // 根据经纬度获取地址
     getAddress (lng, lat) {
@@ -171,25 +199,50 @@ export default {
           }
         })
       })
+    },
+    // 计算年龄
+    getAge (str) {
+      var r = str.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/)
+      if (r === null) return false
+      var d = new Date(r[1], r[3] - 1, r[4])
+      if (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4]) {//eslint-disable-line
+        var Y = new Date().getFullYear()
+        return Y - r[1] + '岁'
+      }
+      return '输入的日期格式错误!'
+    },
+    // gps转高德坐标
+    translateGps (lng, lat) {
+      const gps = [lng, lat]
+      return new Promise((resolve, reject) => {
+        AMap.convertFrom(gps, 'gps', (status, result) => {
+          if (result.info === 'ok') {
+            resolve(result.locations)
+          }
+        })
+      })
+    },
+    // 获取车辆和用户信息
+    getPersonPosition () {
+      this.$http.get(`${config.httpBaseUrl}/map/getPositioning`).then((res) => {
+        if (res.code === 200) {
+          this.persons = res.date.maplocaltions.filter(item => {
+            return item.locationBean.longitude && true
+          })
+          this.drawArea()
+        }
+      })
+    },
+    getCarPosition () {
+      this.$http.get(`${config.httpBaseUrl}/map/getVuPositioning`).then((res) => {
+        if (res.code === 200) {
+          this.cars = res.date.maplocaltions.filter(item => {
+            return item.locationBean.longitude && true
+          })
+          this.drawArea()
+        }
+      })
     }
-    // 构造官方卫星、路网图层
-    // initSatelliteLayer () {
-    //   this.satelliteLayer = new AMap.TileLayer.Satellite()
-    //   this.roadNetLayer = new AMap.TileLayer.RoadNet()
-    //   this.map.add([this.satelliteLayer, this.roadNetLayer])
-    // },
-    // 显示卫星图层&路网图层
-    // handleSatelliteLayer () {
-    //   this.initSatelliteLayer()
-    // },
-    // 显示标准图层
-    // handleStandLayer () {
-    //   this.map.remove([this.satelliteLayer, this.roadNetLayer])
-    // },
-    // 显示设置安全区域
-    // handleSetSafe () {
-    //   this.isSetSafe = true
-    // }
   },
   watch: {
     // center变化，地图中心改变
@@ -197,18 +250,32 @@ export default {
       this.map.setZoomAndCenter(18, value)
     }
   },
-  async mounted () {
-    await this.$nextTick(() => {
+  created () {
+    this.getPersonPosition()
+    this.getCarPosition()
+    this.timer = setInterval(() => {
+      console.log(1)
+      this.getPersonPosition()
+      this.getCarPosition()
+    }, 60000)
+    this.$nextTick(() => {
       this.initMap()
-      this.drawArea()
     })
-    // this.timer = setInterval(this.getData, 2000)
+  },
+  destroyed () {
+    clearInterval(this.timer)
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang='scss' scoped>
+.amap-logo{
+  display: none;
+}
+.amap-copyright{
+  opacity:0;
+}
 .amap {
   position: relative;
   height: 100%;
