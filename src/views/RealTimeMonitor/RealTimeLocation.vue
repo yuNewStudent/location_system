@@ -46,12 +46,38 @@ export default {
       currentCenter: [104.0574050, 30.540512],
       filterQuery: '',
       websock: null,
-      userDeviceId: ''
+      userDeviceId: '',
+      persons: [
+        // {
+        //   name: 'yujian',
+        //   age: '23',
+        //   lng: 104.06406,
+        //   lat: 30.55311,
+        //   id: 0,
+        //   type: 'person'
+        // }
+      ],
+      cars: [
+        // {
+        //   carModel: '大众33',
+        //   carNum: '1223',
+        //   phone: '12455',
+        //   lng: 104.06106,
+        //   lat: 30.55111,
+        //   id: 0,
+        //   type: 'car'
+        // }
+      ]
     }
   },
   created () {
-    // 页面刚进入时开启长连接
-    // this.initWebSocket()
+    this.getPersonPosition()
+    this.getCarPosition()
+    this.timer = setInterval(() => {
+      console.log(1)
+      this.getPersonPosition()
+      this.getCarPosition()
+    }, 60000)
   },
   destroyed () {
     // 页面销毁时关闭长连接
@@ -82,6 +108,27 @@ export default {
           }
         })
       }
+    },
+    // 获取车辆和用户信息
+    getPersonPosition () {
+      this.$http.get(`${config.httpBaseUrl}/map/getPositioning`).then((res) => {
+        if (res.code === 200) {
+          this.persons = res.date.maplocaltions.filter(item => {
+            return item.locationBean.longitude && true
+          })
+          console.log(this.persons)
+        }
+      })
+    },
+    getCarPosition () {
+      this.$http.get(`${config.httpBaseUrl}/map/getVuPositioning`).then((res) => {
+        if (res.code === 200) {
+          this.cars = res.date.maplocaltions.filter(item => {
+            return item.locationBean.longitude && true
+          })
+          // this.drawArea()
+        }
+      })
     }
   },
   components: {

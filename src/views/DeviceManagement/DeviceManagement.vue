@@ -179,16 +179,10 @@ export default {
       this.isShowAddDevice = true
     },
     addDevice (bol, deviceInfo) {
+      deviceInfo.userDeviceId = deviceInfo.userDeviceId.split('').filter((item, index) => {
+        return index !== 0 && index !== 3 && index !== 6 && index !== 10 && index !== 14
+      }).join('')
       if (bol) {
-        // for (let k in deviceInfo) {
-        //   if (!deviceInfo[k]) {
-        //     return this.$message({
-        //       showClose: true,
-        //       type: 'error',
-        //       message: '所填信息不能为空!'
-        //     })
-        //   }
-        // }
         this.$http.post(`${config.httpBaseUrl}/user/insertuser`, deviceInfo
         ).then((res) => {
           if (res.code === 200) {

@@ -32,9 +32,10 @@
 <script>
 import AMap from 'AMap'
 import SetSafe from './SetSafeArea'
+import { setTimeout } from 'timers';
 export default {
   name: 'amap',
-  props: ['center'],
+  props: ['center', 'cars', 'persons'],
   data () {
     return {
       timer: null,
@@ -56,29 +57,10 @@ export default {
         carNum: '',
         phone: '',
         address: ''
-      },
-      persons: [
-        // {
-        //   name: 'yujian',
-        //   age: '23',
-        //   lng: 104.06406,
-        //   lat: 30.55311,
-        //   id: 0,
-        //   type: 'person'
-        // }
-      ],
-      cars: [
-        // {
-        //   carModel: '大众33',
-        //   carNum: '1223',
-        //   phone: '12455',
-        //   lng: 104.06106,
-        //   lat: 30.55111,
-        //   id: 0,
-        //   type: 'car'
-        // }
-      ]
+      }
     }
+  },
+  mounted () {
   },
   components: {
     SetSafe
@@ -110,6 +92,7 @@ export default {
       // 绘制人员
       this.persons.forEach((item, index) => {
         this.translateGps(item.locationBean.longitude, item.locationBean.latitude).then(data => {
+          
           this.drawMarker(data[0].lng, data[0].lat, 'person', index)
         })
       })
@@ -122,6 +105,7 @@ export default {
     },
     // 绘制icon
     drawMarker (longitude, latitude, type, index) {
+      this.map.setZoomAndCenter(15, [longitude, latitude])
       var marker
       if (type === 'person') {
         marker = new AMap.Marker({
@@ -221,27 +205,6 @@ export default {
           }
         })
       })
-    },
-    // 获取车辆和用户信息
-    getPersonPosition () {
-      this.$http.get(`${config.httpBaseUrl}/map/getPositioning`).then((res) => {
-        if (res.code === 200) {
-          this.persons = res.date.maplocaltions.filter(item => {
-            return item.locationBean.longitude && true
-          })
-          this.drawArea()
-        }
-      })
-    },
-    getCarPosition () {
-      this.$http.get(`${config.httpBaseUrl}/map/getVuPositioning`).then((res) => {
-        if (res.code === 200) {
-          this.cars = res.date.maplocaltions.filter(item => {
-            return item.locationBean.longitude && true
-          })
-          this.drawArea()
-        }
-      })
     }
   },
   watch: {
@@ -251,15 +214,11 @@ export default {
     }
   },
   created () {
-    this.getPersonPosition()
-    this.getCarPosition()
-    this.timer = setInterval(() => {
-      console.log(1)
-      this.getPersonPosition()
-      this.getCarPosition()
-    }, 60000)
     this.$nextTick(() => {
       this.initMap()
+      setTimeout(() => {
+        this.drawArea()
+      }, 2000)
     })
   },
   destroyed () {

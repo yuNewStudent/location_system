@@ -1,16 +1,18 @@
 <template>
   <el-container>
     <el-header>
-      <span class="name">防丢失系统</span>
+      <span class="name">智慧社区系统</span>
       <app-menu class="menu" :menus='menus' :mode='mode.row'></app-menu>
       <div class="header_right">
-        <!-- <img src="@/assets/img/userImg.png" alt=""> -->
         <span class="user_name" @click='handleResetPassword'>{{user.administratorAccount}}</span>
         <span class="dividing_line"></span>
         <span class="exit" @click="handleExit">退出</span>
       </div>
     </el-header>
     <el-container>
+      <div class="nav">
+        <img src="@/assets/img/nav.png" alt="">
+      </div>
       <el-main>
         <router-view/>
       </el-main>
@@ -151,7 +153,16 @@ export default {
     }
   }
   .el-container {
+    position: relative;
+    .nav {
+      position: absolute;
+      width: 200px;
+      img {
+        width: 100%;
+      }
+    }
     .el-main {
+      padding-left: 200px;
       width: 100vw;
       height: 100%;
       background: #010101;

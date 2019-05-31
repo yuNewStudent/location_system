@@ -54,22 +54,24 @@
           <label for=""></label>
           <input v-model="deviceInfo.emergencycs[0].emergencycrsNumber1" type="text">
         </el-row>
-        <el-row>
-          <label for="">紧急联系人2</label>
-          <input v-model="deviceInfo.emergencycs[1].emergencycsName" type="text">
-        </el-row>
-        <el-row>
-          <label for="">关系</label>
-          <input v-model="deviceInfo.emergencycs[1].emergencycsRelationShip" type="text">
-        </el-row>
-        <el-row>
-          <label for="">联系电话</label>
-          <input v-model="deviceInfo.emergencycs[1].emergencycsNumber" type="text">
-        </el-row>
-        <el-row>
-          <label for=""></label>
-          <input v-model="deviceInfo.emergencycs[1].emergencycrsNumber1" type="text">
-        </el-row>
+        <div v-if='deviceInfo.emergencycs[1]'>
+          <el-row>
+            <label for="">紧急联系人2</label>
+            <input v-model="deviceInfo.emergencycs[1].emergencycsName" type="text">
+          </el-row>
+          <el-row>
+            <label for="">关系</label>
+            <input v-model="deviceInfo.emergencycs[1].emergencycsRelationShip" type="text">
+          </el-row>
+          <el-row>
+            <label for="">联系电话</label>
+            <input v-model="deviceInfo.emergencycs[1].emergencycsNumber" type="text">
+          </el-row>
+          <el-row>
+            <label for=""></label>
+            <input v-model="deviceInfo.emergencycs[1].emergencycrsNumber1" type="text">
+          </el-row>
+        </div>
       </div>
     </el-main>
   </message-box>
@@ -118,7 +120,6 @@ export default {
     changeDevice (bol) {
       // 新增设备
       if (!this.selectDevice) {
-        console.log(this.deviceInfo)
         this.$emit('addDevice', bol, this.deviceInfo)
       } else {
         // 修改设备
@@ -127,6 +128,7 @@ export default {
     }
   },
   created () {
+    console.log(this.selectDevice)
     if (this.selectDevice) {
       this.isEditor = true
       let _members = Object.assign({}, this.selectDevice.row)

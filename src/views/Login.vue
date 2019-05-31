@@ -61,7 +61,7 @@ export default {
           this.setUser(userInfo)
           // 登录成功跳转子页面
           this.$router.push({
-            name: 'Home'
+            name: 'Page'
           })
         } else {
           this.$message({

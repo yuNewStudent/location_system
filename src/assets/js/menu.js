@@ -13,7 +13,7 @@ const menus = {
       name: 'CarsManagement'
     },
     {
-      title: '摔倒预警',
+      title: '报警信息',
       name: 'FallWaring'
     },
     {

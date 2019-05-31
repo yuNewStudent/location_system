@@ -28,6 +28,10 @@
             label="设备ID">
           </el-table-column>
           <el-table-column
+            prop="fall_message"
+            label="报警信息">
+          </el-table-column>
+          <el-table-column
             prop="fallTime"
             label="报警时间">
           </el-table-column>
@@ -64,6 +68,7 @@ export default {
           fallUserid: '12345',
           fallTime: '2018-05-06-10:20',
           fall_number: '12345678912',
+          fall_message: '摔倒报警',
           fallAddress: '四川省成都市锦江区华为路'
         }
       ],

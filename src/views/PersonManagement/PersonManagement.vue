@@ -28,8 +28,8 @@
           </div>
           <p class="phone">手机号: {{item.userNumber}}</p>
           <p class="device_id">设备ID: {{item.userDeviceId}}</p>
-          <p class="address">家庭地址: {{item.userBirth}}</p>
-          <p class="birth">出生日期: {{item.userBirth||2011-10-20}}<span class='age'>{{getAge(item.birth||'2011-10-20')}}</span></p>
+          <p class="address">家庭地址: {{item.userAddress}}</p>
+          <p class="birth">出生日期: {{item.userBirth}}<span class='age'>{{getAge(item.userBirth)}}</span></p>
           <div class="emergencyContact">
             <span v-if='item.emergencycs.length'>紧急联系人: {{item.emergencycs[0].emergencycsName}}({{item.emergencycs[0].emergencycsRelationShip}})</span>
             <span v-else>紧急联系人: 无</span>
@@ -97,6 +97,7 @@ export default {
     },
     // 计算年龄
     getAge (str) {
+      console.log(str)
       var r = str.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/)
       if (r === null) return false
       var d = new Date(r[1], r[3] - 1, r[4])
