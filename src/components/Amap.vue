@@ -6,7 +6,6 @@
       <button @click='handleStandLayer'>标准图层</button>
       <button @click='handleSetSafe'>设置安全区域</button> -->
     </div>
-    <!-- <set-safe v-else></set-safe> -->
     <div ref='personInfo' class='windowinfo'>
       <h1>人员信息</h1>
       <p>姓名：{{personInfo.name}}</p>
@@ -176,7 +175,6 @@ export default {
       return new Promise((resolve, reject) => {
         this.geocoder.getAddress(lnglat, (status, result) => {
           if (status === 'complete' && result.regeocode) {
-            // address = result.regeocode.formattedAddress
             resolve(result.regeocode.formattedAddress)
           } else {
             alert(JSON.stringify(result))
@@ -211,7 +209,11 @@ export default {
     // center变化，地图中心改变
     center (value) {
       this.map.setZoomAndCenter(18, value)
-    }
+    },
+    persons (value) {
+      this.drawArea()
+    } 
+
   },
   created () {
     this.$nextTick(() => {

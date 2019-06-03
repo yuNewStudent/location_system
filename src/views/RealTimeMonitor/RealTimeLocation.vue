@@ -27,7 +27,9 @@
     <el-main>
       <map-page
         @showPersonLine='showPersonLine'
-        :center='currentCenter'></map-page>
+        :center='currentCenter'
+        :persons='persons'
+        :cars='cars'></map-page>
     </el-main>
     <person-line
       v-if='isPersonLine'
@@ -47,34 +49,14 @@ export default {
       filterQuery: '',
       websock: null,
       userDeviceId: '',
-      persons: [
-        // {
-        //   name: 'yujian',
-        //   age: '23',
-        //   lng: 104.06406,
-        //   lat: 30.55311,
-        //   id: 0,
-        //   type: 'person'
-        // }
-      ],
-      cars: [
-        // {
-        //   carModel: '大众33',
-        //   carNum: '1223',
-        //   phone: '12455',
-        //   lng: 104.06106,
-        //   lat: 30.55111,
-        //   id: 0,
-        //   type: 'car'
-        // }
-      ]
+      persons: [],
+      cars: []
     }
   },
   created () {
     this.getPersonPosition()
     this.getCarPosition()
     this.timer = setInterval(() => {
-      console.log(1)
       this.getPersonPosition()
       this.getCarPosition()
     }, 60000)
@@ -116,7 +98,6 @@ export default {
           this.persons = res.date.maplocaltions.filter(item => {
             return item.locationBean.longitude && true
           })
-          console.log(this.persons)
         }
       })
     },
@@ -126,7 +107,6 @@ export default {
           this.cars = res.date.maplocaltions.filter(item => {
             return item.locationBean.longitude && true
           })
-          // this.drawArea()
         }
       })
     }
