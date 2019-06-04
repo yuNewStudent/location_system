@@ -25,7 +25,7 @@
           <el-table-column label="性别" prop="userGender" sortable align="center">
             <template slot-scope="scope">
               <span type="success" v-if="scope.row.userGender==1">男</span>
-              <span type="success" v-if="scope.row.userGender==2">女</span>
+              <span type="success" v-if="scope.row.userGender==0">女</span>
             </template>
           </el-table-column>
           <el-table-column prop="userBirth" label="年龄" sortable>
@@ -89,7 +89,7 @@
               <h1>
                 姓名:{{personInfo.name}}
                 <span v-if="personInfo.userGender==1">性别:男</span>
-                <span v-if="personInfo.userGender==2">性别:女</span>
+                <span v-if="personInfo.userGender==0">性别:女</span>
                 <span>年龄:{{personInfo.age}}</span>
                 <span v-if="personInfo.userStatus==0">状态:离线</span>
                 <span v-if="personInfo.userStatus==1">状态:在线</span>
@@ -262,7 +262,8 @@ export default {
       // // 获取所有人员
       this.$http.get(`${config.httpBaseUrl}/user/getAll`).then(res => {
         if (res.code === 200) {
-          this.tableData = res.date.users;
+          this.tableData = res.date.users
+          console.log(this.tableData)
         }
       });
     },
