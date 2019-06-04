@@ -17,7 +17,7 @@
         @click='handleRoute(item.name)'>{{item.title}}</el-menu-item>
     </el-submenu> -->
     <el-menu-item
-      v-for='(item, index) in menus.single'
+      v-for='(item, index) in menus'
       :index="index + ''"
       :key='index'
       :route='goRoute(item.name)'
@@ -62,6 +62,10 @@ export default {
 .el-menu {
   display: inline-block;
   border: none;
+  background: transparent !important;
   // width: 80%;
+  .el-menu-item {
+    background: transparent !important;
+  }
 }
 </style>

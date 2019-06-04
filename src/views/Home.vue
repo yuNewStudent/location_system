@@ -2,7 +2,7 @@
   <el-container>
     <el-header>
       <span class="name">智慧社区系统</span>
-      <app-menu class="menu" :menus='menus' :mode='mode.row'></app-menu>
+      <app-menu class="menu" :menus='menus[2].group' :mode='mode.row'></app-menu>
       <div class="header_right">
         <span class="user_name" @click='handleResetPassword'>{{user.administratorAccount}}</span>
         <span class="dividing_line"></span>
@@ -11,7 +11,10 @@
     </el-header>
     <el-container>
       <div class="nav">
-        <img src="@/assets/img/nav.png" alt="">
+        <p
+          v-for='(item, index) in menus'
+          :key='index'
+          class="nav_item">{{item.title}}</p>
       </div>
       <el-main>
         <router-view/>
@@ -39,9 +42,9 @@ export default {
         row: 'horizontal',
         colum: ''
       },
-      menusGroup: [],
       isShowResetPassword: false,
-      type: '修改密码'
+      type: '修改密码',
+      currentPage: 2
     }
   },
   computed: {
@@ -98,6 +101,7 @@ export default {
   created () {
     this.user = this.getUser
     this.menus = menus
+    console.log(menus[2].group)
   },
   beforeDestroy () {
     clearInterval(this.timer)
@@ -113,12 +117,13 @@ export default {
     display: flex;
     padding: 0 40px;
     line-height: 60px;
-    background-color: rgb(84, 92, 100);
+    background-color: #313131;
     justify-content: space-between;
     font-size: 16px;
     .name {
       vertical-align: top;
       color: white;
+      font-size: 24px;
     }
     .menu {
       align-items: center;
@@ -157,8 +162,14 @@ export default {
     .nav {
       position: absolute;
       width: 200px;
-      img {
-        width: 100%;
+      background-color: #313131;
+      text-align: center;
+      cursor: pointer;
+      .nav_item {
+        font-size: 20px;
+        color: #969696;
+        line-height: 60px;
+        width: 200px;
       }
     }
     .el-main {
