@@ -2,18 +2,16 @@
   <div class="amap">
     <div id="container"></div>
     <!--个人信息人员信息-->
-    <div class="information">
+    <div class="information" v-if="informationx">
       <div class="information_h">
         <div class="information_hl">
-          <h1>人员信息</h1>
+          <h1><img src="@/assets/img/人员信息详情_IC.png">人员信息</h1>
         </div>
-        <div class="information_hr" @click="informationh">
-          <h1><i class="el-icon-arrow-down"></i></h1>
+        <div class="information_hr">
         </div>
       </div>
       <div class="information_c">
         <el-table
-         v-if="informationx"
           :data="tableData"
           :row-style="carInqwqwfo"
           height="250"
@@ -45,18 +43,18 @@
       </div>
     </div>
     <!--个人信息车辆信息-->
-    <div class="Vinformation">
-      <div class="information_h">
-        <div class="information_hl">
-          <h1>车辆信息</h1>
+    <div class="Vinformation" v-if="vinformationx">
+      <div class="Vinformation_h">
+        <div class="Vinformation_hl">
+          <h1><img src="@/assets/img/车辆信息—IC.png">车辆信息</h1>
         </div>
-        <div class="information_hr">
+        <div class="Vinformation_hr">
           <h1>
-            <i class="el-icon-arrow-down"></i>
+            <!-- <i class="el-icon-arrow-down"></i> -->
           </h1>
         </div>
       </div>
-      <div class="information_c">
+      <div class="Vinformation_c">
         <el-table
           :data="tableData1"
           :row-style="carInqwqwfo"
@@ -73,14 +71,14 @@
         </el-table>
       </div>
     </div>
-    <div class="dinformation">
+    <div class="dinformation" v-if="dinformationx">
       <div class="dinformation_h">
         <div class="dinformation_hl">
-          <h1>人员信息详情</h1>
+          <h1><img src="@/assets/img/人员信息—IC.png">人员信息详情</h1>
         </div>
         <div class="dinformation_hr">
           <h1>
-            <i class="el-icon-arrow-down"></i>
+            <!-- <i class="el-icon-arrow-down"></i> -->
           </h1>
         </div>
       </div>
@@ -101,33 +99,33 @@
                 <span>联系电话:{{personInfo.userNumber}}</span>
               </h1>
               <h1>
-                是否有病历:是
+                是否有病历:是<font @click="open4" style="border-bottom: 1px solid;cursor:pointer;color: #ff6500;margin-left: 10px;">查看</font>
                 <span>是否存在过敏原:对花粉过敏</span>
               </h1>
               <h1>家庭地址:{{personInfo.address}}</h1>
-              <h1>
+              <!-- <h1>
                 紧急联系人:苏姗(父女)
                 <span>紧急联系人电话:15828658729</span>
-              </h1>
+              </h1> -->
             </li>
           </ul>
         </div>
       </div>
     </div>
-    <div class="pinformation">
+    <div class="pinformation" v-if="pinformationx">
       <div class="pinformation_h">
         <div class="pinformation_hl">
-          <h1>报警信息</h1>
+          <h1><img src="@/assets/img/报警信息_IC.png">报警信息</h1>
         </div>
         <div class="pinformation_hr">
           <h1>
-            <i class="el-icon-arrow-down"></i>
+            <!-- <i class="el-icon-arrow-down"></i> -->
           </h1>
         </div>
       </div>
       <div class="pinformation_c">
         <div class="pinformation_cl">
-          <ul>
+          <ul v-if="fallWarnings.length>0">
             <li v-for="(item, index) in fallWarnings" :key="index">
               <h1>
                 {{item.fallTime}}
@@ -135,8 +133,29 @@
               </h1>
             </li>
           </ul>
+          <ul v-else>
+            <li style="text-align: center;">
+              <h1>无数据</h1>
+            </li>
+          </ul>
         </div>
       </div>
+    </div>
+    <div class="informationx">
+      <ul>
+        <li @click="dinformation">
+          <img src="@/assets/img/人员信息收缩.png">
+        </li>
+        <li @click="vinformation">
+          <img src="@/assets/img/车辆信息收缩.png">
+        </li>
+        <li @click="informationh">
+          <img src="@/assets/img/人员信息详情收缩IC.png">
+        </li>
+        <li @click="pinformation">
+          <img src="@/assets/img/报警信息收缩IC.png">
+        </li>
+      </ul>
     </div>
     <div v-if="!isSetSafe">
       <!-- <button @click='handleSatelliteLayer'>卫星图层</button>
@@ -177,6 +196,9 @@ export default {
       timer: null,
       map: null,
       informationx:true,
+      vinformationx:true,
+      pinformationx:true,
+      dinformationx:true,
       tableData: [
       ],
       tableData1: [],
@@ -212,6 +234,21 @@ export default {
     //人员信息隐藏
     informationh() {
       this.informationx = !this.informationx;
+    },
+    open4() {
+      this.$message.error('功能模块还在开发中...');
+    },
+    //车辆信息隐藏
+    vinformation(){
+      this.vinformationx=!this.vinformationx;
+    },
+    //报警信息隐藏
+    pinformation(){
+      this.pinformationx=!this.pinformationx;
+    },
+    //人员信息隐藏
+    dinformation(){
+      this.dinformationx=!this.dinformationx;
     },
     //报警信息
     getFallWarnings() {
@@ -486,13 +523,18 @@ export default {
     position: absolute;
     z-index: 9999;
     .information_hl {
-      width: 220px;
+      width: 250px;
       line-height:50px;
       line-height: 50px;
       text-align: center;
       float: left;
       color: #ffffff;
       background: rgba(14, 73, 118, 1);
+    }
+    .information_hl h1 img{
+      margin-right: 5px;
+      height: 15px;
+      width: 15px;
     }
     .information_hr {
       width: 30px;
@@ -523,15 +565,20 @@ export default {
     right: 10px;
     position: absolute;
     z-index: 9999;
-    .information_hl {
-      width: 220px;
+    .Vinformation_hl {
+      width: 250px;
       line-height: 50px;
       text-align: center;
       float: left;
       color: #ffffff;
       background: rgba(14, 73, 118, 1);
     }
-    .information_hr {
+    .Vinformation_hl h1 img{
+      margin-right: 5px;
+      height: 15px;
+      width: 15px;
+    }
+    .Vinformation_hr {
       width: 30px;
       float: right;
       text-align: center;
@@ -539,7 +586,7 @@ export default {
       color: #ffffff;
       background: rgba(14, 73, 118, 1);
     }
-    .information_c {
+    .Vinformation_c {
       width: 250px;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);
@@ -550,7 +597,7 @@ export default {
         background: rgba(6, 50, 110, 0.8) !important;
       }
     }
-    .information_cl {
+    .Vinformation_cl {
       padding: 5px;
     }
   }
@@ -561,12 +608,17 @@ export default {
     position: absolute;
     z-index: 9999;
     .dinformation_hl {
-      width: 570px;
+      width: 600px;
       line-height: 50px;
       text-align: center;
       float: left;
       color: #ffffff;
       background: rgba(14, 73, 118, 1);
+    }
+    .dinformation_hl h1 img{
+      margin-right: 5px;
+      height: 15px;
+      width: 15px;
     }
     .dinformation_hr {
       width: 30px;
@@ -586,8 +638,8 @@ export default {
     .dinformation_cl {
       padding: 5px;
     }
-    .dinformation_cl li {
-      line-height: 20px;
+    .dinformation_cl li h1{
+      line-height: 25px;
     }
     .dinformation_cl li h1 {
       color: #ffffff;
@@ -605,12 +657,17 @@ export default {
     position: absolute;
     z-index: 9999;
     .pinformation_hl {
-      width: 270px;
+      width: 300px;
       line-height: 50px;
       text-align: center;
       float: left;
       color: #ffffff;
       background: rgba(14, 73, 118, 1);
+    }
+    .pinformation_hl h1 img{
+      margin-right: 5px;
+      height: 15px;
+      width: 15px;
     }
     .pinformation_hr {
       width: 30px;
@@ -644,6 +701,16 @@ export default {
       margin-left: 2px;
       text-align: left;
     }
+  }
+  .informationx{
+    width: 50px;
+    bottom:10px;
+    right:0px;
+    position: absolute;
+    z-index: 9999;
+  }
+  .informationx li{
+    cursor:pointer;
   }
 }
 </style>
