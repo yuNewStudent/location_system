@@ -1,21 +1,28 @@
 <template>
   <div class="amap">
     <div id="container"></div>
+    <!-- <div id="container"></div> -->
     <!--个人信息人员信息-->
     <div class="information">
       <div class="information_h">
         <div class="information_hl">
          <h1>人员信息</h1>
+          <h1>人员信息</h1>
         </div>
         <div class="information_hr">
           <h1><i class="el-icon-arrow-down"></i></h1>
+          <h1 @click="information">
+            <i class="el-icon-arrow-down"></i>
+          </h1>
         </div>
       </div>
       <div class="information_c">
           <el-table
+        <el-table
           :data="tableData"
           :row-style="carInqwqwfo"
           height="300"
+          height="250"
           width="250"
           size="mini"
           border:none
@@ -28,12 +35,24 @@
             label="姓名"
             fixed
             >
+          :default-sort="{prop: 'date', order: 'descending'}"
+        >
+          <el-table-column prop="userName" label="姓名" fixed></el-table-column>
+          <el-table-column label="性别" sortable align="center">
+            <template slot-scope="scope">
+              <span type="success" v-if="scope.row.userGender==1">男</span>
+              <span type="success" v-if="scope.row.userGender==2">女</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="gender"
             label="性别"
             sortable
             >
+          <el-table-column label="年龄" sortable>
+            <template slot-scope="scope">
+              <span type="success">{{getAge(scope.row.userBirth)}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="age"
@@ -46,25 +65,37 @@
             label="状态"
              sortable
             >
+          <el-table-column prop="userStatus" label="状态" sortable>
+            <template slot-scope="scope">
+              <span type="success" v-if="scope.row.userStatus==1">在线</span>
+              <span type="success" v-if="scope.row.userStatus==0">离线</span>
+            </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
      <!--个人信息车辆信息-->
+    <!--个人信息车辆信息-->
     <div class="Vinformation">
       <div class="information_h">
         <div class="information_hl">
          <h1>车辆信息</h1>
+          <h1>车辆信息</h1>
         </div>
         <div class="information_hr">
           <h1><i class="el-icon-arrow-down"></i></h1>
+          <h1>
+            <i class="el-icon-arrow-down"></i>
+          </h1>
         </div>
       </div>
       <div class="information_c">
           <el-table
+        <el-table
           :data="tableData1"
           :row-style="carInqwqwfo"
           height="300"
+          height="250"
           width="250"
           border:none;
           size="mini"
@@ -87,15 +118,85 @@
             label="联系电话"
             >
           </el-table-column>
+          :default-sort="{prop: 'date', order: 'descending'}"
+        >
+          <el-table-column prop="vehiclesTypeof" label="型号"></el-table-column>
+          <el-table-column prop="vehiclesUseunit" label="使用单位"></el-table-column>
+          <el-table-column prop="vehiclesNsumber" label="联系电话"></el-table-column>
         </el-table>
       </div>
     </div>
-    <div v-if='!isSetSafe'>
+    <div class="dinformation">
+      <div class="dinformation_h">
+        <div class="dinformation_hl">
+          <h1>人员信息详情</h1>
+        </div>
+        <div class="dinformation_hr">
+          <h1>
+            <i class="el-icon-arrow-down"></i>
+          </h1>
+        </div>
+      </div>
+      <div class="dinformation_c">
+        <div class="dinformation_cl">
+          <ul>
+            <li>
+              <h1>
+                姓名:{{personInfo.name}}
+                <span v-if="personInfo.userGender==1">性别:男</span>
+                <span v-if="personInfo.userGender==2">性别:女</span>
+                <span>年龄:{{personInfo.age}}</span>
+                <span v-if="personInfo.userStatus==0">状态:离线</span>
+                <span v-if="personInfo.userStatus==1">状态:在线</span>
+              </h1>
+              <h1>
+                设备ID:{{personInfo.userDeviceId}}
+                <span>联系电话:{{personInfo.userNumber}}</span>
+              </h1>
+              <h1>
+                是否有病历:是
+                <span>是否存在过敏原:对花粉过敏</span>
+              </h1>
+              <h1>家庭地址:{{personInfo.address}}</h1>
+              <h1>
+                紧急联系人:苏姗(父女)
+                <span>紧急联系人电话:15828658729</span>
+              </h1>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="pinformation">
+      <div class="pinformation_h">
+        <div class="pinformation_hl">
+          <h1>报警信息</h1>
+        </div>
+        <div class="pinformation_hr">
+          <h1>
+            <i class="el-icon-arrow-down"></i>
+          </h1>
+        </div>
+      </div>
+      <div class="pinformation_c">
+        <div class="pinformation_cl">
+          <ul>
+            <li v-for="(item, index) in fallWarnings" :key="index">
+              <h1>
+                {{item.fallTime}}
+                <span>{{item.fallAddress}}进行{{item.fallNpeople}}报警</span>
+              </h1>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div v-if="!isSetSafe">
       <!-- <button @click='handleSatelliteLayer'>卫星图层</button>
       <button @click='handleStandLayer'>标准图层</button>
-      <button @click='handleSetSafe'>设置安全区域</button> -->
+      <button @click='handleSetSafe'>设置安全区域</button>-->
     </div>
-    <div ref='personInfo' class='windowinfo'>
+    <div ref="personInfo" class="windowinfo">
       <h1>人员信息</h1>
       <p>姓名：{{personInfo.name}}</p>
       <p>年龄：{{personInfo.age}}</p>
@@ -416,7 +517,6 @@ export default {
       line-height:50px;
       text-align: center;
       float: left;
-      color: #FFFFFF;
       background:rgba(14,73,118,1);
     }
     .information_hr{
