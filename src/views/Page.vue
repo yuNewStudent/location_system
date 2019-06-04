@@ -19,6 +19,7 @@ export default {
   },
   methods: {
     enter () {
+      console.log("212");
       console.log(1)
       this.$router.push({
         name: 'Home'
