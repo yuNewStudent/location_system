@@ -22,13 +22,13 @@
           :default-sort = "{prop: 'date', order: 'descending'}"
           >
           <el-table-column prop="userName" label="姓名" fixed></el-table-column>
-          <el-table-column label="性别" sortable align="center">
+          <el-table-column label="性别" prop="userGender" sortable align="center">
             <template slot-scope="scope">
               <span type="success" v-if="scope.row.userGender==1">男</span>
               <span type="success" v-if="scope.row.userGender==2">女</span>
             </template>
           </el-table-column>
-          <el-table-column label="年龄" sortable>
+          <el-table-column prop="userBirth" label="年龄" sortable>
             <template slot-scope="scope">
               <span type="success">{{getAge(scope.row.userBirth)}}</span>
             </template>
@@ -259,7 +259,7 @@ export default {
       });
     },
     getPersons() {
-      // 获取所有人员
+      // // 获取所有人员
       this.$http.get(`${config.httpBaseUrl}/user/getAll`).then(res => {
         if (res.code === 200) {
           this.tableData = res.date.users;
@@ -364,7 +364,6 @@ export default {
       if (type === "person") {
         // 获取用户信息
         const info = this.persons[index];
-        console.log(info);
         this.personInfo = {
           name: info.user.userName,
           age: this.getAge(info.user.userBirth),
