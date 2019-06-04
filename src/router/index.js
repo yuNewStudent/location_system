@@ -17,7 +17,7 @@ export default new Router({
     {
       path: '/',
       name: 'Page',
-      component: Page,
+      component: Page
       // redirect: '/realTimeMonitor',
       // children: [
       //   // 实时监控

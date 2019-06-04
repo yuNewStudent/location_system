@@ -18,7 +18,6 @@
           height="300"
           width="250"
           size="mini"
-          border:none
           style="background: transparent;"
           :header-cell-style="tableHeaderColor"
           :default-sort = "{prop: 'date', order: 'descending'}"
@@ -66,7 +65,6 @@
           :row-style="carInqwqwfo"
           height="300"
           width="250"
-          border:none;
           size="mini"
           style="background: transparent;"
           :header-cell-style="tableHeaderColor"
@@ -120,7 +118,6 @@
 <script>
 import AMap from 'AMap'
 import SetSafe from './SetSafeArea'
-import { setTimeout } from 'timers';
 export default {
   name: 'amap',
   props: ['center', 'cars', 'persons'],
@@ -128,36 +125,44 @@ export default {
     return {
       timer: null,
       map: null,
-      tableData: [{
-          state: '在线',
-          name: '王小虎',
-          age:'96岁',
-          gender: '男',
-        }, {
-          state: '在线',
-          name: '王小虎',
-          age:'96岁',
-          gender: '男',
-        }, {
-          state: '在线',
-          name: '王小虎',
-          age:'96岁',
-          gender: '男',
-        },{
-          state: '在线',
-          name: '王小虎',
-          age:'96岁',
-          gender: '男',
-        }],
-        tableData1: [{
-          model: '森塔纳',
-          unit: '大雨村卫生医',
-          phone:'15828658729',
-        }, {
-          model: '森塔纳',
-          unit: '大雨村卫生医',
-          phone:'15828658729',
-        },],
+      tableData: [
+        // {
+        //   state: '在线',
+        //   name: '王小虎',
+        //   age:'96岁',
+        //   gender: '男',
+        // },
+        // {
+        //   state: '在线',
+        //   name: '王小虎',
+        //   age:'96岁',
+        //   gender: '男',
+        // },
+        // {
+        //   state: '在线',
+        //   name: '王小虎',
+        //   age:'96岁',
+        //   gender: '男',
+        // },
+        // {
+        //   state: '在线',
+        //   name: '王小虎',
+        //   age:'96岁',
+        //   gender: '男',
+        // }
+      ],
+      tableData1: [
+        // {
+        //   model: '森塔纳',
+        //   unit: '大雨村卫生医',
+        //   phone:'15828658729',
+        // },
+        // {
+        //   model: '森塔纳',
+        //   unit: '大雨村卫生医',
+        //   phone:'15828658729',
+        // }
+      ],
       // 卫星图层
       satelliteLayer: null,
       // 路网图层
@@ -179,13 +184,12 @@ export default {
     }
   },
   mounted () {
-    this.carInqwqwfo();
   },
   components: {
     SetSafe
   },
   methods: {
-    carInqwqwfo(row,rowIndex){
+    carInqwqwfo (row, rowIndex) {
       return 'background:transparent;color:#FFFFFF;'
     },
     tableHeaderColor ({row, column, rowIndex, columnIndex}) {
@@ -219,7 +223,6 @@ export default {
       // 绘制人员
       this.persons.forEach((item, index) => {
         this.translateGps(item.locationBean.longitude, item.locationBean.latitude).then(data => {
-          
           this.drawMarker(data[0].lng, data[0].lat, 'person', index)
         })
       })
@@ -340,8 +343,7 @@ export default {
     },
     persons (value) {
       this.drawArea()
-    } 
-
+    }
   },
   created () {
     this.$nextTick(() => {

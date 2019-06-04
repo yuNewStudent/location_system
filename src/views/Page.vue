@@ -19,8 +19,6 @@ export default {
   },
   methods: {
     enter () {
-      console.log("212");
-      console.log(1)
       this.$router.push({
         name: 'Home'
       })
@@ -40,7 +38,7 @@ export default {
     width: 100%;
     height: 1820px;
     background: url('../assets/img/homeB.png') no-repeat;
-    background-size: 100% 100%; 
+    background-size: 100% 100%;
     .enter {
       position: absolute;
       right: 40px;
