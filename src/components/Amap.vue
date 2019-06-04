@@ -1,25 +1,24 @@
 <template>
   <div class="amap">
     <div id="container"></div>
-    <!-- <div id="container"></div> -->
     <!--个人信息人员信息-->
     <div class="information">
       <div class="information_h">
         <div class="information_hl">
           <h1>人员信息</h1>
         </div>
-        <div class="information_hr">
+        <div class="information_hr" @click="informationh">
           <h1><i class="el-icon-arrow-down"></i></h1>
         </div>
       </div>
       <div class="information_c">
         <el-table
+         v-if="informationx"
           :data="tableData"
           :row-style="carInqwqwfo"
           height="250"
           width="250"
           size="mini"
-          border:none
           style="background: transparent;"
           :header-cell-style="tableHeaderColor"
           :default-sort = "{prop: 'date', order: 'descending'}"
@@ -31,7 +30,6 @@
               <span type="success" v-if="scope.row.userGender==2">女</span>
             </template>
           </el-table-column>
-          <el-table-column
           <el-table-column label="年龄" sortable>
             <template slot-scope="scope">
               <span type="success">{{getAge(scope.row.userBirth)}}</span>
@@ -178,7 +176,7 @@ export default {
     return {
       timer: null,
       map: null,
-      informationx: true,
+      informationx:true,
       tableData: [
       ],
       tableData1: [],
@@ -212,7 +210,7 @@ export default {
   },
   methods: {
     //人员信息隐藏
-    information() {
+    informationh() {
       this.informationx = !this.informationx;
     },
     //报警信息
@@ -423,7 +421,7 @@ export default {
         this.drawArea();
       }, 2000);
     });
-     this.getFallWarnings();
+    this.getFallWarnings();
     this.getCars();
     this.getPersons();
   },
