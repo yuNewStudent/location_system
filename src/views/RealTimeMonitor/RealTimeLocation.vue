@@ -190,5 +190,12 @@ export default {
     left: 0;
     right: 0px;
   }
+  .information{
+    width:300px;
+    height:50px;
+    position:absolute;
+    top: 10px;
+    background:rgba(14,73,118,1);
+  }
 }
 </style>

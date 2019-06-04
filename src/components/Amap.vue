@@ -1,6 +1,95 @@
 <template>
   <div class="amap">
     <div id="container"></div>
+    <!--个人信息人员信息-->
+    <div class="information">
+      <div class="information_h">
+        <div class="information_hl">
+         <h1>人员信息</h1>
+        </div>
+        <div class="information_hr">
+          <h1><i class="el-icon-arrow-down"></i></h1>
+        </div>
+      </div>
+      <div class="information_c">
+          <el-table
+          :data="tableData"
+          :row-style="carInqwqwfo"
+          height="300"
+          width="250"
+          size="mini"
+          border:none
+          style="background: transparent;"
+          :header-cell-style="tableHeaderColor"
+          :default-sort = "{prop: 'date', order: 'descending'}"
+          >
+          <el-table-column
+            prop="name"
+            label="姓名"
+            fixed
+            >
+          </el-table-column>
+          <el-table-column
+            prop="gender"
+            label="性别"
+            sortable
+            >
+          </el-table-column>
+          <el-table-column
+            prop="age"
+            label="年龄"
+             sortable
+            >
+          </el-table-column>
+          <el-table-column
+            prop="state"
+            label="状态"
+             sortable
+            >
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
+     <!--个人信息车辆信息-->
+    <div class="Vinformation">
+      <div class="information_h">
+        <div class="information_hl">
+         <h1>车辆信息</h1>
+        </div>
+        <div class="information_hr">
+          <h1><i class="el-icon-arrow-down"></i></h1>
+        </div>
+      </div>
+      <div class="information_c">
+          <el-table
+          :data="tableData1"
+          :row-style="carInqwqwfo"
+          height="300"
+          width="250"
+          border:none;
+          size="mini"
+          style="background: transparent;"
+          :header-cell-style="tableHeaderColor"
+          :default-sort = "{prop: 'date', order: 'descending'}"
+          >
+          <el-table-column
+            prop="model"
+            label="型号"
+            >
+          </el-table-column>
+          <el-table-column
+            prop="unit"
+            label="使用单位"
+            >
+          </el-table-column>
+          <el-table-column
+            prop="phone"
+            label="联系电话"
+            >
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
     <div v-if='!isSetSafe'>
       <!-- <button @click='handleSatelliteLayer'>卫星图层</button>
       <button @click='handleStandLayer'>标准图层</button>
@@ -39,6 +128,36 @@ export default {
     return {
       timer: null,
       map: null,
+      tableData: [{
+          state: '在线',
+          name: '王小虎',
+          age:'96岁',
+          gender: '男',
+        }, {
+          state: '在线',
+          name: '王小虎',
+          age:'96岁',
+          gender: '男',
+        }, {
+          state: '在线',
+          name: '王小虎',
+          age:'96岁',
+          gender: '男',
+        },{
+          state: '在线',
+          name: '王小虎',
+          age:'96岁',
+          gender: '男',
+        }],
+        tableData1: [{
+          model: '森塔纳',
+          unit: '大雨村卫生医',
+          phone:'15828658729',
+        }, {
+          model: '森塔纳',
+          unit: '大雨村卫生医',
+          phone:'15828658729',
+        },],
       // 卫星图层
       satelliteLayer: null,
       // 路网图层
@@ -60,11 +179,20 @@ export default {
     }
   },
   mounted () {
+    this.carInqwqwfo();
   },
   components: {
     SetSafe
   },
   methods: {
+    carInqwqwfo(row,rowIndex){
+      return 'background:transparent;color:#FFFFFF;'
+    },
+    tableHeaderColor ({row, column, rowIndex, columnIndex}) {
+      if (rowIndex === 0) {
+        return 'background:rgba(6,50,110,0.8);color:#FFFFFF;border:1px solid rgba(0,160,233,1);'
+      }
+    },
     // 初始化地图
     initMap () {
       this.map = new AMap.Map('container', {
@@ -275,6 +403,78 @@ export default {
           height: 15px;
         }
       }
+    }
+  }
+  .information{
+    width:250px;
+    top:30px;
+    left:10px;
+    position:absolute;
+    z-index:9999;
+    .information_hl{
+      width: 220px;
+      line-height:50px;
+      text-align: center;
+      float: left;
+      color: #FFFFFF;
+      background:rgba(14,73,118,1);
+    }
+    .information_hr{
+      width:30px;
+      float: right;
+      text-align:center;
+      line-height:50px;
+      color: #FFFFFF;
+      background:rgba(14,73,118,1);
+    }
+    .information_c{
+      width:250px;
+      margin-top: 50px;
+      background:rgba(6,50,110,0.8);
+      border:1px solid rgba(0,160,233,1);
+      box-shadow:0px 0px 50px #267cf2 inset;
+      .el-table th, .el-table tr{
+        background:rgba(6,50,110,0.8) !important;
+      }
+    }
+    .information_cl{
+      padding: 5px;
+    }
+  }
+  .Vinformation{
+    width:250px;
+    top:30px;
+    right:10px;
+    position:absolute;
+    z-index:9999;
+    .information_hl{
+      width: 220px;
+      line-height:50px;
+      text-align: center;
+      float: left;
+      color: #FFFFFF;
+      background:rgba(14,73,118,1);
+    }
+    .information_hr{
+      width:30px;
+      float: right;
+      text-align:center;
+      line-height:50px;
+      color: #FFFFFF;
+      background:rgba(14,73,118,1);
+    }
+    .information_c{
+      width:250px;
+      margin-top: 50px;
+      background:rgba(6,50,110,0.8);
+      border:1px solid rgba(0,160,233,1);
+      box-shadow:0px 0px 50px #267cf2 inset;
+      .el-table th, .el-table tr{
+        background:rgba(6,50,110,0.8) !important;
+      }
+    }
+    .information_cl{
+      padding: 5px;
     }
   }
 }
