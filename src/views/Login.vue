@@ -20,6 +20,8 @@
 
 <script>
 import { mapMutations } from 'vuex'
+import { Loading } from 'element-ui'
+import { setTimeout, clearInterval } from 'timers';
 export default {
   name: 'login',
   data () {
@@ -45,7 +47,18 @@ export default {
         }
       }
       // 向后台登录,登录成功将用户信息存在本地
+      let loading = Loading.service({
+        lock: true,
+        text: '正在登陆中',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      let timer = setTimeout(() => {
+        this.$message.error('服务器出错')
+      }, 5000)
       this.$http.post(`${config.httpBaseUrl}/admin/login`, this.user).then(res => {
+        loading.close()
+        clearInterval(timer)
         if (res.code === 200) {
           this.$message({
             showClose: true,
@@ -74,6 +87,9 @@ export default {
     }
   },
   computed: {
+  },
+  destroyed () {
+    console.log(this.timer)
   }
 }
 </script>

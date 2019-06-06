@@ -8,12 +8,12 @@
         <label>姓名</label>
         <el-input
           v-model="accountInfo.administratorName"
-          placeholder="请输入账号"
+          placeholder="请输入姓名"
           :disabled="selectAccount && true"></el-input>
       </el-row>
       <el-row>
         <label>电话号码</label>
-        <el-input v-model="accountInfo.administratorAccount" placeholder="请输入密码"></el-input>
+        <el-input v-model="accountInfo.administratorAccount" placeholder="电话号码"></el-input>
       </el-row>
     </el-main>
   </message-box>

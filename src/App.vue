@@ -18,7 +18,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang='scss'>
 @import './assets/css/reset.css';
 html,body,#app{
   height: 100%;

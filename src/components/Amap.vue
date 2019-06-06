@@ -7,8 +7,6 @@
         <div class="information_hl">
           <h1><img src="@/assets/img/人员信息详情_IC.png">人员信息</h1>
         </div>
-        <div class="information_hr">
-        </div>
       </div>
       <div class="information_c">
         <el-table
@@ -19,21 +17,21 @@
           size="mini"
           style="background: transparent;"
           :header-cell-style="tableHeaderColor"
-          :default-sort = "{prop: 'date', order: 'descending'}"
+          @row-click='personRowClick'
           >
-          <el-table-column prop="userName" label="姓名" fixed></el-table-column>
-          <el-table-column label="性别" prop="userGender" sortable align="center">
+          <el-table-column prop="userName" label="姓名"></el-table-column>
+          <el-table-column :filters="[{ text: '男', value: '1' }, { text: '女', value: '0' }]" :filter-method="filterSex" label="性别" prop="userGender" align="center">
             <template slot-scope="scope">
               <span type="success" v-if="scope.row.userGender==1">男</span>
               <span type="success" v-if="scope.row.userGender==0">女</span>
             </template>
           </el-table-column>
-          <el-table-column prop="userBirth" label="年龄" sortable>
+          <el-table-column :filters="ages" :filter-method="filterAge" prop="userBirth" label="年龄">
             <template slot-scope="scope">
               <span type="success">{{getAge(scope.row.userBirth)}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="userStatus" label="状态" sortable>
+          <el-table-column :filters="[{ text: '在线', value: '1' }, { text: '离线', value: '0' }]" :filter-method="filterStatus"  prop="userStatus" label="状态">
             <template slot-scope="scope">
               <span type="success" v-if="scope.row.userStatus==1">在线</span>
               <span type="success" v-if="scope.row.userStatus==0">离线</span>
@@ -47,11 +45,6 @@
       <div class="Vinformation_h">
         <div class="Vinformation_hl">
           <h1><img src="@/assets/img/车辆信息—IC.png">车辆信息</h1>
-        </div>
-        <div class="Vinformation_hr">
-          <h1>
-            <!-- <i class="el-icon-arrow-down"></i> -->
-          </h1>
         </div>
       </div>
       <div class="Vinformation_c">
@@ -117,11 +110,6 @@
         <div class="pinformation_hl">
           <h1><img src="@/assets/img/报警信息_IC.png">报警信息</h1>
         </div>
-        <div class="pinformation_hr">
-          <h1>
-            <!-- <i class="el-icon-arrow-down"></i> -->
-          </h1>
-        </div>
       </div>
       <div class="pinformation_c">
         <div class="pinformation_cl">
@@ -164,10 +152,10 @@
     </div>
     <div ref="personInfo" class="windowinfo">
       <h1>人员信息</h1>
-      <p>姓名：{{personInfo.name}}</p>
-      <p>年龄：{{personInfo.age}}</p>
-      <p>所在位置：{{personInfo.address}}</p>
+      <!-- <p>姓名：{{personInfo.name}}</p> -->
+      <!-- <p>年龄：{{personInfo.age}}</p> -->
       <!-- <p>所在时长：2h20min</p> -->
+      <p>所在位置：{{personInfo.address}}</p>
       <p class="icon">
         <span style="margin-right: 10px" @click="getLngLat(personInfo.userDeviceId)">
           <img src="@/assets/img/icon/行动轨迹IC.png">
@@ -224,8 +212,18 @@ export default {
         carNum: "",
         phone: "",
         address: ""
-      }
-    };
+      },
+      currentCenter: null,
+      ages: [
+        { text: '0 - 10 岁', value: [0, 10] },
+        { text: '11 - 20 岁', value: [11, 20] },
+        { text: '21 - 50 岁', value: [21, 40] },
+        { text: '51 - 60 岁', value: [51, 60] },
+        { text: '61 - 70 岁', value: [61, 70] },
+        { text: '71 - 80 岁', value: [71, 80] },
+        { text: '81 岁及以上', value: [81] }
+      ]
+    }
   },
   components: {
     SetSafe
@@ -263,7 +261,6 @@ export default {
       this.$http.get(`${config.httpBaseUrl}/user/getAll`).then(res => {
         if (res.code === 200) {
           this.tableData = res.date.users
-          console.log(this.tableData)
         }
       });
     },
@@ -282,11 +279,11 @@ export default {
       return row.tag === value;
     },
     carInqwqwfo(row, rowIndex) {
-      return "background:transparent;color:#FFFFFF;border-bottom: 1px solid rgba(6,50,110,0.8)";
+     return "background:transparent;color:#FFFFFF;";
     },
     tableHeaderColor({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return "background:rgba(6,50,110,0.8);color:#FFFFFF;border:1px solid rgba(0,160,233,1);";
+        return "height: 40px;background:rgba(6,50,110,0.8);color:#FFFFFF;border:1px solid rgba(0,160,233,1);";
       }
     },
     // 初始化地图
@@ -318,7 +315,7 @@ export default {
           item.locationBean.longitude,
           item.locationBean.latitude
         ).then(data => {
-          this.drawMarker(data[0].lng, data[0].lat, "person", index);
+          this.drawMarker(data[0].lng, data[0].lat, "person", index)
         });
       });
       // 绘制车辆
@@ -327,14 +324,14 @@ export default {
           item.locationBean.longitude,
           item.locationBean.latitude
         ).then(data => {
-          this.drawMarker(data[0].lng, data[0].lat, "car", index);
+          this.drawMarker(data[0].lng, data[0].lat, "car", index)
         });
       });
     },
     // 绘制icon
     drawMarker(longitude, latitude, type, index) {
-      this.map.setZoomAndCenter(15, [longitude, latitude]);
-      var marker;
+      this.map.setZoomAndCenter(15, [longitude, latitude])
+      var marker
       if (type === "person") {
         marker = new AMap.Marker({
           icon: require("@/assets/img/icon/定位icon.png"),
@@ -344,7 +341,7 @@ export default {
         marker = new AMap.Marker({
           icon: require("@/assets/img/icon/车辆IC.png"),
           position: [longitude, latitude]
-        });
+        })
       }
       this.map.add(marker);
       // 鼠标点击marker弹出自定义的信息窗体
@@ -352,10 +349,11 @@ export default {
         // 生成信息窗体
         // 改变中心点
         // this.map.setZoomAndCenter(15, [longitude, latitude])
-        const address = this.getAddress(longitude, latitude);
+        const address = this.getAddress(longitude, latitude)
+        this.currentCenter = [longitude, latitude]
         address.then(data => {
-          let hh = this.creatInfo(type, index, data);
-          hh.open(this.map, marker.getPosition());
+          let hh = this.creatInfo(type, index, data)
+          hh.open(this.map, marker.getPosition())
         });
       });
     },
@@ -364,22 +362,23 @@ export default {
       var infoWindow;
       if (type === "person") {
         // 获取用户信息
-        const info = this.persons[index];
+        const info = this.tableData[index]
         this.personInfo = {
-          name: info.user.userName,
-          age: this.getAge(info.user.userBirth),
-          userGender: info.user.userGender,
-          userNumber: info.user.userNumber,
-          userDeviceId: info.user.userDeviceId,
-          userStatus: info.user.userStatus,
-          address
-        };
+          name: info.userName,
+          age: this.getAge(info.userBirth),
+          userGender: info.userGender,
+          userNumber: info.userNumber,
+          userDeviceId: info.userDeviceId,
+          userStatus: info.userStatus,
+          address,
+
+        }
         this.$refs.personInfo.style.display = "block";
         infoWindow = new AMap.InfoWindow({
           // 使用默认信息窗体框样式，显示信息内容
           content: this.$refs.personInfo,
           offset: new AMap.Pixel(5, -30)
-        });
+        })
       } else {
         // 获取车辆信息
         const info = this.cars[index];
@@ -399,7 +398,7 @@ export default {
       return infoWindow;
     },
     getLngLat(userDeviceId) {
-      this.$emit("showPersonLine", userDeviceId);
+      this.$emit("showPersonLine", userDeviceId, this.currentCenter)
     },
     // 根据经纬度获取地址
     getAddress(lng, lat) {
@@ -440,6 +439,23 @@ export default {
           }
         });
       });
+    },
+    // 通过性别筛选
+    filterSex (value, row, column) {
+      return row.userGender == value
+    },
+    // 通过年龄筛选
+    filterAge (value, row, column) {
+      let birth = this.getAge(row.userBirth)
+      let age = birth.slice(0, birth.length - 1)
+      return age >= value[0] && age <= value[1]
+    },
+    // 通过状态筛选
+    filterStatus (value, row, column) {
+      return row.userStatus == value
+    },
+    personRowClick (row, column, event) {
+      console.log(row, column, event)
     }
   },
   watch: {
@@ -455,7 +471,8 @@ export default {
     this.$nextTick(() => {
       this.initMap();
       setTimeout(() => {
-        this.drawArea();
+        console.log(this.persons)
+        this.drawArea()
       }, 2000);
     });
     this.getFallWarnings();
@@ -465,7 +482,7 @@ export default {
   destroyed() {
     clearInterval(this.timer);
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -489,7 +506,7 @@ export default {
     display: none;
     padding: 5px 0 0;
     font-size: 15px;
-    z-index: 6;
+    z-index: 3;
     h1 {
       font-size: 18px;
       color: #ffbf05;
@@ -518,10 +535,10 @@ export default {
   }
   .information {
     width: 250px;
-    top: 30px;
+    top: 10px;
     left: 10px;
     position: absolute;
-    z-index: 9999;
+    z-index: 3;
     .information_hl {
       width: 250px;
       line-height:50px;
@@ -548,7 +565,6 @@ export default {
       width: 250px;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);
-      border: 1px solid rgba(0, 160, 233, 1);
       box-shadow: 0px 0px 50px #267cf2 inset;
       .el-table th,
       .el-table tr {
@@ -561,10 +577,10 @@ export default {
   }
   .Vinformation {
     width: 250px;
-    top: 30px;
+    top: 10px;
     right: 10px;
     position: absolute;
-    z-index: 9999;
+    z-index: 3;
     .Vinformation_hl {
       width: 250px;
       line-height: 50px;
@@ -590,7 +606,6 @@ export default {
       width: 250px;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);
-      border: 1px solid rgba(0, 160, 233, 1);
       box-shadow: 0px 0px 50px #267cf2 inset;
       .el-table th,
       .el-table tr {
@@ -602,13 +617,13 @@ export default {
     }
   }
   .dinformation {
-    width: 600px;
+    width: 58%;
     bottom: 0px;
     left: 10px;
     position: absolute;
-    z-index: 9999;
+    z-index: 3;
     .dinformation_hl {
-      width: 600px;
+      width: 100%;
       line-height: 50px;
       text-align: center;
       float: left;
@@ -629,10 +644,9 @@ export default {
       background: rgba(14, 73, 118, 1);
     }
     .dinformation_c {
-      width: 600px;
+      width: 100%;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);
-      // border:1px solid rgba(0,160,233,1);
       box-shadow: 0px 0px 50px #267cf2 inset;
     }
     .dinformation_cl {
@@ -650,14 +664,14 @@ export default {
     }
   }
   .pinformation {
-    width: 300px;
+    position: absolute;
+    width: 40%;
     bottom: 0px;
     height: 160px;
     right: 10px;
-    position: absolute;
-    z-index: 9999;
+    z-index: 3;
     .pinformation_hl {
-      width: 300px;
+      width: 100%;
       line-height: 50px;
       text-align: center;
       float: left;
@@ -669,19 +683,18 @@ export default {
       height: 15px;
       width: 15px;
     }
-    .pinformation_hr {
-      width: 30px;
-      float: right;
-      text-align: center;
-      line-height: 50px;
-      color: #ffffff;
-      background: rgba(14, 73, 118, 1);
-    }
+    // .pinformation_hr {
+    //   width: 30px;
+    //   float: right;
+    //   text-align: center;
+    //   line-height: 50px;
+    //   color: #ffffff;
+    //   background: rgba(14, 73, 118, 1);
+    // }
     .pinformation_c {
-      width: 300px;
+      width: 100%;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);
-      // border:1px solid rgba(0,160,233,1);
       box-shadow: 0px 0px 50px #267cf2 inset;
     }
     .pinformation_cl {
@@ -702,12 +715,12 @@ export default {
       text-align: left;
     }
   }
-  .informationx{
+  .informationx {
     width: 50px;
-    bottom:10px;
-    right:0px;
+    bottom: 10px;
+    right: 0px;
     position: absolute;
-    z-index: 9999;
+    z-index: 3;
   }
   .informationx li{
     cursor:pointer;

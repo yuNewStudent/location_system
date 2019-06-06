@@ -14,7 +14,7 @@
         <p
           v-for='(item, index) in menus'
           :key='index'
-          class="nav_item">{{item.title}}</p>
+          class="nav_item"><img :src="item.icon" alt=""><span>{{item.title}}</span></p>
       </div>
       <el-main>
         <router-view/>
@@ -24,6 +24,10 @@
       :type='type'
       v-if='isShowResetPassword'
       @resetPassword='resetPassword'></reset-password>
+    <footer>
+      <p>崇州市大雨村</p>
+      <p>版权所有©成都棋照科技有限公司</p>
+    </footer>
   </el-container>
 </template>
 
@@ -166,10 +170,19 @@ export default {
       text-align: center;
       cursor: pointer;
       .nav_item {
+        display: flex;
+        align-items: center;
         font-size: 20px;
         color: #969696;
-        line-height: 60px;
+        height: 60px;
         width: 200px;
+        text-align: center;
+        justify-content: center;
+        img {
+          width: 16px;
+          height: 20px;
+          margin-right: 10px;
+        }
       }
     }
     .el-main {
@@ -177,6 +190,17 @@ export default {
       width: 100vw;
       height: 100%;
       background: #010101;
+    }
+
+  }
+  footer {
+    background: black;
+    text-align: center;
+    color: #FFFFFF;
+    border-top: 3px solid #7B7B7B;
+    padding: 10px 0;
+    p {
+      margin: 10px;
     }
   }
 }

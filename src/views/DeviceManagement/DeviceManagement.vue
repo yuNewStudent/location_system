@@ -14,7 +14,7 @@
           v-for='(item, index) in selects'
           :key='index'
           :class="{active:currentStatu===index+1}"
-          @click='handleSelect(index)'>
+          @click='handleSelect(item.statu, index)'>
           <span class="radius"></span>
           <span class="title all">{{item.title}}</span>
         </div>
@@ -122,6 +122,7 @@ export default {
         //   ]
         // }
       ],
+      filterDevices: [],
       isShowAddDevice: false,
       isShowEditorDevice: false,
       selectDevice: {
@@ -131,15 +132,15 @@ export default {
       selects: [
         {
           title: '全部',
-          statu: 1
+          statu: -1
         },
         {
           title: '离线',
-          statu: 2
+          statu: 0
         },
         {
           title: '在线',
-          statu: 3
+          statu: 1
         }
       ],
       currentStatu: 1,
@@ -158,6 +159,7 @@ export default {
   watch: {
     deviceQuery (value) {
       if (!value) {
+        this.currentStatu = 1
         this.getDevices()
       }
     }
@@ -169,6 +171,7 @@ export default {
       this.$http.get(`${config.httpBaseUrl}/user/getAll`).then((res) => {
         if (res.code === 200) {
           this.devices = res.date.users
+          this.filterDevices = res.date.users
           // 分页
           this.handleCurrentChange(this.currentPage)
         }
@@ -265,27 +268,53 @@ export default {
       })
     },
     // 筛选状态
-    handleSelect (index) {
+    handleSelect (status, index) {
       this.currentStatu = index + 1
+      this.filterDevices = []
+      this.deviceQuery = ''
+      switch (status) {
+        case -1:
+          this.filterDevices = this.devices
+          break
+        case 0:
+          this.filterDevices = this.devices.filter(item => {
+            return item.userStatus === 0
+          })
+          break
+        case 1:
+          this.filterDevices = this.devices.filter(item => {
+            return item.userStatus === 1
+          })
+          break
+      }
+      // 分页
+      this.handleCurrentChange(this.currentPage)
     },
     handleSearchDevice () {
-      this.$http.get(`${config.httpBaseUrl}/user/get`, {
-        params: {
-          userDeviceId: this.deviceQuery
-        }
-      }).then((res) => {
-        if (res.date.user.length) {
-          this.devices = res.date.user
-          // 分页
-          this.handleCurrentChange(this.currentPage)
-        } else {
-          this.$message({
-            showClose: true,
-            type: 'info',
-            message: '没有相关的设备'
-          })
-        }
+      this.currentStatu = 1
+      this.filterDevices = []
+      this.filterDevices = this.devices.filter(item => {
+        return item.userName.indexOf(this.deviceQuery) !== -1 || item.userDeviceId.indexOf(this.deviceQuery) !== -1
       })
+      // 分页
+      this.handleCurrentChange(this.currentPage)
+      // this.$http.get(`${config.httpBaseUrl}/user/get`, {
+      //   params: {
+      //     userDeviceId: this.deviceQuery
+      //   }
+      // }).then((res) => {
+      //   if (res.date.user.length) {
+      //     this.devices = res.date.user
+      //     // 分页
+      //     this.handleCurrentChange(this.currentPage)
+      //   } else {
+      //     this.$message({
+      //       showClose: true,
+      //       type: 'info',
+      //       message: '没有相关的设备'
+      //     })
+      //   }
+      // })
     },
     // 修改table tr行的背景色
     tableRowStyle (row, rowIndex) {
@@ -301,7 +330,7 @@ export default {
     getPaginationData (pageIndex) {
       const start = (pageIndex - 1) * this.pageSize
       const end = pageIndex * this.pageSize
-      this.paginationData = this.devices.slice(start, end)
+      this.paginationData = this.filterDevices.slice(start, end)
     },
     // 跳转至对应分页
     handleCurrentChange (val) {

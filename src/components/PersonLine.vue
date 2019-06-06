@@ -31,7 +31,7 @@
 <script>
 import AMap from 'AMap'
 export default {
-  props: ['userDeviceId'],
+  props: ['userDeviceId', 'center'],
   data () {
     return {
       map: null,
@@ -49,7 +49,7 @@ export default {
         // 调整窗口大小
         resizeEnable: true,
         // 设置中心点
-        center: [104.06406, 30.54311],
+        center: this.center,
         // 地图显示范围
         zoom: 15
       })

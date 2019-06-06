@@ -34,7 +34,8 @@
     <person-line
       v-if='isPersonLine'
       @close='closePersonLine'
-      :userDeviceId='userDeviceId'></person-line>
+      :userDeviceId='userDeviceId'
+      :center='currentCenter'></person-line>
   </div>
 </template>
 
@@ -67,8 +68,9 @@ export default {
   },
   methods: {
     // 展示人员路径页面
-    showPersonLine (userDeviceId) {
+    showPersonLine (userDeviceId, currentCenter) {
       this.userDeviceId = userDeviceId
+      this.currentCenter = currentCenter
       this.isPersonLine = true
     },
     // 关闭人员路径页面
