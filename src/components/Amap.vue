@@ -548,7 +548,6 @@ export default {
       width: 250px;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);
-      border: 1px solid rgba(0, 160, 233, 1);
       box-shadow: 0px 0px 50px #267cf2 inset;
       .el-table th,
       .el-table tr {
@@ -590,7 +589,6 @@ export default {
       width: 250px;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);
-      border: 1px solid rgba(0, 160, 233, 1);
       box-shadow: 0px 0px 50px #267cf2 inset;
       .el-table th,
       .el-table tr {
