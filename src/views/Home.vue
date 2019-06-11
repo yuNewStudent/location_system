@@ -2,7 +2,7 @@
   <el-container>
     <el-header>
       <span class="name">智慧社区系统</span>
-      <app-menu class="menu" :menus='menus[2].group' :mode='mode.row'></app-menu>
+      <app-menu class="menu" :menus='menus[currentPage].group' :mode='mode.row'></app-menu>
       <div class="header_right">
         <span class="user_name" @click='handleResetPassword'>{{user.administratorAccount}}</span>
         <span class="dividing_line"></span>
@@ -14,7 +14,8 @@
         <p
           v-for='(item, index) in menus'
           :key='index'
-          class="nav_item"><img :src="item.icon" alt=""><span>{{item.title}}</span></p>
+          class="nav_item"
+          @click='changeMenu(index)'><img :src="item.icon" alt=""><span>{{item.title}}</span></p>
       </div>
       <el-main>
         <router-view/>
@@ -91,6 +92,9 @@ export default {
         })
       }
       this.isShowResetPassword = false
+    },
+    changeMenu (index) {
+      this.currentPage = index
     }
   },
   watch: {

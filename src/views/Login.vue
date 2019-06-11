@@ -21,7 +21,6 @@
 <script>
 import { mapMutations } from 'vuex'
 import { Loading } from 'element-ui'
-import { setTimeout, clearInterval } from 'timers';
 export default {
   name: 'login',
   data () {
@@ -55,6 +54,7 @@ export default {
       })
       let timer = setTimeout(() => {
         this.$message.error('服务器出错')
+        loading.close()
       }, 5000)
       this.$http.post(`${config.httpBaseUrl}/admin/login`, this.user).then(res => {
         loading.close()
