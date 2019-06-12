@@ -59,6 +59,36 @@
                 <h1>武胜县礼安镇领导到大雨村参观指导工作</h1>
                 <span>2019-05-21</span>
             </li>
+             <li>
+                <div style="width:10px;height:10px;display:inline-block;background:rgba(248,191,18,1);border-radius:50%;"></div>
+                <h1>武胜县礼安镇领导到大雨村参观指导工作</h1>
+                <span>2019-05-21</span>
+            </li>
+            <li>
+                <div style="width:10px;height:10px;display:inline-block;background:rgba(248,191,18,1);border-radius:50%;"></div>
+                <h1>武胜县礼安镇领导到大雨村参观指导工作</h1>
+                <span>2019-05-21</span>
+            </li>
+             <li>
+                <div style="width:10px;height:10px;display:inline-block;background:rgba(248,191,18,1);border-radius:50%;"></div>
+                <h1>武胜县礼安镇领导到大雨村参观指导工作</h1>
+                <span>2019-05-21</span>
+            </li>
+            <li>
+                <div style="width:10px;height:10px;display:inline-block;background:rgba(248,191,18,1);border-radius:50%;"></div>
+                <h1>武胜县礼安镇领导到大雨村参观指导工作</h1>
+                <span>2019-05-21</span>
+            </li>
+             <li>
+                <div style="width:10px;height:10px;display:inline-block;background:rgba(248,191,18,1);border-radius:50%;"></div>
+                <h1>武胜县礼安镇领导到大雨村参观指导工作</h1>
+                <span>2019-05-21</span>
+            </li>
+            <li>
+                <div style="width:10px;height:10px;display:inline-block;background:rgba(248,191,18,1);border-radius:50%;"></div>
+                <h1>武胜县礼安镇领导到大雨村参观指导工作</h1>
+                <span>2019-05-21</span>
+            </li>
         </ul>
       </div>
       <div class="communitybuilding_lr">
@@ -71,8 +101,24 @@
           <div class="communitybuilding_lrm">
               <img src="@/assets/img/zx.png">
           </div>
-          <div>
-              
+          <div class="communitybuilding_lrl">
+              <ol>
+                    <li>
+                        <h1>1、王场镇大雨村召开人居环境整 ...<span>2019-05-21</span></h1>
+                    </li>
+                    <li>
+                        <h1>2、王场镇大雨村召开人居环境整 ...<span>2019-05-21</span></h1>
+                    </li>
+                    <li>
+                        <h1>3、王场镇大雨村召开人居环境整 ...<span>2019-05-21</span></h1>
+                    </li>
+                    <li>
+                        <h1>4、王场镇大雨村召开人居环境整 ...<span>2019-05-21</span></h1>
+                    </li>
+                    <li>
+                        <h1>5、王场镇大雨村召开人居环境整 ...<span>2019-05-21</span></h1>
+                    </li>
+              </ol>
           </div>
       </div>
     </div>
@@ -184,7 +230,8 @@ export default {
             }
             .communitybuilding_lrr{
                 width:296px;
-                line-height: 39px;
+                height: 39px;
+                // line-height: 39px;
                 float: right;
                 text-align: right;
                 border-bottom: 1px solid #ffffff;
@@ -192,12 +239,21 @@ export default {
             .communitybuilding_lrm{
                 margin-top: 10px;
                 width:396px;
-                height:200px;
                 border-radius:6px 6px 0px 0px;
             }
             .communitybuilding_lrm img{
                 width: 100%;
-            }    
+                border-radius:6px 6px 0px 0px;
+            } 
+            .communitybuilding_lrl{
+                width: 100%;
+                margin-top:-2px;
+                background-color:rgba(49,49,49,1);
+            }
+            .communitybuilding_lrl li{
+               width: 100%;
+               line-height:35px;
+            }   
         }
     }
 }
