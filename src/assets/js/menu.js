@@ -7,6 +7,22 @@ const menus = [
       {
         title: '实时监控',
         name: 'RealTimeMonitor'
+      },
+      {
+        title: '社区党建',
+        name: 'communitybuilding'
+      },
+      {
+        title: '便民服务',
+        name: 'communitybuilding'
+      },
+      {
+        title: '社区活动',
+        name: 'communitybuilding'
+      },
+      {
+        title: '村情概述',
+        name: 'communitybuilding'
       }
     ]
   },

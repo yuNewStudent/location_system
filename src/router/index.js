@@ -11,7 +11,7 @@ const FallWaring = name => () => import('@/views/FallWaring/' + name)
 const CarsManagement = name => () => import('@/views/CarsManagement/' + name)
 const DeviceManagement = name => () => import('@/views/DeviceManagement/' + name)
 const AccountManagement = name => () => import('@/views/AccountManagement/' + name)
-
+const communitybuilding = name => () => import('@/views/communitybuilding/' + name)
 export default new Router({
   routes: [
     {
@@ -109,6 +109,11 @@ export default new Router({
           path: '/accountManagement',
           name: 'AccountManagement',
           component: AccountManagement('AccountManagement')
+        },
+        {
+          path: '/communitybuilding',
+          name: 'communitybuilding',
+          component: communitybuilding('communitybuilding')
         }
       ]
     },
