@@ -3,21 +3,21 @@
     <div class="communitybuilding_h">
         <img src="@/assets/img/1.jpeg">
         <div class="communitybuilding_ht">
-            <p>社区委员会召开会议，以党建为引领，提升社区治理水平...<span>2018-12-24</span></p>
+          <p>社区委员会召开会议，以党建为引领，提升社区治理水平...<span>2018-12-24</span></p>
         </div>
     </div>
     <div class="communitybuilding_hw">
-        <div class="communitybuilding_hwl">
-            <h1>【要闻】</h1>
-        </div>
-        <div class="communitybuilding_hwr">
-            <marquee>
-           <font size=+1>习近平：奋力开创中部地区崛起新局面</font>
-           <font size=+1>习近平：中纪委办公厅印发意见严把案件...</font>
-           <font size=+1>习近平：中纪委办公厅印发意见严把案件...</font>
+      <div class="communitybuilding_hwl">
+          <h1>【要闻】</h1>
+      </div>
+      <div class="communitybuilding_hwr">
+        <marquee>
+          <font size=+1>习近平：奋力开创中部地区崛起新局面</font>
+          <font size=+1>习近平：中纪委办公厅印发意见严把案件...</font>
+          <font size=+1>习近平：中纪委办公厅印发意见严把案件...</font>
         </marquee>
-        </div>
-        <div style="clear:both"></div>
+      </div>
+      <div style="clear:both"></div>
     </div>
     <div class="communitybuilding_l">
       <div class="communitybuilding_ll">
@@ -55,9 +55,9 @@
                 <span>2019-05-21</span>
             </li>
             <li>
-                <div style="width:10px;height:10px;display:inline-block;background:rgba(248,191,18,1);border-radius:50%;"></div>
-                <h1>武胜县礼安镇领导到大雨村参观指导工作</h1>
-                <span>2019-05-21</span>
+              <div style="width:10px;height:10px;display:inline-block;background:rgba(248,191,18,1);border-radius:50%;"></div>
+              <h1>武胜县礼安镇领导到大雨村参观指导工作</h1>
+              <span>2019-05-21</span>
             </li>
              <li>
                 <div style="width:10px;height:10px;display:inline-block;background:rgba(248,191,18,1);border-radius:50%;"></div>
@@ -133,7 +133,6 @@ export default {
     mounted () {
   },
   methods: {
-   
   }
 }
 </script>
@@ -149,17 +148,17 @@ export default {
         height: 300px;
     }
     .communitybuilding_ht{
-    position: absolute;
-    line-height: 30px;
-    width: 100%;
-    bottom:0px;
-    left:0px;
-    z-index: 87;
-    font-size: 14px;
-    color: #FFFFFFFF;
-    background-color:black;
-    opacity: .6;
-    text-align: left;
+      position: absolute;
+      line-height: 30px;
+      width: 100%;
+      bottom:0px;
+      left:0px;
+      z-index: 87;
+      font-size: 14px;
+      color: #FFFFFFFF;
+      background-color:black;
+      opacity: .6;
+      text-align: left;
     }
      .communitybuilding_ht p{
         margin-left: 20px;

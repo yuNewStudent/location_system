@@ -15,6 +15,7 @@
           v-for='(item, index) in menus'
           :key='index'
           class="nav_item"
+          :class='{active:index===currentPage}'
           @click='changeMenu(index)'><img :src="item.icon" alt=""><span>{{item.title}}</span></p>
       </div>
       <el-main>
@@ -25,10 +26,10 @@
       :type='type'
       v-if='isShowResetPassword'
       @resetPassword='resetPassword'></reset-password>
-    <footer>
+    <!-- <footer>
       <p>崇州市大雨村</p>
       <p>版权所有©成都棋照科技有限公司</p>
-    </footer>
+    </footer> -->
   </el-container>
 </template>
 
@@ -49,7 +50,7 @@ export default {
       },
       isShowResetPassword: false,
       type: '修改密码',
-      currentPage: 2
+      currentPage: 0
     }
   },
   computed: {
@@ -177,16 +178,28 @@ export default {
         display: flex;
         align-items: center;
         font-size: 20px;
-        color: #969696;
+        color: white;
         height: 60px;
         width: 200px;
         text-align: center;
         justify-content: center;
+        &.active {
+          background: #767676;
+          position: relative;
+        }
         img {
           width: 16px;
           height: 20px;
           margin-right: 10px;
         }
+      }
+      .active:after {
+        content: '';
+        position: absolute;
+        display: inline-block;
+        border: 10px solid transparent;
+        border-left: 10px solid #767676;
+        right: -20px;
       }
     }
     .el-main {
