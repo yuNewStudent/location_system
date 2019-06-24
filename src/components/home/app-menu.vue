@@ -46,12 +46,12 @@ export default {
       this.$router.push({
         name: name
       })
-    },
-    handleRouteHead (name) {
-      this.$router.push({
-        name: 'RealTimeLocation'
-      })
     }
+    // handleRouteHead (name) {
+    //   this.$router.push({
+    //     name: 'RealTimeLocation'
+    //   })
+    // }
   },
   mounted () {
   }

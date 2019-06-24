@@ -112,21 +112,18 @@
         </div>
       </div>
       <div class="pinformation_c">
-        <div class="pinformation_cl">
-          <ul v-if="fallWarnings.length>0">
-            <li v-for="(item, index) in fallWarnings" :key="index">
-              <h1>
-                {{item.fallTime}}
-                <span>{{item.fallAddress}}进行{{item.fallNpeople}}报警</span>
-              </h1>
-            </li>
-          </ul>
-          <ul v-else>
-            <li style="text-align: center;">
-              <h1>无数据</h1>
-            </li>
-          </ul>
-        </div>
+        <ul class="pinformation_cl" v-if="fallWarnings.length>0">
+          <li v-for="(item, index) in fallWarnings" :key="index">
+            {{item.fallTime}}
+            <!-- {{item.fallAddress}} -->
+            <span>{{item.fallNpeople}}进行报警</span>
+          </li>
+        </ul>
+        <ul v-else>
+          <li style="text-align: center;">
+            <h1>无数据</h1>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="informationx">
@@ -173,20 +170,19 @@
 </template>
 
 <script>
-import AMap from "AMap";
-import SetSafe from "./SetSafeArea";
-import { setTimeout } from "timers";
+import AMap from 'AMap'
+import SetSafe from './SetSafeArea'
 export default {
-  name: "amap",
-  props: ["center", "cars", "persons"],
-  data() {
+  name: 'amap',
+  props: ['center', 'cars', 'persons'],
+  data () {
     return {
       timer: null,
       map: null,
-      informationx:true,
-      vinformationx:true,
-      pinformationx:true,
-      dinformationx:true,
+      informationx: true,
+      vinformationx: true,
+      pinformationx: true,
+      dinformationx: true,
       tableData: [
       ],
       tableData1: [],
@@ -197,21 +193,21 @@ export default {
       geocoder: null,
       isSetSafe: false,
       personInfo: {
-        name: "",
-        age: "",
-        address: "",
-        userGender: "",
-        userNumber: "",
-        userDeviceId: "",
-        userStatus: "",
-        personInfo: ""
+        name: '',
+        age: '',
+        address: '',
+        userGender: '',
+        userNumber: '',
+        userDeviceId: '',
+        userStatus: '',
+        personInfo: ''
       },
       fallWarnings: [],
       carInfo: {
-        carModel: "",
-        carNum: "",
-        phone: "",
-        address: ""
+        carModel: '',
+        carNum: '',
+        phone: '',
+        address: ''
       },
       currentCenter: null,
       ages: [
@@ -229,123 +225,132 @@ export default {
     SetSafe
   },
   methods: {
-    //人员信息隐藏
-    informationh() {
-      this.informationx = !this.informationx;
+    // 人员信息隐藏
+    informationh () {
+      this.informationx = !this.informationx
     },
-    open4() {
-      this.$message.error('功能模块还在开发中...');
+    open4 () {
+      this.$message.error('功能模块还在开发中...')
     },
-    //车辆信息隐藏
-    vinformation(){
-      this.vinformationx=!this.vinformationx;
+    // 车辆信息隐藏
+    vinformation () {
+      this.vinformationx = !this.vinformationx
     },
-    //报警信息隐藏
-    pinformation(){
-      this.pinformationx=!this.pinformationx;
+    // 报警信息隐藏
+    pinformation () {
+      this.pinformationx = !this.pinformationx
     },
-    //人员信息隐藏
-    dinformation(){
-      this.dinformationx=!this.dinformationx;
+    // 人员信息隐藏
+    dinformation () {
+      this.dinformationx = !this.dinformationx
     },
-    //报警信息
-    getFallWarnings() {
+    // 报警信息
+    getFallWarnings () {
       this.$http.get(`${config.httpBaseUrl}/fall/getAll`).then(res => {
         if (res.code === 200) {
-          this.fallWarnings = res.date.falls;
+          // this.fallWarnings = res.date.falls
+          // 处理信息
+          res.date.falls.map(item => {
+            const lng = item.fallAddress.split('-')[0]
+            const lat = item.fallAddress.split('-')[1]
+            this.getAddress(lng, lat).then(data => {
+              item.fallAddress = data
+              this.fallWarnings.push(item)
+            })
+          })
         }
-      });
+      })
     },
-    getPersons() {
+    getPersons () {
       // // 获取所有人员
       this.$http.get(`${config.httpBaseUrl}/user/getAll`).then(res => {
         if (res.code === 200) {
           this.tableData = res.date.users
         }
-      });
+      })
     },
     // 获取车辆
-    getCars() {
+    getCars () {
       // 服务器获取车辆
       this.$http
         .get(`${config.httpBaseUrl}/vehucle/getAllVehucle`)
         .then(res => {
           if (res.code === 200) {
-            this.tableData1 = res.date.vhucles;
+            this.tableData1 = res.date.vhucles
           }
-        });
+        })
     },
-    filterTag(value, row) {
-      return row.tag === value;
+    filterTag (value, row) {
+      return row.tag === value
     },
-    carInqwqwfo(row, rowIndex) {
-     return "background:transparent;color:#FFFFFF;";
+    carInqwqwfo (row, rowIndex) {
+      return 'background:transparent;color:#FFFFFF;'
     },
-    tableHeaderColor({ row, column, rowIndex, columnIndex }) {
+    tableHeaderColor ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return "height: 40px;background:rgba(6,50,110,0.8);color:#FFFFFF;border:1px solid rgba(0,160,233,1);";
+        return 'height: 40px;background:rgba(6,50,110,0.8);color:#FFFFFF;border:1px solid rgba(0,160,233,1);'
       }
     },
     // 初始化地图
-    initMap() {
-      this.map = new AMap.Map("container", {
+    initMap () {
+      this.map = new AMap.Map('container', {
         // 调整窗口大小
         resizeEnable: true,
         // 设置中心点
         center: this.center,
         // 地图显示范围
         zoom: 15
-      });
+      })
       // 添加缩放标尺控件
-      AMap.plugin(["AMap.Scale"], () => {
-        this.map.addControl(new AMap.Scale());
-      });
-      AMap.plugin(["AMap.Geocoder"], () => {
+      AMap.plugin(['AMap.Scale'], () => {
+        this.map.addControl(new AMap.Scale())
+      })
+      AMap.plugin(['AMap.Geocoder'], () => {
         this.geocoder = new AMap.Geocoder({
           radius: 1000,
-          extensions: "all"
-        });
-      });
+          extensions: 'all'
+        })
+      })
     },
     // 创建标记点位置
-    drawArea() {
+    drawArea () {
       // 绘制人员
       this.persons.forEach((item, index) => {
         this.translateGps(
           item.locationBean.longitude,
           item.locationBean.latitude
         ).then(data => {
-          this.drawMarker(data[0].lng, data[0].lat, "person", index)
-        });
-      });
+          this.drawMarker(data[0].lng, data[0].lat, 'person', index)
+        })
+      })
       // 绘制车辆
       this.cars.forEach((item, index) => {
         this.translateGps(
           item.locationBean.longitude,
           item.locationBean.latitude
         ).then(data => {
-          this.drawMarker(data[0].lng, data[0].lat, "car", index)
-        });
-      });
+          this.drawMarker(data[0].lng, data[0].lat, 'car', index)
+        })
+      })
     },
     // 绘制icon
-    drawMarker(longitude, latitude, type, index) {
+    drawMarker (longitude, latitude, type, index) {
       this.map.setZoomAndCenter(15, [longitude, latitude])
       var marker
-      if (type === "person") {
+      if (type === 'person') {
         marker = new AMap.Marker({
-          icon: require("@/assets/img/icon/定位icon.png"),
+          icon: require('@/assets/img/icon/定位icon.png'),
           position: [longitude, latitude]
-        });
+        })
       } else {
         marker = new AMap.Marker({
-          icon: require("@/assets/img/icon/车辆IC.png"),
+          icon: require('@/assets/img/icon/车辆IC.png'),
           position: [longitude, latitude]
         })
       }
-      this.map.add(marker);
+      this.map.add(marker)
       // 鼠标点击marker弹出自定义的信息窗体
-      marker.on("click", event => {
+      marker.on('click', event => {
         // 生成信息窗体
         // 改变中心点
         // this.map.setZoomAndCenter(15, [longitude, latitude])
@@ -354,13 +359,13 @@ export default {
         address.then(data => {
           let hh = this.creatInfo(type, index, data)
           hh.open(this.map, marker.getPosition())
-        });
-      });
+        })
+      })
     },
     // 生成信息窗体
-    creatInfo(type, index, address) {
-      var infoWindow;
-      if (type === "person") {
+    creatInfo (type, index, address) {
+      var infoWindow
+      if (type === 'person') {
         // 获取用户信息
         const info = this.tableData[index]
         this.personInfo = {
@@ -370,10 +375,9 @@ export default {
           userNumber: info.userNumber,
           userDeviceId: info.userDeviceId,
           userStatus: info.userStatus,
-          address,
-
+          address
         }
-        this.$refs.personInfo.style.display = "block";
+        this.$refs.personInfo.style.display = 'block'
         infoWindow = new AMap.InfoWindow({
           // 使用默认信息窗体框样式，显示信息内容
           content: this.$refs.personInfo,
@@ -381,68 +385,68 @@ export default {
         })
       } else {
         // 获取车辆信息
-        const info = this.cars[index];
+        const info = this.cars[index]
         this.carInfo = {
           carModel: info.vehiclesTypeof,
           carNum: info.vehiclesNumBering,
           phone: info.vehiclesNsumber,
           address
-        };
-        this.$refs.carInfo.style.display = "block";
+        }
+        this.$refs.carInfo.style.display = 'block'
         infoWindow = new AMap.InfoWindow({
           // 使用默认信息窗体框样式，显示信息内容
           content: this.$refs.carInfo,
           offset: new AMap.Pixel(5, -30)
-        });
+        })
       }
-      return infoWindow;
+      return infoWindow
     },
-    getLngLat(userDeviceId) {
-      this.$emit("showPersonLine", userDeviceId, this.currentCenter)
+    getLngLat (userDeviceId) {
+      this.$emit('showPersonLine', userDeviceId, this.currentCenter)
     },
     // 根据经纬度获取地址
-    getAddress(lng, lat) {
-      const lnglat = [lng, lat];
+    getAddress (lng, lat) {
+      const lnglat = [lng, lat]
       return new Promise((resolve, reject) => {
         this.geocoder.getAddress(lnglat, (status, result) => {
-          if (status === "complete" && result.regeocode) {
-            resolve(result.regeocode.formattedAddress);
+          if (status === 'complete' && result.regeocode) {
+            resolve(result.regeocode.formattedAddress)
           } else {
-            alert(JSON.stringify(result));
+            alert(JSON.stringify(result))
           }
-        });
-      });
+        })
+      })
     },
     // 计算年龄
-    getAge(str) {
-      var r = str.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/);
-      if (r === null) return false;
-      var d = new Date(r[1], r[3] - 1, r[4]);
+    getAge (str) {
+      var r = str.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/)
+      if (r === null) return false
+      var d = new Date(r[1], r[3] - 1, r[4])
       if (
-        d.getFullYear() == r[1] &&
-        d.getMonth() + 1 == r[3] &&
-        d.getDate() == r[4]
+        d.getFullYear() == r[1] && //eslint-disable-line
+        d.getMonth() + 1 == r[3] && //eslint-disable-line
+        d.getDate() == r[4] //eslint-disable-line
       ) {
         //eslint-disable-line
-        var Y = new Date().getFullYear();
-        return Y - r[1] + "岁";
+        var Y = new Date().getFullYear()
+        return Y - r[1] + '岁'
       }
-      return "输入的日期格式错误!";
+      return '输入的日期格式错误!'
     },
     // gps转高德坐标
-    translateGps(lng, lat) {
-      const gps = [lng, lat];
+    translateGps (lng, lat) {
+      const gps = [lng, lat]
       return new Promise((resolve, reject) => {
-        AMap.convertFrom(gps, "gps", (status, result) => {
-          if (result.info === "ok") {
-            resolve(result.locations);
+        AMap.convertFrom(gps, 'gps', (status, result) => {
+          if (result.info === 'ok') {
+            resolve(result.locations)
           }
-        });
-      });
+        })
+      })
     },
     // 通过性别筛选
     filterSex (value, row, column) {
-      return row.userGender == value
+      return row.userGender === value
     },
     // 通过年龄筛选
     filterAge (value, row, column) {
@@ -452,7 +456,7 @@ export default {
     },
     // 通过状态筛选
     filterStatus (value, row, column) {
-      return row.userStatus == value
+      return row.userStatus === value
     },
     personRowClick (row, column, event) {
       console.log(row, column, event)
@@ -460,27 +464,27 @@ export default {
   },
   watch: {
     // center变化，地图中心改变
-    center(value) {
-      this.map.setZoomAndCenter(18, value);
+    center (value) {
+      this.map.setZoomAndCenter(18, value)
     },
-    persons(value) {
-      this.drawArea();
+    persons (value) {
+      this.drawArea()
     }
   },
-  created() {
+  created () {
     this.$nextTick(() => {
-      this.initMap();
+      this.initMap()
       setTimeout(() => {
         console.log(this.persons)
         this.drawArea()
-      }, 2000);
-    });
-    this.getFallWarnings();
-    this.getCars();
-    this.getPersons();
+      }, 2000)
+    })
+    this.getFallWarnings()
+    this.getCars()
+    this.getPersons()
   },
-  destroyed() {
-    clearInterval(this.timer);
+  destroyed () {
+    clearInterval(this.timer)
   }
 }
 </script>
@@ -677,42 +681,33 @@ export default {
       float: left;
       color: #ffffff;
       background: rgba(14, 73, 118, 1);
+      img{
+        margin-right: 5px;
+        height: 15px;
+        width: 15px;
+      }
     }
-    .pinformation_hl h1 img{
-      margin-right: 5px;
-      height: 15px;
-      width: 15px;
-    }
-    // .pinformation_hr {
-    //   width: 30px;
-    //   float: right;
-    //   text-align: center;
-    //   line-height: 50px;
-    //   color: #ffffff;
-    //   background: rgba(14, 73, 118, 1);
-    // }
     .pinformation_c {
       width: 100%;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);
       box-shadow: 0px 0px 50px #267cf2 inset;
-    }
-    .pinformation_cl {
-      padding: 5px;
-    }
-    .pinformation_cl li {
-      line-height: 20px;
-    }
-    .pinformation_cl li h1 {
-      color: #ffffff;
-      width: 300px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-    .pinformation_cl li span {
-      margin-left: 2px;
-      text-align: left;
+      .pinformation_cl {
+        width: 100%;
+        color: #ffffff;
+        padding: 5px;
+        height: 110px;
+        box-sizing: border-box;
+        overflow-y: scroll;
+        li {
+          width: 90%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow:ellipsis;
+          margin:  5px 0;
+          line-height: 20px;
+        }
+      }
     }
   }
   .informationx {

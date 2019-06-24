@@ -4,25 +4,9 @@ const menus = [
   //   name: 'CommunityLife',
   //   icon: require('@/assets/img/社区生活—IC—灰.png'),
   //   group: [
-  //     // {
-  //     //   title: '实时监控',
-  //     //   name: 'RealTimeMonitor'
-  //     // },
   //     {
-  //       title: '社区党建',
-  //       name: 'communitybuilding'
-  //     },
-  //     {
-  //       title: '便民服务',
-  //       name: 'communitybuilding'
-  //     },
-  //     {
-  //       title: '社区活动',
-  //       name: 'communitybuilding'
-  //     },
-  //     {
-  //       title: '村情概述',
-  //       name: 'communitybuilding'
+  //       title: '新闻编辑',
+  //       name: 'Editor'
   //     }
   //   ]
   // },
@@ -32,8 +16,8 @@ const menus = [
   //   icon: require('@/assets/img/社区文旅ic _灰.png'),
   //   group: [
   //     {
-  //       title: '实时监控',
-  //       name: 'RealTimeMonitor'
+  //       title: '新闻编辑',
+  //       name: 'Editor'
   //     }
   //   ]
   // },
@@ -42,6 +26,10 @@ const menus = [
     name: 'CommunityHealth',
     icon: require('@/assets/img/社区康养IC—高亮.png'),
     group: [
+      {
+        title: '实时定位',
+        name: 'RealTimeLocation'
+      },
       {
         title: '实时监控',
         name: 'RealTimeMonitor'
@@ -67,15 +55,15 @@ const menus = [
         name: 'AccountManagement'
       }
     ]
-  },
+  }
   // {
   //   title: '社区特产',
-  //   name: 'CommunityLife',
+  //   name: 'CommunitySpecialty',
   //   icon: require('@/assets/img/社区特产_IC—高亮.png'),
   //   group: [
   //     {
-  //       title: '实时监控',
-  //       name: 'RealTimeMonitor'
+  //       title: '新闻编辑',
+  //       name: 'Editor'
   //     }
   //   ]
   // }

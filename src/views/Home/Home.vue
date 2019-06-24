@@ -110,7 +110,6 @@ export default {
   created () {
     this.user = this.getUser
     this.menus = menus
-    console.log(menus[2].group)
   },
   beforeDestroy () {
     clearInterval(this.timer)
@@ -169,6 +168,7 @@ export default {
   .el-container {
     position: relative;
     .nav {
+      display: none;
       position: absolute;
       width: 200px;
       background-color: #313131;
@@ -203,7 +203,7 @@ export default {
       }
     }
     .el-main {
-      padding-left: 200px;
+      // padding-left: 200px;
       width: 100vw;
       height: 100%;
       background: #010101;
