@@ -17,20 +17,24 @@
         :header-cell-style="tableHeaderColor"
         size='mini'>
         <el-table-column
+          align='center'
           type='index'
           label="序号">
         </el-table-column>
         <el-table-column
+          align='center'
           prop="administratorName"
           label="姓名"
           width="180">
         </el-table-column>
         <el-table-column
+          align='center'
           prop="administratorAccount"
           label="电话号码"
           width="180">
         </el-table-column>
         <el-table-column
+          align='center'
           label="操作">
           <template slot-scope="scope">
             <!-- <el-button

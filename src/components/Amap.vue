@@ -19,19 +19,19 @@
           :header-cell-style="tableHeaderColor"
           @row-click='personRowClick'
           >
-          <el-table-column prop="userName" label="姓名"></el-table-column>
+          <el-table-column align='center' prop="userName" label="姓名"></el-table-column>
           <el-table-column :filters="[{ text: '男', value: '1' }, { text: '女', value: '0' }]" :filter-method="filterSex" label="性别" prop="userGender" align="center">
             <template slot-scope="scope">
               <span type="success" v-if="scope.row.userGender==1">男</span>
               <span type="success" v-if="scope.row.userGender==0">女</span>
             </template>
           </el-table-column>
-          <el-table-column :filters="ages" :filter-method="filterAge" prop="userBirth" label="年龄">
+          <el-table-column align='center' :filters="ages" :filter-method="filterAge" prop="userBirth" label="年龄">
             <template slot-scope="scope">
               <span type="success">{{getAge(scope.row.userBirth)}}</span>
             </template>
           </el-table-column>
-          <el-table-column :filters="[{ text: '在线', value: 1 }, { text: '离线', value: 0 }]" :filter-method="filterStatus"  prop="userStatus" label="状态">
+          <el-table-column align='center' :filters="[{ text: '在线', value: 1 }, { text: '离线', value: 0 }]" :filter-method="filterStatus"  prop="userStatus" label="状态">
             <template slot-scope="scope">
               <span type="success" v-if="scope.row.userStatus==1">在线</span>
               <span type="success" v-if="scope.row.userStatus==0">离线</span>
@@ -58,9 +58,9 @@
           :header-cell-style="tableHeaderColor"
           :default-sort="{prop: 'date', order: 'descending'}"
         >
-          <el-table-column prop="vehiclesTypeof" label="型号"></el-table-column>
-          <el-table-column prop="vehiclesUseunit" label="使用单位"></el-table-column>
-          <el-table-column prop="vehiclesNsumber" label="联系电话"></el-table-column>
+          <el-table-column align='center' prop="vehiclesTypeof" label="型号" show-overflow-tooltip></el-table-column>
+          <el-table-column align='center' prop="vehiclesUseunit" label="使用单位" show-overflow-tooltip></el-table-column>
+          <el-table-column align='center' prop="vehiclesNsumber" label="联系电话" show-overflow-tooltip></el-table-column>
         </el-table>
       </div>
     </div>
@@ -68,11 +68,6 @@
       <div class="dinformation_h">
         <div class="dinformation_hl">
           <h1><img src="@/assets/img/人员信息—IC.png">人员信息详情</h1>
-        </div>
-        <div class="dinformation_hr">
-          <h1>
-            <!-- <i class="el-icon-arrow-down"></i> -->
-          </h1>
         </div>
       </div>
       <div class="dinformation_c">
@@ -91,12 +86,12 @@
               </span>
             </li>
             <li>
-              设备ID:{{personInfo.userDeviceId}}
-              <span>联系电话:{{personInfo.userNumber}}</span>
+              <span class="left">设备ID:{{personInfo.userDeviceId}}</span>
+              <span class="right">联系电话:{{personInfo.userNumber}}</span>
             </li>
             <li>
-              是否有病历:是<font @click="open4" style="border-bottom: 1px solid;cursor:pointer;color: #ff6500;margin-left: 10px;">查看</font>
-              <span>是否存在过敏原:<font @click="open4" style="border-bottom: 1px solid;cursor:pointer;color: #ff6500;margin-left: 10px;">查看</font></span>
+              <span class="left">是否有病历:是<font @click="open4" style="border-bottom: 1px solid;cursor:pointer;color: #ff6500;margin-left: 10px;">查看</font></span>
+              <span class="right">是否存在过敏原:<font @click="open4" style="border-bottom: 1px solid;cursor:pointer;color: #ff6500;margin-left: 10px;">查看</font></span>
             </li>
             <li>家庭地址:{{personInfo.address}}</li>
             <!-- <li>
@@ -181,10 +176,10 @@ export default {
     return {
       timer: null,
       map: null,
-      informationx: true,
-      vinformationx: true,
-      pinformationx: true,
-      dinformationx: true,
+      informationx: false,
+      vinformationx: false,
+      pinformationx: false,
+      dinformationx: false,
       tableData: [
       ],
       tableData1: [],
@@ -301,11 +296,11 @@ export default {
       return row.tag === value
     },
     carInqwqwfo (row, rowIndex) {
-      return 'background:transparent;color:#FFFFFF;'
+      return 'background:transparent;color:#FFFFFF;font-size:15px'
     },
     tableHeaderColor ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return 'height: 40px;background:rgba(6,50,110,0.8);color:#FFFFFF;border:1px solid rgba(0,160,233,1);'
+        return 'height: 40px;background:rgba(6,50,110,0.8);color:#FFFFFF;border:1px solid rgba(0,160,233,1);font-size:15px'
       }
     },
     // 初始化地图
@@ -496,7 +491,10 @@ export default {
   watch: {
     // center变化，地图中心改变
     center (value) {
-      this.map.setZoomAndCenter(18, value)
+      this.translateGps(value[0], value[1]).then(data => {
+        console.log(data)
+        this.map.setZoomAndCenter(15, [data[0].lng, data[0].lat])
+      })
     },
     persons (value) {
       this.drawArea()
@@ -573,6 +571,7 @@ export default {
     left: 10px;
     position: absolute;
     z-index: 3;
+    font-size: 16px;
     .information_hl {
       width: 250px;
       line-height:50px;
@@ -610,86 +609,80 @@ export default {
     }
   }
   .Vinformation {
-    width: 250px;
+    width: 320px;
     top: 10px;
     right: 10px;
     position: absolute;
     z-index: 3;
+    font-size: 16px;
     .Vinformation_hl {
-      width: 250px;
+      width: 320px;
       line-height: 50px;
       text-align: center;
       float: left;
       color: #ffffff;
       background: rgba(14, 73, 118, 1);
-    }
-    .Vinformation_hl h1 img{
-      margin-right: 5px;
-      height: 15px;
-      width: 15px;
-    }
-    .Vinformation_hr {
-      width: 30px;
-      float: right;
-      text-align: center;
-      line-height: 50px;
-      color: #ffffff;
-      background: rgba(14, 73, 118, 1);
+      h1 img{
+        margin-right: 5px;
+        height: 15px;
+        width: 15px;
+      }
     }
     .Vinformation_c {
-      width: 250px;
+      width: 320px;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);
       box-shadow: 0px 0px 50px #267cf2 inset;
-      .el-table th,
-      .el-table tr {
-        background: rgba(6, 50, 110, 0.8) !important;
+      // .el-table th,
+      // .el-table tr {
+      //   background: rgba(6, 50, 110, 0.8) !important;
+      // }
+      .Vinformation_cl {
+        padding: 5px;
       }
-    }
-    .Vinformation_cl {
-      padding: 5px;
     }
   }
   .dinformation {
-    width: 58%;
+    // width: 58%;
     bottom: 0px;
     left: 10px;
     position: absolute;
     z-index: 3;
+    font-size: 16px;
     .dinformation_hl {
-      width: 100%;
+      width: 560px;
       line-height: 50px;
       text-align: center;
       float: left;
       color: #ffffff;
       background: rgba(14, 73, 118, 1);
-    }
-    .dinformation_hl h1 img{
-      margin-right: 5px;
-      height: 15px;
-      width: 15px;
-    }
-    .dinformation_hr {
-      width: 30px;
-      float: right;
-      text-align: center;
-      line-height: 50px;
-      color: #ffffff;
-      background: rgba(14, 73, 118, 1);
+      h1 img{
+        margin-right: 5px;
+        height: 15px;
+        width: 15px;
+      }
     }
     .dinformation_c {
-      width: 100%;
+      width: 560px;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);
       box-shadow: 0px 0px 50px #267cf2 inset;
-    }
-    .dinformation_cl {
-      padding: 5px;
-      line-height: 25px;
-      color: #ffffff;
-      li>span {
-        margin-left: 100px;
-        text-align: left;
+      .dinformation_cl {
+        padding: 5px;
+        line-height: 25px;
+        color: #ffffff;
+        li > span {
+          margin-left: 70px;
+          text-align: left;
+        }
+        .left {
+          display: inline-block;
+          margin-left: 0;
+          width: 160px;
+        }
+        .right {
+          margin-left: 50px;
+        }
       }
     }
   }

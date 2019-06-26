@@ -32,6 +32,7 @@
           :header-cell-style="tableHeaderColor"
           size='mini'>
           <el-table-column
+            align='center'
             label="报警人"
             width='150'>
             <template slot-scope="scope">
@@ -39,11 +40,13 @@
             </template>
           </el-table-column>
           <el-table-column
+            align='center'
             prop="alarminformationWearid"
             label="设备ID"
             width='140'>
           </el-table-column>
           <el-table-column
+            align='center'
             prop="fall_message"
             label="报警类型"
             width='130'>
@@ -52,11 +55,13 @@
             </template>
           </el-table-column>
           <el-table-column
+            align='center'
             prop="alarminformationDate"
             label="报警时间"
             width='170'>
           </el-table-column>
           <el-table-column
+            align='center'
             label="联系电话"
             width='120'>
             <template slot-scope="scope">
@@ -64,6 +69,7 @@
             </template>
           </el-table-column>
           <el-table-column
+            align='center'
             prop='alarminformationLatandlong'
             label="报警地点">
           </el-table-column>

@@ -79,16 +79,17 @@ export default {
     },
     // 搜索人员或车辆，将结果展示在地图中心
     handleFilter () {
+        console.log(isNaN(this.filterQuery))
       if (isNaN(this.filterQuery)) {
         this.persons.forEach(item => {
-          if (item.name === this.filterQuery) {
-            this.currentCenter = [item.lng, item.lat]
+          if (item.user.userName === this.filterQuery) {
+            this.currentCenter = [item.locationBean.longitude, item.locationBean.latitude]
           }
         })
       } else {
         this.cars.forEach(item => {
           if (item.carNum === this.filterQuery) {
-            this.currentCenter = [item.lng, item.lat]
+            this.currentCenter = [item.locationBean.longitude, item.locationBean.latitude]
           }
         })
       }
@@ -160,9 +161,9 @@ export default {
     }
     .legends {
       margin-left: 160px;
+      color: white;
       .old_man {
         display: inline-block;
-        color: #0C4F62;
         >span {
           display: inline-block;
           width: 16px;
@@ -173,7 +174,6 @@ export default {
       .car {
         margin-left: 60px;
         display: inline-block;
-        color: #F06749;
         line-height: 19px;
         >span {
           display: inline-block;

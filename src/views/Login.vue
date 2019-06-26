@@ -3,7 +3,7 @@
     <div class="login_wrapper">
       <div class="login_box">
         <div class="login">
-          <header>社区定位系统</header>
+          <header>智慧社区康养系统</header>
           <h3>欢迎回来</h3>
           <el-input placeholder="请输入账号" v-model="user.administratorAccount">
             <template slot="prepend"><img src="@/assets/img/icon/账号IC.png" alt=""></template>

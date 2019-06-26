@@ -13,7 +13,7 @@ const CarsManagement = name => () => import('@/views/Home/CarsManagement/' + nam
 const DeviceManagement = name => () => import('@/views/Home/DeviceManagement/' + name)
 const AccountManagement = name => () => import('@/views/Home/AccountManagement/' + name)
 // const communitybuilding = name => () => import('@/views/communitybuilding/' + name)
-const News = name => () => import('@/views/News/' + name)
+// const News = name => () => import('@/views/News/' + name)
 export default new Router({
   routes: [
     // {
@@ -72,12 +72,12 @@ export default new Router({
           path: '/accountManagement',
           name: 'AccountManagement',
           component: AccountManagement('AccountManagement')
-        },
-        {
-          path: '/editor',
-          name: 'Editor',
-          component: News('NewsEditor')
         }
+        // {
+        //   path: '/editor',
+        //   name: 'Editor',
+        //   component: News('NewsEditor')
+        // }
         // {
         //   path: '/communitybuilding',
         //   name: 'communitybuilding',

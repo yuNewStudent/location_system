@@ -34,28 +34,34 @@
         :row-style="tableRowStyle"
         :header-cell-style="tableHeaderColor"
         size='mini'><el-table-column
+          align='center'
           prop="userName"
           label="佩戴人">
         </el-table-column>
         <el-table-column
+          align='center'
           prop="userDeviceId"
           label="设备ID">
         </el-table-column>
         <el-table-column
+          align='center'
           prop="userActivationtime"
           label="激活时间">
         </el-table-column>
         <el-table-column
+          align='center'
           prop="userNumber"
           label="联系电话">
         </el-table-column>
         <el-table-column
+          align='center'
           label="状态">
           <template slot-scope="scope">
             <span>{{scope.row.userStatus==0?'离线':'在线'}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          align='center' label="操作">
           <template slot-scope="scope">
             <el-button
               size="mini"

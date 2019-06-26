@@ -23,23 +23,29 @@
         style="width: 100%"
         :row-style="tableRowStyle"
         :header-cell-style="tableHeaderColor"
-        size='mini'><el-table-column
+        size='mini'>
+        <el-table-column
+          align='center'
           prop="vehiclesTypeof"
           label="车辆型号">
         </el-table-column>
         <el-table-column
+          align='center'
           prop="vehiclesNumBering"
           label="车辆编号">
         </el-table-column>
         <el-table-column
+          align='center'
           prop="vehiclesUseunit"
           label="使用单位">
         </el-table-column>
         <el-table-column
+          align='center'
           prop="vehiclesNsumber"
           label="紧急电话">
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          align='center' label="操作">
           <template slot-scope="scope">
             <el-button
               size="mini"
