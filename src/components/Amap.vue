@@ -31,7 +31,7 @@
               <span type="success">{{getAge(scope.row.userBirth)}}</span>
             </template>
           </el-table-column>
-          <el-table-column :filters="[{ text: '在线', value: '1' }, { text: '离线', value: '0' }]" :filter-method="filterStatus"  prop="userStatus" label="状态">
+          <el-table-column :filters="[{ text: '在线', value: 1 }, { text: '离线', value: 0 }]" :filter-method="filterStatus"  prop="userStatus" label="状态">
             <template slot-scope="scope">
               <span type="success" v-if="scope.row.userStatus==1">在线</span>
               <span type="success" v-if="scope.row.userStatus==0">离线</span>
@@ -79,28 +79,30 @@
         <div class="dinformation_cl">
           <ul>
             <li>
-              <h1>
-                姓名:{{personInfo.name}}
-                <span v-if="personInfo.userGender==1">性别:男</span>
-                <span v-if="personInfo.userGender==0">性别:女</span>
-                <span>年龄:{{personInfo.age}}</span>
-                <span v-if="personInfo.userStatus==0">状态:离线</span>
-                <span v-if="personInfo.userStatus==1">状态:在线</span>
-              </h1>
-              <h1>
-                设备ID:{{personInfo.userDeviceId}}
-                <span>联系电话:{{personInfo.userNumber}}</span>
-              </h1>
-              <h1>
-                是否有病历:是<font @click="open4" style="border-bottom: 1px solid;cursor:pointer;color: #ff6500;margin-left: 10px;">查看</font>
-                <span>是否存在过敏原:对花粉过敏</span>
-              </h1>
-              <h1>家庭地址:{{personInfo.address}}</h1>
-              <!-- <h1>
-                紧急联系人:苏姗(父女)
-                <span>紧急联系人电话:15828658729</span>
-              </h1> -->
+              姓名:{{personInfo.name}}
+              <span>性别:
+                <span v-if="personInfo.userGender===1">男</span>
+                <span v-if="personInfo.userGender===0">女</span>
+              </span>
+              <span>年龄:{{personInfo.age}}</span>
+              <span>状态:
+                <span v-if="personInfo.userStatus===0">离线</span>
+                <span v-if="personInfo.userStatus===1">在线</span>
+              </span>
             </li>
+            <li>
+              设备ID:{{personInfo.userDeviceId}}
+              <span>联系电话:{{personInfo.userNumber}}</span>
+            </li>
+            <li>
+              是否有病历:是<font @click="open4" style="border-bottom: 1px solid;cursor:pointer;color: #ff6500;margin-left: 10px;">查看</font>
+              <span>是否存在过敏原:<font @click="open4" style="border-bottom: 1px solid;cursor:pointer;color: #ff6500;margin-left: 10px;">查看</font></span>
+            </li>
+            <li>家庭地址:{{personInfo.address}}</li>
+            <!-- <li>
+              紧急联系人:苏姗(父女)
+              <span>紧急联系人电话:15828658729</span>
+            </li> -->
           </ul>
         </div>
       </div>
@@ -114,9 +116,9 @@
       <div class="pinformation_c">
         <ul class="pinformation_cl" v-if="fallWarnings.length>0">
           <li v-for="(item, index) in fallWarnings" :key="index">
-            {{item.fallTime}}
-            <!-- {{item.fallAddress}} -->
-            <span>{{item.fallNpeople}}进行报警</span>
+            {{item.alarminformationDate}}
+            <span>{{item.alarminformationName || '无人员信息'}}进行{{getType(item.alarminformationType)}}</span>
+            {{item.alarminformationLatandlong}}
           </li>
         </ul>
         <ul v-else>
@@ -128,13 +130,13 @@
     </div>
     <div class="informationx">
       <ul>
-        <li @click="dinformation">
+        <li @click="informationh">
           <img src="@/assets/img/人员信息收缩.png">
         </li>
         <li @click="vinformation">
           <img src="@/assets/img/车辆信息收缩.png">
         </li>
-        <li @click="informationh">
+        <li @click="dinformation">
           <img src="@/assets/img/人员信息详情收缩IC.png">
         </li>
         <li @click="pinformation">
@@ -246,16 +248,31 @@ export default {
     },
     // 报警信息
     getFallWarnings () {
-      this.$http.get(`${config.httpBaseUrl}/fall/getAll`).then(res => {
+      // 获取报警
+      const data = {
+        startdate: '',
+        enddate: '',
+        userId: '',
+        page: 0,
+        type: ''
+      }
+      this.$http.get(`${config.httpBaseUrl}/fall/getAll`, {
+        params: data
+      }).then((res) => {
         if (res.code === 200) {
-          // this.fallWarnings = res.date.falls
-          // 处理信息
+          // 处理位置信息
           res.date.falls.map(item => {
-            const lng = item.fallAddress.split('-')[0]
-            const lat = item.fallAddress.split('-')[1]
-            this.getAddress(lng, lat).then(data => {
-              item.fallAddress = data
-              this.fallWarnings.push(item)
+            if (!item.alarminformationLatandlong || item.alarminformationLatandlong === '0') {
+              item.alarminformationLatandlong = '无位置信息'
+              return this.fallWarnings.push(item)
+            }
+            const lng = item.alarminformationLatandlong.split('-')[0]
+            const lat = item.alarminformationLatandlong.split('-')[1]
+            this.translateGps(lng, lat).then(data => {
+              this.getAddress(data[0].lng, data[0].lat).then(data => {
+                item.alarminformationLatandlong = data
+                this.fallWarnings.push(item)
+              })
             })
           })
         }
@@ -332,6 +349,17 @@ export default {
           this.drawMarker(data[0].lng, data[0].lat, 'car', index)
         })
       })
+    },
+    // 获取报警类型
+    getType (type) {
+      switch (type) {
+        case 'fence':
+          return '电子围栏报警'
+        case 'electricity':
+          return '低电量报警'
+        case 'sos':
+          return 'sos报警'
+      }
     },
     // 绘制icon
     drawMarker (longitude, latitude, type, index) {
@@ -446,12 +474,15 @@ export default {
     },
     // 通过性别筛选
     filterSex (value, row, column) {
-      return row.userGender === value
+      return row.userGender == value
     },
     // 通过年龄筛选
     filterAge (value, row, column) {
       let birth = this.getAge(row.userBirth)
       let age = birth.slice(0, birth.length - 1)
+      if (value.length === 1) {
+        return age >= value[0]
+      }
       return age >= value[0] && age <= value[1]
     },
     // 通过状态筛选
@@ -475,7 +506,6 @@ export default {
     this.$nextTick(() => {
       this.initMap()
       setTimeout(() => {
-        console.log(this.persons)
         this.drawArea()
       }, 2000)
     })
@@ -655,16 +685,12 @@ export default {
     }
     .dinformation_cl {
       padding: 5px;
-    }
-    .dinformation_cl li h1{
       line-height: 25px;
-    }
-    .dinformation_cl li h1 {
       color: #ffffff;
-    }
-    .dinformation_cl li span {
-      margin-left: 100px;
-      text-align: left;
+      li>span {
+        margin-left: 100px;
+        text-align: left;
+      }
     }
   }
   .pinformation {
@@ -700,7 +726,7 @@ export default {
         box-sizing: border-box;
         overflow-y: scroll;
         li {
-          width: 90%;
+          width: 95%;
           white-space: nowrap;
           overflow: hidden;
           text-overflow:ellipsis;

@@ -28,12 +28,12 @@
               </span>
               <p>行动轨迹</p>
             </div>
-            <div class="warning_num">
+            <!-- <div class="warning_num">
               <span>
                 <img src="@/assets/img/icon/报警次数IC.png" alt="">
               </span>
               <p>报警次数</p>
-            </div>
+            </div> -->
           </div>
         </div>
         <header><img src="@/assets/img/icon/人员信息IC.png" alt=""> 紧急联系人</header>

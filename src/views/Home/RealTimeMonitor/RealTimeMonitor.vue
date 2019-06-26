@@ -77,7 +77,7 @@ export default {
 <style lang="scss" scoped>
 .RealTimeMonitor {
   .el-header {
-    text-align: right;
+    text-align: left;
     line-height: 40px;
     .el-select {
       width: 150px;

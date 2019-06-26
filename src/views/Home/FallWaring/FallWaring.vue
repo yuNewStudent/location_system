@@ -5,7 +5,7 @@
         <el-input clearable class="name" placeholder="请输入设备ID" v-model="query.id"></el-input>
         <el-select v-model="query.type" clearable placeholder="请选择报警类型">
           <el-option
-            v-for="item in WarningNames"
+            v-for="item in Warningtypes"
             :key="item.value"
             :label="item.label"
             :value="item.value">
@@ -17,23 +17,9 @@
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          align="right">
+          align="right"
+          class="date_picker">
         </el-date-picker>
-        <!-- <el-date-picker
-          v-model="query.date"
-          type="date"
-          placeholder="选择日期"
-          class="date_picker picker">
-        </el-date-picker>
-        <el-time-picker
-          is-range
-          v-model="query.time"
-          range-separator="至"
-          start-placeholder="开始时间"
-          end-placeholder="结束时间"
-          placeholder="选择时间范围"
-          class="time_picker picker">
-        </el-time-picker> -->
         <el-button @click='handleSearch'>搜索</el-button>
       </el-header>
       <el-main>
@@ -46,12 +32,14 @@
           :header-cell-style="tableHeaderColor"
           size='mini'>
           <el-table-column
-            prop="fallNpeople"
             label="报警人"
             width='150'>
+            <template slot-scope="scope">
+              {{scope.row.alarminformationName||'无报警人信息'}}
+            </template>
           </el-table-column>
           <el-table-column
-            prop="fallUserid"
+            prop="alarminformationWearid"
             label="设备ID"
             width='140'>
           </el-table-column>
@@ -59,61 +47,49 @@
             prop="fall_message"
             label="报警类型"
             width='130'>
+            <template slot-scope="scope">
+              <span>{{getType(scope.row.alarminformationType)}}</span>
+            </template>
           </el-table-column>
-          <!-- <el-table-column
-            prop="fall_message"
-            label="报警信息">
-          </el-table-column> -->
           <el-table-column
-            prop="fallTime"
+            prop="alarminformationDate"
             label="报警时间"
             width='170'>
           </el-table-column>
           <el-table-column
-            prop="fall_number"
             label="联系电话"
             width='120'>
+            <template slot-scope="scope">
+              {{scope.row.alarminformationNumber||'无联系电话'}}
+            </template>
           </el-table-column>
           <el-table-column
-            prop='fallAddress'
+            prop='alarminformationLatandlong'
             label="报警地点">
-            <!-- <template slot-scope="scope">
-              <span>{{address(scope.row.fallAddress)}}</span>
-              <span>{{fallAddress}}</span>
-            </template> -->
           </el-table-column>
         </el-table>
         <el-pagination
+          v-if='fallWarnings.length'
           @current-change="handleCurrentChange"
           :current-page="currentPage"
-          :page-count='fallWarnings.length/5'
+          :page-count='fallsInfo.pageSize'
           :page-size='pageSize'
           layout="total, prev, pager, next, jumper"
-          :total="fallWarnings.length"></el-pagination>
+          :total="fallsInfo.count"></el-pagination>
       </el-main>
     </div>
-    <waring-info :currentDeviceId='currentDeviceId' @close='isShowWarningInfo = !isShowWarningInfo' v-if='isShowWarningInfo'></waring-info>
+    <waring-info :center='center' :currentDeviceId='currentDeviceId' @close='isShowWarningInfo = !isShowWarningInfo' v-if='isShowWarningInfo'></waring-info>
   </div>
 </template>
 
 <script>
 import AMap from 'AMap'
 import WaringInfo from '@/components/FallWaring/FallWaringInfo'
-import { setTimeout } from 'timers';
 export default {
   data () {
     return {
-      fallWarnings: [
-        // {
-        //   fallNpeople: '谢老大',
-        //   fallUserid: '12345',
-        //   fallTime: '2018-05-06-10:20',
-        //   fall_number: '12345678912',
-        //   fall_message: '摔倒报警',
-        //   fallAddress: '四川省成都市锦江区华为路'
-        // }
-      ],
-      WarningNames: [
+      fallWarnings: [],
+      Warningtypes: [
         {
           label: 'SOS报警',
           value: 'sos'
@@ -128,68 +104,102 @@ export default {
         }
       ],
       geocoder: null,
-      fallAddress: [],
       isShowWarningInfo: false,
       // 分页
       currentPage: 1,
-      paginationData: [],
       pageSize: 8,
       currentDeviceId: '',
       query: {
         id: '',
         type: '',
         date: ''
-        // time: ''
-      }
+      },
+      fallsInfo: {
+        count: 158,
+        pageSize: 20
+      },
+      center: []
     }
   },
   components: {
     WaringInfo
   },
   methods: {
+    // 进入报警信息详情页
     handleRow (row, column) {
       this.isShowWarningInfo = true
-      this.currentDeviceId = row.fallUserid
+      this.currentDeviceId = row.alarminformationWearid
+      this.center = row.lnglat
     },
     // 获取摔倒预警
-    getFallWarnings () {
-      const data = {
-        startdate: '',
-        enddate: '',
-        userId: '',
-        page: 0,
-        type: ''
-      }
+    getFallWarnings (data) {
       this.$http.get(`${config.httpBaseUrl}/fall/getAll`, {
-        params: {
-          ...data
-        }
+        params: data
       }).then((res) => {
-          console.log(res)
         if (res.code === 200) {
-          console.log(res)
-          // 处理信息
-          // res.date.falls.map(item => {
-          //   const lng = item.fallAddress.split('-')[0]
-          //   const lat = item.fallAddress.split('-')[1]
-          //   this.getAddress(lng, lat).then(data => {
-          //     item.fallAddress = data
-          //     this.fallWarnings.push(item)
-          //   })
+          // 清空报警信息
+          if (this.fallWarnings.length) {
+            this.fallWarnings = []
+          }
+          // 设置分页信息
+          this.fallsInfo.count = Number(res.totol)
+          this.fallsInfo.pageSize = res.count
+          // 处理位置信息
+          const len = res.date.falls.length
+          let i = 0
+          const that = this
+          async function getFalls () {
+            if (i > len - 1) return
+            let item = res.date.falls[i]
+            console.log(that)
+            if (!item.alarminformationLatandlong || item.alarminformationLatandlong === '0') {
+              item.alarminformationLatandlong = '无位置信息'
+              return that.fallWarnings.push(item)
+            }
+            const lng = item.alarminformationLatandlong.split('-')[0]
+            const lat = item.alarminformationLatandlong.split('-')[1]
+            const data = await that.translateGps(lng, lat)
+            item.lnglat = [data[0].lng, data[0].lat]
+            item.alarminformationLatandlong = await that.getAddress(data[0].lng, data[0].lat)
+            that.fallWarnings.push(item)
+            i += 1
+            getFalls()
+          }
+          getFalls()
+          // res.date.falls.forEach(async (item, index) => {
+          //   if (!item.alarminformationLatandlong || item.alarminformationLatandlong === '0') {
+          //     item.alarminformationLatandlong = '无位置信息'
+          //     return this.fallWarnings.push(item)
+          //   }
+          //   const lng = item.alarminformationLatandlong.split('-')[0]
+          //   const lat = item.alarminformationLatandlong.split('-')[1]
+          //   const data = await this.translateGps(lng, lat)
+          //   item.lnglat = [data[0].lng, data[0].lat]
+          //   const data_1 = await this.getAddress(data[0].lng, data[0].lat)
+          //   item.alarminformationLatandlong = data_1
+          //   this.fallWarnings.push(item)
+          //   // this.translateGps(lng, lat).then(async data => {
+          //   //   item.lnglat = await [data[0].lng, data[0].lat]
+          //   //   this.getAddress(data[0].lng, data[0].lat).then(async data => {
+          //   //     item.alarminformationLatandlong = await data
+          //   //     this.fallWarnings.push(item)
+          //   //   })
+          //   // })
           // })
         }
       })
-      this.handleCurrentChange(this.currentPage)
     },
+    // 搜索符合条件的报警信息
     handleSearch () {
+      this.currentPage = 1
       const data = {
-        startdate: this.moment(this.query.date[0]).format('YYYY-MM-DD HH:mm:ss'),
-        enddate: this.moment(this.query.date[1]).format('YYYY-MM-DD HH:mm:ss'),
+        startdate: this.query.date ? this.moment(this.query.date[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        enddate: this.query.date ? this.moment(this.query.date[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         userId: this.query.id,
-        page: 0,
+        page: this.currentPage - 1,
         type: this.query.type
       }
-      console.log(data)
+      this.getFallWarnings(data)
     },
     // 修改table tr行的背景色
     tableRowStyle (row, rowIndex) {
@@ -201,26 +211,52 @@ export default {
         return 'background-color: black; color: white'
       }
     },
-    // // 分页
-    // getPaginationData (pageIndex) {
-    //   const start = (pageIndex - 1) * this.pageSize
-    //   const end = pageIndex * this.pageSize
-    //   this.paginationData = this.fallWarnings.slice(start, end)
-    // },
-    // // 跳转至对应分页
-    // handleCurrentChange (val) {
-    //   this.currentPage = val
-    //   this.getPaginationData(val)
-    // },
+    // 跳转至对应分页
+    handleCurrentChange (val) {
+      this.currentPage = val
+      // 获取报警
+      const data = {
+        startdate: this.query.date ? this.moment(this.query.date[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        enddate: this.query.date ? this.moment(this.query.date[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        userId: this.query.id,
+        page: this.currentPage - 1,
+        type: this.query.type
+      }
+      this.getFallWarnings(data)
+    },
+    // 获取报警类型
+    getType (type) {
+      switch (type) {
+        case 'fence':
+          return '电子围栏报警'
+        case 'electricity':
+          return '低电量报警'
+        case 'sos':
+          return 'sos报警'
+      }
+    },
     // 根据经纬度获取地址
     getAddress (lng, lat) {
       const lnglat = [lng, lat]
       return new Promise((resolve, reject) => {
         this.geocoder.getAddress(lnglat, (status, result) => {
+          console.log(2)
           if (status === 'complete' && result.regeocode) {
             resolve(result.regeocode.formattedAddress)
           } else {
             alert(JSON.stringify(result))
+          }
+        })
+      })
+    },
+    // gps转高德坐标
+    translateGps (lng, lat) {
+      const gps = [lng, lat]
+      return new Promise((resolve, reject) => {
+        AMap.convertFrom(gps, 'gps', (status, result) => {
+          console.log(1)
+          if (result.info === 'ok') {
+            resolve(result.locations)
           }
         })
       })
@@ -233,7 +269,15 @@ export default {
         extensions: 'all'
       })
     })
-    this.getFallWarnings()
+    // 获取报警
+    const data = {
+      startdate: '',
+      enddate: '',
+      userId: '',
+      page: this.currentPage - 1,
+      type: ''
+    }
+    this.getFallWarnings(data)
   }
 }
 </script>
@@ -247,18 +291,10 @@ export default {
       width: 140px;
     }
     .el-select {
-      margin-left: 10px;
       width: 150px;
     }
     .date_picker {
-      margin-left: 10px;
-      width: 140px;
-    }
-    .picker {
-      // margin-left: 10px;
-    }
-    .time_picker {
-      width: 250px;
+      margin-right: 10px;
     }
   }
   .el-main {

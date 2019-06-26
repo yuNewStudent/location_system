@@ -177,6 +177,8 @@ export default {
       this.isShowEditorCar = true
     },
     editorCar (bol, carInfo) {
+      delete carInfo.locationBean
+      console.log(carInfo)
       if (bol) {
         for (var k in carInfo) {
           if (!carInfo[k]) {
