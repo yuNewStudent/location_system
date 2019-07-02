@@ -434,6 +434,7 @@ export default {
     }
   }
   .el-main {
+    padding-top: 10px;
     .el-table {
       color: white;
       font-size: 13px;

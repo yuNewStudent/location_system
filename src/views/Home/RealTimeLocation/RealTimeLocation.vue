@@ -126,7 +126,7 @@ export default {
   position: relative;
   height: 100%;
   .header {
-    padding: 0 20px;
+    padding: 0px;
     >div {
       display: inline-block;
     }
@@ -134,8 +134,8 @@ export default {
       box-sizing: border-box;
       font-size: 16px;
       width: 250px;
-      height: 40px;
-      border-radius: 40px;
+      height: 35px;
+      border-radius: 35px;
       outline: none;
       background: transparent;
       border: 2px solid #313131;
@@ -145,7 +145,7 @@ export default {
     .searchBtn {
       display: inline-block;
       width: 50px;
-      line-height: 40px;
+      line-height: 35px;
       text-align: center;
       border-radius: 0 40px 40px 0;
       color: red;
@@ -160,7 +160,7 @@ export default {
       }
     }
     .legends {
-      margin-left: 160px;
+      margin-left: 20px;
       color: white;
       .old_man {
         display: inline-block;
@@ -172,7 +172,7 @@ export default {
         }
       }
       .car {
-        margin-left: 60px;
+        margin-left: 30px;
         display: inline-block;
         line-height: 19px;
         >span {
@@ -185,7 +185,8 @@ export default {
     }
   }
   .el-main {
-    padding: 0 20px;
+    margin-top: -15px;
+    padding: 0;
     position: absolute;
     top: 60px;
     bottom: 0;

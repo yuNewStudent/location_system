@@ -342,6 +342,7 @@ export default {
     }
   }
   .el-main {
+    padding-top: 10px;
     .el-pagination {
       text-align: right;
       margin-top: 10px;

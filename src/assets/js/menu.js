@@ -27,7 +27,7 @@ const menus = [
     icon: require('@/assets/img/社区康养IC—高亮.png'),
     group: [
       {
-        title: '智慧社区康养系统',
+        title: '实时定位',
         name: 'RealTimeLocation'
       },
       {

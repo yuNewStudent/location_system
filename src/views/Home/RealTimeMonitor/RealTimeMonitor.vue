@@ -90,10 +90,10 @@ export default {
     }
   }
   .el-main {
-    padding: 0 20px;
+    padding: 0;
     .video_wrapper {
       position: fixed;
-      top: 125px;
+      top: 115px;
       bottom: 0;
       .video {
         background: black;

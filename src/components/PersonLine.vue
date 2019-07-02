@@ -36,9 +36,13 @@ export default {
     return {
       map: null,
       lines: [],
+      // defaultDate: new Date('2019-08-09'),
       timeLine: {
-        date: '',
-        time: ''
+        date: new Date(),
+        time: [
+          new Date(0,0,0),
+          new Date()
+        ]
       }
     }
   },
@@ -154,6 +158,7 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.initMap()
+      this.getLines()
     })
   }
 }

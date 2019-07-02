@@ -192,7 +192,7 @@ export default {
     }
   }
   .el-main {
-    padding: 10px 0;
+    padding: 0 0 10px;
     .cards {
       .card {
         margin: 10px 0 10px 20px;

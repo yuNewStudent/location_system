@@ -73,8 +73,8 @@
       <div class="dinformation_c">
         <div class="dinformation_cl">
           <ul>
-            <li>
-              姓名:{{personInfo.name}}
+            <li class="userinfo">
+              <span>姓名:{{personInfo.name}}</span>
               <span>性别:
                 <span v-if="personInfo.userGender===1">男</span>
                 <span v-if="personInfo.userGender===0">女</span>
@@ -296,11 +296,11 @@ export default {
       return row.tag === value
     },
     carInqwqwfo (row, rowIndex) {
-      return 'background:transparent;color:#FFFFFF;font-size:15px'
+      return 'background:transparent;color:#FFFFFF;font-size:14px'
     },
     tableHeaderColor ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return 'height: 40px;background:rgba(6,50,110,0.8);color:#FFFFFF;border:1px solid rgba(0,160,233,1);font-size:15px'
+        return 'height: 40px;background:rgba(6,50,110,0.8);color:#FFFFFF;border:1px solid rgba(0,160,233,1);font-size:14px'
       }
     },
     // 初始化地图
@@ -571,7 +571,6 @@ export default {
     left: 10px;
     position: absolute;
     z-index: 3;
-    font-size: 16px;
     .information_hl {
       width: 250px;
       line-height:50px;
@@ -595,6 +594,7 @@ export default {
       background: rgba(14, 73, 118, 1);
     }
     .information_c {
+      font-size: 14px;
       width: 250px;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);
@@ -614,7 +614,6 @@ export default {
     right: 10px;
     position: absolute;
     z-index: 3;
-    font-size: 16px;
     .Vinformation_hl {
       width: 320px;
       line-height: 50px;
@@ -648,9 +647,8 @@ export default {
     left: 10px;
     position: absolute;
     z-index: 3;
-    font-size: 16px;
     .dinformation_hl {
-      width: 560px;
+      width: 520px;
       line-height: 50px;
       text-align: center;
       float: left;
@@ -663,25 +661,42 @@ export default {
       }
     }
     .dinformation_c {
-      width: 560px;
+      width: 520px;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);
       box-shadow: 0px 0px 50px #267cf2 inset;
+      font-size: 14px;
       .dinformation_cl {
         padding: 5px;
         line-height: 25px;
         color: #ffffff;
-        li > span {
-          margin-left: 70px;
-          text-align: left;
+        // li > span {
+        //   margin-left: 70px;
+        //   text-align: left;
+        // }
+        // li {
+        //   display: flex;
+        //   justify-content: space-between;
+        //   >span {
+        //     margin-right: 20px;
+        //   }
+        // }
+        .userinfo {
+          // display: flex;
+          // justify-content: space-between;
+          >span {
+            display: inline-block;
+            width: 24%;
+            // margin-right: 20px;
+          }
         }
         .left {
           display: inline-block;
-          margin-left: 0;
-          width: 160px;
+          // margin-left: 0;
+          width: 250px;
         }
         .right {
-          margin-left: 50px;
+          // margin-left: 150px;
         }
       }
     }
@@ -707,6 +722,7 @@ export default {
       }
     }
     .pinformation_c {
+      font-size: 14px;
       width: 100%;
       margin-top: 50px;
       background: rgba(6, 50, 110, 0.8);

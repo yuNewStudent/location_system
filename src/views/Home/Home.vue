@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header>
-      <span class="name">智慧社区系统</span>
+      <span class="name">智慧社区康养系统</span>
       <app-menu class="menu" :menus='menus[currentPage].group' :mode='mode.row'></app-menu>
       <div class="header_right">
         <span class="user_name" @click='handleResetPassword'>{{user.administratorAccount}}</span>
@@ -207,8 +207,8 @@ export default {
       width: 100vw;
       height: 100%;
       background: #010101;
+      padding-top: 10px;
     }
-
   }
   footer {
     background: black;

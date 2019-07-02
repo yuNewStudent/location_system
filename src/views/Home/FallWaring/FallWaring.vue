@@ -304,7 +304,8 @@ export default {
     }
   }
   .el-main {
-    padding: 0 20px;
+    padding: 0 20px 0;
+    margin-top: -5px;
     .el-table {
       color: #fff;
       font-size: 13px;
