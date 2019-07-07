@@ -27,6 +27,8 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   },
   globals: {
-    'config': true
+    'config': true,
+    'WebRTC': true,
+    'NIM': true
   }
 }
