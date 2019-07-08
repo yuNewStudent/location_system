@@ -41,17 +41,18 @@
     </el-main>
   </div>
   <div class="vide_call" v-else>
-    <div class="call_wrapper">
+    <div class="call_wrapper" v-if='isShowCallWarpper'>
       <el-input v-model="targetAccid" type='text' placeholder='请输入呼叫id'></el-input>
       <el-button @click="startCalling">呼叫</el-button>
-      <el-button ref='hangupbtn' class="hangupbtn" @click="cancelCalling">挂断</el-button>
     </div>
-    <div class="video_contanier" ref='accepting'>
+    <el-button ref='hangupbtn' class="hangupbtn" @click="cancelCalling" v-if='isShowHangup'>挂断</el-button>
+    <div class="video_contanier" ref='accepting' v-if='isShowAccepting'>
       <div class="self" ref='container'></div>
-      <div class="you" ref='remoteContainer'></div>
       <el-button @click="hangupbtnaccepted">挂断</el-button>
+      <div class="you" ref='remoteContainer'></div>
     </div>
-    <div class="accept_wrapper" ref='acceptDiv'>
+    <div class="accept_wrapper" ref='acceptDiv' v-if='isShowAcceptDiv'>
+      <span class="name">{{targetAccid}}来电</span>
       <el-button @click="handleAnswer" size='mini'>接听</el-button>
       <el-button @click="handleHangUp" size='mini'>挂断</el-button>
     </div>
@@ -90,7 +91,11 @@ export default {
       netcall: null,
       beCalledInfo: null,
       sessionConfig: null,
-      beCalling: false
+      beCalling: false,
+      isShowAccepting: false,
+      isShowCallWarpper: true,
+      isShowAcceptDiv: false,
+      isShowHangup: false
     }
   },
   methods: {
@@ -109,7 +114,6 @@ export default {
       function onConnect () {
         console.log('SDK Connected')
         // hasLogined1 = true
-        console.log(self)
         self.initNetCall()
       }
       function onWillReconnect (obj) {
@@ -154,13 +158,31 @@ export default {
       })
       // 被呼叫
       this.netcall.on('beCalling', obj => {
+        this.targetAccid = obj.account
         this.showAcceptUI(obj, null, this)
         this.beCalledInfo = obj
       })
       // 被叫接受的通知
       this.netcall.on('callAccepted', obj => {
         console.log('on callAccepted', obj)
-        that.startConnect()
+        this.isShowAcceptDiv = false
+        this.isShowAccepting = true
+        this.isShowCallWarpper = false
+        // console.log(obj)
+        that.startConnect(obj)
+      })
+      this.netcall.on('hangup', obj => {
+        console.log('on callAccepted', obj)
+        that.$message({
+          showClose: true,
+          message: '电话被挂断',
+          type: 'error'
+        })
+        // resetWhenHangup()
+        this.isShowAcceptDiv = false
+        this.isShowAccepting = false
+        this.isShowCallWarpper = true
+        this.netcall.hangup()
       })
     },
     // 拨打电话
@@ -186,7 +208,8 @@ export default {
         // 成功发起呼叫
         console.log('call success', obj)
         // remoteContainer1.style.display = 'block'
-        that.$refs.hangupbtn.$el.style.display = 'block'
+        this.isShowCallWarpper = false
+        that.isShowHangup = true
         that.isCalling = true
       }).catch(err => {
         console.log(err)
@@ -197,29 +220,27 @@ export default {
           // clearAcceptUI()
         }
       })
+      // 对方拒绝接听
       that.netcall.on('callRejected', obj => {
+        this.$message({
+          showClose: true,
+          message: '对方拒绝接听',
+          type: 'error'
+        })
+        that.isShowHangup = false
+        that.isShowCallWarpper = true
         that.netcall.hangup()
-        // clearAcceptUI()
       })
       // 被叫接受的通知
       that.netcall.on('callAccepted', obj => {
         // 缓存呼叫类型，后面开启音视频连接需要用到
         console.log('on callAccepted', obj)
         // 取消呼叫倒计时
-        // startConnect()
-      })
-      that.netcall.on('hangup', obj => {
-        console.log('on hangup', obj)
-        // 判断需要挂断的通话是否是当前正在进行中的通话
-        if (that.netcall.channelId === obj.channelId) {
-          // 清理工作，这是调用一系列接口实现的
-          that.netcall.stopDevice(that.Netcall.DEVICE_TYPE_VIDEO).then(() => {
-            console.log('摄像头关闭成功')
-          })
-          // 也可以直接调用hangup接口实现各种清除工作
-          that.netcall.hangup()
-          // clearAcceptUI()
-        }
+        that.isShowHangup = false
+        that.isShowCallWarpper = false
+        that.isShowAccepting = true
+        this.targetAccid = obj.account
+        that.startConnect()
       })
     },
     // 接听电话
@@ -240,7 +261,7 @@ export default {
       const that = this
       this.netcall.control({
         channelId: that.beCalledInfo.channelId,
-        command: that.WebRTC.NETCALL_CONTROL_COMMAND_BUSY
+        command: WebRTC.NETCALL_CONTROL_COMMAND_BUSY
       })
       this.netcall.response({
         accepted: false,
@@ -251,20 +272,22 @@ export default {
     },
     // 显示接听界面
     showAcceptUI (obj, accid, that) {
+      this.isShowCallWarpper = false
       this.beCalling = true
-      this.$refs.acceptDiv.style.display = 'block'
+      this.isShowAcceptDiv = true
     },
+    // 开始通话
     startConnect () {
       const netcall = this.netcall
       const that = this
+      // this.$refs.accepting.style.
       // 连接媒体网关
       netcall.startRtc().then(() => {
         // 开启麦克风
         return netcall.startDevice({
           type: that.Netcall.DEVICE_TYPE_AUDIO_IN
         }).catch(err => {
-          console.log('启动麦克风失败')
-          console.error(err)
+          console.log(err)
           that.$message({
             showClose: true,
             message: '启动麦克风失败',
@@ -280,8 +303,7 @@ export default {
             type: that.Netcall.DEVICE_TYPE_VIDEO
           })
             .catch(err => {
-              console.log('启动摄像头失败')
-              console.error(err)
+              console.log(err)
               that.$message({
                 showClose: true,
                 message: '启动摄像头失败',
@@ -290,15 +312,37 @@ export default {
             })
         })
         .then(() => {
-          // 预览本地画面
+          // 开启本地视频预览
           netcall.startLocalStream(
-            this.$refs.container
+            that.$refs.container
           )
-          // 设置本地预览画面大小
+          // 设置本地视频画面大小
           netcall.setVideoViewSize({
-            width: 90,
-            height: 180,
+            width: 500,
+            height: 500,
             cut: true
+          })
+          // 播放对方声音
+          // 开启本地音频播放
+          netcall.startDevice({
+            type: that.Netcall.DEVICE_TYPE_AUDIO_OUT_CHAT
+          }).catch(err => {
+            console.log('播放对方的声音失败')
+            console.log(err)
+          })
+          // const target = that.targetAccid || obj
+          // 开启远程视频预览
+          netcall.startRemoteStream({
+            account: that.targetAccid,
+            node: that.$refs.remoteContainer
+            // poster: 'http://dev.netease.im/images/logo2.png'
+          })
+          // 设置对端视频画面大小
+          netcall.setVideoViewRemoteSize({
+            account: that.targetAccid,
+            width: 500,
+            height: 500,
+            cut: false
           })
         })
         .catch(err => {
@@ -308,43 +352,26 @@ export default {
           // window.location.href = './callready.html'
         })
       // 在回调里监听对方加入通话，并显示对方的视频画面
-      netcall.on('remoteTrack', obj => {
-        console.log('user join', obj)
-        // 播放对方声音
-        netcall.startDevice({
-          type: that.Netcall.DEVICE_TYPE_AUDIO_OUT_CHAT
-        }).catch(err => {
-          console.log('播放对方的声音失败')
-          console.error(err)
-        })
-        // 预览对方视频画面
-        netcall.startRemoteStream({
-          account: obj.account,
-          node: this.$refs.containerRemote
-        })
-        // 设置对方预览画面大小
-        netcall.setVideoViewRemoteSize({
-          account: 'testAccount',
-          width: 360,
-          height: 640,
-          cut: true
-        })
-      })
+      // netcall.on('remoteTrack', obj => {
+        // console.log('user join', obj)
+      // })
     },
     // 通话过程中的挂断按钮
     hangupbtnaccepted () {
       this.netcall.hangup()
-      this.$refs.accepting.style.display = 'block'
+      this.isShowAccepting = false
+      this.isShowCallWarpper = true
       this.$message({
         showClose: true,
-        message: '已经挂断电话',
+        message: '你挂断了电话',
         type: 'error'
       })
     },
     // 取消呼叫
     cancelCalling () {
       this.netcall.hangup()
-      this.$refs.hangupbtn.$el.style.display = 'block'
+      this.isShowHangup = false
+      this.isShowCallWarpper = true
       this.$message({
         showClose: true,
         message: '已经取消呼叫',
@@ -412,21 +439,19 @@ export default {
     .el-input {
       width: 200px;
     }
-    .hangupbtn {
-      display: none;
-    }
   }
   .video_contanier {
-    display: none;
     > div {
-      width: 200px;
-      height: 200px;
+      width: 500px;
+      height: 500px;
       border: 1px solid red;
       display: inline-block;
     }
   }
   .accept_wrapper {
-    display: none;
+    .name {
+      color: white;
+    }
   }
 }
 </style>
