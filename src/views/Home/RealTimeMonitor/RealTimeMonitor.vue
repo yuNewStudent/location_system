@@ -1,63 +1,57 @@
 <template>
-  <div class="RealTimeMonitor" v-if='false'>
-    <el-header>
-      <el-select v-model="query.videoName" clearable placeholder="请选择">
-        <el-option
-          v-for="item in videoNames"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-      <el-date-picker
-        v-model="query.date"
-        type="date"
-        placeholder="选择日期">
-      </el-date-picker>
-      <el-time-picker
-        is-range
-        v-model="query.time"
-        range-separator="至"
-        start-placeholder="开始时间"
-        end-placeholder="结束时间"
-        placeholder="选择时间范围">
-      </el-time-picker>
-    </el-header>
-    <el-main>
-      <div class='video_wrapper'>
-        <div class="video">
-          <video autoplay controls src="http://vt1.doubanio.com/201906171724/81ef8962656c6613f8568d32e66f9f1c/view/movie/M/402430698.mp4"></video>
+  <div class="box">
+    <div class="RealTimeMonitor">
+      <el-main>
+        <div class='video_wrapper'>
+          <el-header>
+            <el-select v-model="query.videoName" clearable placeholder="请选择">
+              <el-option
+                v-for="item in videoNames"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-date-picker
+              v-model="query.date"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+            <el-time-picker
+              is-range
+              v-model="query.time"
+              range-separator="至"
+              start-placeholder="开始时间"
+              end-placeholder="结束时间"
+              placeholder="选择时间范围">
+            </el-time-picker>
+          </el-header>
+          <div class="video">
+            <video ref='video' autoplay src="http://hls01open.ys7.com/openlive/9006facdc13a4611a36700fd7486515a.hd.m3u8"></video>
+          </div>
         </div>
-        <!-- <div class="video">
-          <video autoplay controls src="http://vt1.doubanio.com/201906171724/81ef8962656c6613f8568d32e66f9f1c/view/movie/M/402430698.mp4"></video>
+        <div class="vide_call">
+          <div class="call_wrapper" v-if='isShowCallWarpper'>
+            <el-input v-model="targetAccid" type='text' placeholder='请输入呼叫id'></el-input>
+            <el-button @click="startCalling">呼叫</el-button>
+          </div>
+          <el-button ref='hangupbtn' class="hangupbtn" @click="cancelCalling" v-if='isShowHangup'>挂断</el-button>
+          <div class="video_contanier" ref='accepting' v-if='isShowAccepting'>
+            <div class="self" ref='container'></div>
+            <el-button @click="hangupbtnaccepted">挂断</el-button>
+            <div class="you" ref='remoteContainer'></div>
+          </div>
+          <!-- <div class="accept_wrapper" ref='acceptDiv' v-if='isShowAcceptDiv'>
+            <span class="name">{{targetAccid}}来电</span>
+            <el-button @click="handleAnswer" size='mini'>接听</el-button>
+            <el-button @click="handleHangUp" size='mini'>挂断</el-button>
+          </div> -->
         </div>
-        <div class="video">
-          <video autoplay controls src="http://vt1.doubanio.com/201906171724/81ef8962656c6613f8568d32e66f9f1c/view/movie/M/402430698.mp4"></video>
-        </div>
-        <div class="video">
-          <video autoplay controls src="http://vt1.doubanio.com/201906171724/81ef8962656c6613f8568d32e66f9f1c/view/movie/M/402430698.mp4"></video>
-        </div> -->
-      </div>
-    </el-main>
-  </div>
-  <div class="vide_call" v-else>
-    <div class="call_wrapper" v-if='isShowCallWarpper'>
-      <el-input v-model="targetAccid" type='text' placeholder='请输入呼叫id'></el-input>
-      <el-button @click="startCalling">呼叫</el-button>
-    </div>
-    <el-button ref='hangupbtn' class="hangupbtn" @click="cancelCalling" v-if='isShowHangup'>挂断</el-button>
-    <div class="video_contanier" ref='accepting' v-if='isShowAccepting'>
-      <div class="self" ref='container'></div>
-      <el-button @click="hangupbtnaccepted">挂断</el-button>
-      <div class="you" ref='remoteContainer'></div>
-    </div>
-    <div class="accept_wrapper" ref='acceptDiv' v-if='isShowAcceptDiv'>
-      <span class="name">{{targetAccid}}来电</span>
-      <el-button @click="handleAnswer" size='mini'>接听</el-button>
-      <el-button @click="handleHangUp" size='mini'>挂断</el-button>
+      </el-main>
     </div>
   </div>
 </template>
+
 <script>
 export default {
   data () {
@@ -94,7 +88,7 @@ export default {
       beCalling: false,
       isShowAccepting: false,
       isShowCallWarpper: true,
-      isShowAcceptDiv: false,
+      // isShowAcceptDiv: false,
       isShowHangup: false
     }
   },
@@ -165,7 +159,7 @@ export default {
       // 被叫接受的通知
       this.netcall.on('callAccepted', obj => {
         console.log('on callAccepted', obj)
-        this.isShowAcceptDiv = false
+        // this.isShowAcceptDiv = false
         this.isShowAccepting = true
         this.isShowCallWarpper = false
         // console.log(obj)
@@ -179,7 +173,7 @@ export default {
           type: 'error'
         })
         // resetWhenHangup()
-        this.isShowAcceptDiv = false
+        // this.isShowAcceptDiv = false
         this.isShowAccepting = false
         this.isShowCallWarpper = true
         this.netcall.hangup()
@@ -274,7 +268,23 @@ export default {
     showAcceptUI (obj, accid, that) {
       this.isShowCallWarpper = false
       this.beCalling = true
-      this.isShowAcceptDiv = true
+      this.$confirm(`${obj.account}来电`, '提示', {
+        confirmButtonText: '接听',
+        cancelButtonText: '挂断',
+        type: 'info '
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '接听电话!'
+        })
+        this.handleAnswer()
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已挂断电话'
+        })
+        this.handleHangUp()
+      })
     },
     // 开始通话
     startConnect () {
@@ -377,6 +387,17 @@ export default {
         message: '已经取消呼叫',
         type: 'error'
       })
+    },
+    initVideo () {
+      if (Hls.isSupported()) {
+        var video = this.$refs.video
+        var hls = new Hls()
+        hls.loadSource('http://hls01open.ys7.com/openlive/9006facdc13a4611a36700fd7486515a.hd.m3u8')
+        hls.attachMedia(video)
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.play()
+        })
+      }
     }
   },
   created () {
@@ -394,31 +415,40 @@ export default {
       rtmpRecord: false,
       splitMode: this.Netcall.LAYOUT_SPLITLATTICETILE
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.initVideo()
+    })
   }
 }
 </script>
 
 <style lang='scss' scoped>
 .RealTimeMonitor {
-  .el-header {
-    text-align: left;
-    line-height: 40px;
-    .el-select {
-      width: 150px;
-    }
-    .el-date-picker {
-      width: 100px;
-    }
-    .el-time-picker {
-      width: 300px;
-    }
-  }
   .el-main {
     padding: 0;
+    height: 100%;
     .video_wrapper {
-      position: fixed;
-      top: 115px;
-      bottom: 0;
+      // position: fixed;
+      // top: 115px;
+      // bottom: 0;
+      width: 800px;
+      float: left;
+      overflow: hidden;
+      .el-header {
+        text-align: left;
+        line-height: 40px;
+        .el-select {
+          width: 150px;
+        }
+        .el-date-picker {
+          width: 100px;
+        }
+        .el-time-picker {
+          width: 300px;
+        }
+      }
       .video {
         background: black;
         width: 49%;
@@ -431,26 +461,28 @@ export default {
         }
       }
     }
-  }
-}
-.vide_call {
-  .call_wrapper {
-    // display: none;
-    .el-input {
-      width: 200px;
-    }
-  }
-  .video_contanier {
-    > div {
-      width: 500px;
-      height: 500px;
-      border: 1px solid red;
-      display: inline-block;
-    }
-  }
-  .accept_wrapper {
-    .name {
-      color: white;
+    .vide_call {
+      float: right;
+      .call_wrapper {
+        // width: 550px;
+        // display: none;
+        .el-input {
+          width: 200px;
+        }
+      }
+      .video_contanier {
+        > div {
+          // width: 500px;
+          // height: 500px;
+          // border: 1px solid red;
+          // display: inline-block;
+        }
+      }
+      .accept_wrapper {
+        .name {
+          color: white;
+        }
+      }
     }
   }
 }

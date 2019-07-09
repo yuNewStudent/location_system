@@ -29,6 +29,7 @@ module.exports = {
   globals: {
     'config': true,
     'WebRTC': true,
-    'NIM': true
+    'NIM': true,
+    'Hls': true
   }
 }
