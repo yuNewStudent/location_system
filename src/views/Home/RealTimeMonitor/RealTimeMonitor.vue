@@ -3,7 +3,7 @@
     <div class="RealTimeMonitor">
       <el-main>
         <div class='video_wrapper'>
-          <el-header>
+          <!-- <el-header>
             <el-select v-model="query.videoName" clearable placeholder="请选择">
               <el-option
                 v-for="item in videoNames"
@@ -25,27 +25,29 @@
               end-placeholder="结束时间"
               placeholder="选择时间范围">
             </el-time-picker>
-          </el-header>
+          </el-header> -->
           <div class="video">
             <video ref='video' autoplay src="http://hls01open.ys7.com/openlive/9006facdc13a4611a36700fd7486515a.hd.m3u8"></video>
           </div>
         </div>
         <div class="vide_call">
-          <div class="call_wrapper" v-if='isShowCallWarpper'>
-            <el-input v-model="targetAccid" type='text' placeholder='请输入呼叫id'></el-input>
-            <el-button @click="startCalling">呼叫</el-button>
+          <div class="login" v-if='!isLogin'>
+            <el-input placeholder="账号" v-model="account"></el-input>
+            <el-input placeholder="密码" v-model="password"></el-input>
+            <el-input type='submit' @focus='handleLogin'></el-input>
           </div>
-          <el-button ref='hangupbtn' class="hangupbtn" @click="cancelCalling" v-if='isShowHangup'>挂断</el-button>
-          <div class="video_contanier" ref='accepting' v-if='isShowAccepting'>
-            <div class="self" ref='container'></div>
-            <el-button @click="hangupbtnaccepted">挂断</el-button>
-            <div class="you" ref='remoteContainer'></div>
+          <div class="call" v-else>
+            <div class="call_wrapper" v-if='isShowCallWarpper'>
+              <el-input v-model="targetAccid" type='text' placeholder='请输入呼叫id'></el-input>
+              <el-button @click="startCalling">呼叫</el-button>
+            </div>
+            <el-button ref='hangupbtn' class="hangupbtn" @click="cancelCalling" v-if='isShowHangup'>挂断</el-button>
+            <div class="video_contanier" ref='accepting' v-if='isShowAccepting'>
+              <div class="self" ref='container'></div>
+              <el-button @click="hangupbtnaccepted">挂断</el-button>
+              <div class="you" ref='remoteContainer'></div>
+            </div>
           </div>
-          <!-- <div class="accept_wrapper" ref='acceptDiv' v-if='isShowAcceptDiv'>
-            <span class="name">{{targetAccid}}来电</span>
-            <el-button @click="handleAnswer" size='mini'>接听</el-button>
-            <el-button @click="handleHangUp" size='mini'>挂断</el-button>
-          </div> -->
         </div>
       </el-main>
     </div>
@@ -89,16 +91,19 @@ export default {
       isShowAccepting: false,
       isShowCallWarpper: true,
       // isShowAcceptDiv: false,
-      isShowHangup: false
+      isShowHangup: false,
+      isLogin: false,
+      account: '',
+      password: ''
     }
   },
   methods: {
     initNim () {
       this.nim = NIM.getInstance({
         // debug:true,
-        appKey: '45c6af3c98409b18a84451215d0bdd6e',
-        account: 'yj1020',
-        token: '46f94c8de14fb36680850768ff1b7f2a',
+        appKey: '1664477a1216e189119905d3e752f86b',
+        account: this.account,
+        token: this.password,
         onconnect: onConnect,
         onwillreconnect: onWillReconnect,
         ondisconnect: onDisconnect,
@@ -106,18 +111,21 @@ export default {
       })
       const self = this
       function onConnect () {
-        console.log('SDK Connected')
         // hasLogined1 = true
+        self.$message({
+          type: 'success',
+          message: '网易云信登录成功!'
+        })
+        self.isLogin = true
         self.initNetCall()
       }
       function onWillReconnect (obj) {
-        console.log('SDK is reconnecting')
-        console.log(obj.retryCount)
-        console.log(obj.duration)
+        // console.log(obj.retryCount)
+        // console.log(obj.duration)
       }
       function onDisconnect (error) {
-        console.log('Lost Connection')
-        console.log(error)
+        // console.log('Lost Connection')
+        // console.log(error)
         if (error) {
           switch (error.code) {
             case 302: alert('Password or account not matched')
@@ -132,7 +140,7 @@ export default {
         // delCookie('token')
       }
       function onError (error) {
-        console.log(error)
+        // console.log(error)
         alert('Login error:' + error)
         // window.location.href = './login.html'
         // delCookie('accid')
@@ -148,17 +156,16 @@ export default {
         remoteContainer: that.$refs.remoteContainer,
         // chromeId: '',
         // 是否开启日志打印
-        debug: true
+        debug: false
       })
       // 被呼叫
       this.netcall.on('beCalling', obj => {
-        this.targetAccid = obj.account
         this.showAcceptUI(obj, null, this)
         this.beCalledInfo = obj
       })
       // 被叫接受的通知
       this.netcall.on('callAccepted', obj => {
-        console.log('on callAccepted', obj)
+        // console.log('on callAccepted', obj)
         // this.isShowAcceptDiv = false
         this.isShowAccepting = true
         this.isShowCallWarpper = false
@@ -166,7 +173,7 @@ export default {
         that.startConnect(obj)
       })
       this.netcall.on('hangup', obj => {
-        console.log('on callAccepted', obj)
+        // console.log('on callAccepted', obj)
         that.$message({
           showClose: true,
           message: '电话被挂断',
@@ -200,13 +207,13 @@ export default {
         webrtcEnable: true
       }).then(obj => {
         // 成功发起呼叫
-        console.log('call success', obj)
+        // console.log('call success', obj)
         // remoteContainer1.style.display = 'block'
         this.isShowCallWarpper = false
         that.isShowHangup = true
         that.isCalling = true
       }).catch(err => {
-        console.log(err)
+        // console.log(err)
         // 被叫不在线
         if (err.event.code === 11001) {
           console.log('callee offline', err)
@@ -228,13 +235,13 @@ export default {
       // 被叫接受的通知
       that.netcall.on('callAccepted', obj => {
         // 缓存呼叫类型，后面开启音视频连接需要用到
-        console.log('on callAccepted', obj)
+        // console.log('on callAccepted', obj)
         // 取消呼叫倒计时
         that.isShowHangup = false
         that.isShowCallWarpper = false
         that.isShowAccepting = true
-        this.targetAccid = obj.account
-        that.startConnect()
+        // this.targetAccid = obj.account
+        that.startConnect(obj)
       })
     },
     // 接听电话
@@ -287,27 +294,28 @@ export default {
       })
     },
     // 开始通话
-    startConnect () {
+    startConnect (obj) {
       const netcall = this.netcall
       const that = this
       // this.$refs.accepting.style.
       // 连接媒体网关
-      netcall.startRtc().then(() => {
-        // 开启麦克风
-        return netcall.startDevice({
-          type: that.Netcall.DEVICE_TYPE_AUDIO_IN
-        }).catch(err => {
-          console.log(err)
-          that.$message({
-            showClose: true,
-            message: '启动麦克风失败',
-            type: 'error'
+      netcall.startRtc()
+        .then(() => {
+          // 开启麦克风
+          return netcall.startDevice({
+            type: that.Netcall.DEVICE_TYPE_AUDIO_IN
+          }).catch(err => {
+            console.log(err)
+            that.$message({
+              showClose: true,
+              message: '启动麦克风失败',
+              type: 'error'
+            })
           })
         })
-      })
         .then(() => {
           // 设置采集音量
-          netcall.setCaptureVolume(255)
+          // netcall.setCaptureVolume(255)
           // 开启摄像头
           return netcall.startDevice({
             type: that.Netcall.DEVICE_TYPE_VIDEO
@@ -330,9 +338,12 @@ export default {
           netcall.setVideoViewSize({
             width: 500,
             height: 500,
-            cut: true
+            cut: false
           })
-          // 播放对方声音
+        })
+        // 播放对方声音
+        netcall.on('remoteTrack', obj => {
+          console.log(obj)
           // 开启本地音频播放
           netcall.startDevice({
             type: that.Netcall.DEVICE_TYPE_AUDIO_OUT_CHAT
@@ -340,31 +351,20 @@ export default {
             console.log('播放对方的声音失败')
             console.log(err)
           })
-          // const target = that.targetAccid || obj
           // 开启远程视频预览
           netcall.startRemoteStream({
-            account: that.targetAccid,
-            node: that.$refs.remoteContainer
+            account: obj.account,
+            // node: that.$refs.remoteContainer
             // poster: 'http://dev.netease.im/images/logo2.png'
           })
           // 设置对端视频画面大小
           netcall.setVideoViewRemoteSize({
-            account: that.targetAccid,
+            account: obj.account,
             width: 500,
             height: 500,
             cut: false
           })
         })
-        .catch(err => {
-          console.log('发生错误')
-          console.log(err)
-          netcall.hangup()
-          // window.location.href = './callready.html'
-        })
-      // 在回调里监听对方加入通话，并显示对方的视频画面
-      // netcall.on('remoteTrack', obj => {
-        // console.log('user join', obj)
-      // })
     },
     // 通话过程中的挂断按钮
     hangupbtnaccepted () {
@@ -398,23 +398,33 @@ export default {
           video.play()
         })
       }
+    },
+    // 登录网易云信
+    handleLogin () {
+      if (!this.account || !this.password) {
+        return this.$message({
+          showClose: true,
+          message: '登录信息不能为空',
+          type: 'error'
+        })
+      }
+      this.initNim()
+      this.Netcall = WebRTC
+      this.sessionConfig = {
+        videoQuality: this.Netcall.CHAT_VIDEO_QUALITY_HIGH,
+        videoFrameRate: this.Netcall.CHAT_VIDEO_FRAME_RATE_15,
+        videoBitrate: 0,
+        recordVideo: false,
+        recordAudio: false,
+        highAudio: false,
+        bypassRtmp: false,
+        rtmpUrl: '',
+        rtmpRecord: false,
+        splitMode: this.Netcall.LAYOUT_SPLITLATTICETILE
+      }
     }
   },
   created () {
-    this.initNim()
-    this.Netcall = WebRTC
-    this.sessionConfig = {
-      videoQuality: this.Netcall.CHAT_VIDEO_QUALITY_HIGH,
-      videoFrameRate: this.Netcall.CHAT_VIDEO_FRAME_RATE_15,
-      videoBitrate: 0,
-      recordVideo: false,
-      recordAudio: false,
-      highAudio: false,
-      bypassRtmp: false,
-      rtmpUrl: '',
-      rtmpRecord: false,
-      splitMode: this.Netcall.LAYOUT_SPLITLATTICETILE
-    }
   },
   mounted () {
     this.$nextTick(() => {
@@ -433,7 +443,7 @@ export default {
       // position: fixed;
       // top: 115px;
       // bottom: 0;
-      width: 800px;
+      width: 500px;
       float: left;
       overflow: hidden;
       .el-header {
@@ -463,6 +473,12 @@ export default {
     }
     .vide_call {
       float: right;
+      .login {
+        width: 200px;
+        .el-input {
+          margin: 5px 0;
+        }
+      }
       .call_wrapper {
         // width: 550px;
         // display: none;

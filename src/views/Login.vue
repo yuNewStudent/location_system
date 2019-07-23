@@ -88,6 +88,8 @@ export default {
   },
   computed: {
   },
+  mounted () {
+  },
   destroyed () {
     console.log(this.timer)
   }
