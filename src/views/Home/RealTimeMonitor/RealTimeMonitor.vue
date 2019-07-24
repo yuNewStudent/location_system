@@ -42,7 +42,7 @@
               <el-button @click="startCalling">呼叫</el-button>
             </div>
             <el-button ref='hangupbtn' class="hangupbtn" @click="cancelCalling" v-if='isShowHangup'>挂断</el-button>
-            <div class="video_contanier" ref='accepting' v-if='isShowAccepting'>
+            <div class="video_contanier" v-if='isShowAccepting'>
               <div class="self" ref='container'></div>
               <el-button @click="hangupbtnaccepted">挂断</el-button>
               <div class="you" ref='remoteContainer'></div>
@@ -55,6 +55,8 @@
 </template>
 
 <script>
+import MD5 from '@/assets/js/md5.js'
+// import SDK from 'NIM_Web_SDK.js'
 export default {
   data () {
     return {
@@ -83,7 +85,6 @@ export default {
       },
       targetAccid: '',
       nim: null,
-      Netcall: null,
       netcall: null,
       beCalledInfo: null,
       sessionConfig: null,
@@ -101,9 +102,9 @@ export default {
     initNim () {
       this.nim = NIM.getInstance({
         // debug:true,
-        appKey: '1664477a1216e189119905d3e752f86b',
+        appKey: '45c6af3c98409b18a84451215d0bdd6e', // 1664477a1216e189119905d3e752f86b
         account: this.account,
-        token: this.password,
+        token: MD5(this.password), // this.password
         onconnect: onConnect,
         onwillreconnect: onWillReconnect,
         ondisconnect: onDisconnect,
@@ -128,7 +129,12 @@ export default {
         // console.log(error)
         if (error) {
           switch (error.code) {
-            case 302: alert('Password or account not matched')
+            case 302: 
+              self.$message({
+                type: 'error',
+                message: '账号或者密码错误!'
+              })
+              this.isLogin = false
               break
             case 417: break
             case 'kicked': break
@@ -150,7 +156,7 @@ export default {
     initNetCall () {
       NIM.use(WebRTC)
       const that = this
-      this.netcall = this.Netcall.getInstance({
+      this.netcall = WebRTC.getInstance({
         nim: that.nim,
         container: that.$refs.container,
         remoteContainer: that.$refs.remoteContainer,
@@ -163,17 +169,17 @@ export default {
         this.showAcceptUI(obj, null, this)
         this.beCalledInfo = obj
       })
-      // 被叫接受的通知
       this.netcall.on('callAccepted', obj => {
+        // 缓存呼叫类型，后面开启音视频连接需要用到
         // console.log('on callAccepted', obj)
-        // this.isShowAcceptDiv = false
-        this.isShowAccepting = true
+        // 取消呼叫倒计时
+        this.isShowHangup = false
         this.isShowCallWarpper = false
-        // console.log(obj)
-        that.startConnect(obj)
+        this.isShowAccepting = true
+        // this.targetAccid = obj.account
+        this.startConnect(obj)
       })
       this.netcall.on('hangup', obj => {
-        // console.log('on callAccepted', obj)
         that.$message({
           showClose: true,
           message: '电话被挂断',
@@ -185,6 +191,20 @@ export default {
         this.isShowCallWarpper = true
         this.netcall.hangup()
       })
+      // this.netcall.on('remoteTrack', obj => {
+      //   console.log(obj)
+      //   this.netcall.startRemoteStream({
+      //     account: obj.account,
+      //     node: that.$refs.remoteContainer
+      //   })
+      //   // 设置对端视频画面大小
+      //   this.netcall.setVideoViewRemoteSize({
+      //     account: obj.account,
+      //     width: 500,
+      //     height: 500,
+      //     cut: true
+      //   })
+      // })
     },
     // 拨打电话
     startCalling () {
@@ -200,7 +220,7 @@ export default {
       }
       const that = this
       this.netcall.call({
-        type: that.Netcall.NETCALL_TYPE_VIDEO,
+        type: WebRTC.NETCALL_TYPE_VIDEO,
         account: that.targetAccid,
         pushConfig: pushConfig,
         sessionConfig: that.sessionConfig,
@@ -208,7 +228,6 @@ export default {
       }).then(obj => {
         // 成功发起呼叫
         // console.log('call success', obj)
-        // remoteContainer1.style.display = 'block'
         this.isShowCallWarpper = false
         that.isShowHangup = true
         that.isCalling = true
@@ -233,16 +252,16 @@ export default {
         that.netcall.hangup()
       })
       // 被叫接受的通知
-      that.netcall.on('callAccepted', obj => {
-        // 缓存呼叫类型，后面开启音视频连接需要用到
-        // console.log('on callAccepted', obj)
-        // 取消呼叫倒计时
-        that.isShowHangup = false
-        that.isShowCallWarpper = false
-        that.isShowAccepting = true
-        // this.targetAccid = obj.account
-        that.startConnect(obj)
-      })
+      // that.netcall.on('callAccepted', obj => {
+      //   // 缓存呼叫类型，后面开启音视频连接需要用到
+      //   // console.log('on callAccepted', obj)
+      //   // 取消呼叫倒计时
+      //   that.isShowHangup = false
+      //   that.isShowCallWarpper = false
+      //   that.isShowAccepting = true
+      //   // this.targetAccid = obj.account
+      //   that.startConnect(obj)
+      // })
     },
     // 接听电话
     handleAnswer () {
@@ -297,13 +316,12 @@ export default {
     startConnect (obj) {
       const netcall = this.netcall
       const that = this
-      // this.$refs.accepting.style.
       // 连接媒体网关
       netcall.startRtc()
         .then(() => {
           // 开启麦克风
           return netcall.startDevice({
-            type: that.Netcall.DEVICE_TYPE_AUDIO_IN
+            type: WebRTC.DEVICE_TYPE_AUDIO_IN
           }).catch(err => {
             console.log(err)
             that.$message({
@@ -318,16 +336,15 @@ export default {
           // netcall.setCaptureVolume(255)
           // 开启摄像头
           return netcall.startDevice({
-            type: that.Netcall.DEVICE_TYPE_VIDEO
-          })
-            .catch(err => {
-              console.log(err)
-              that.$message({
-                showClose: true,
-                message: '启动摄像头失败',
-                type: 'error'
-              })
+            type: WebRTC.DEVICE_TYPE_VIDEO
+          }).catch(err => {
+            console.log(err)
+            that.$message({
+              showClose: true,
+              message: '启动摄像头失败',
+              type: 'error'
             })
+          })
         })
         .then(() => {
           // 开启本地视频预览
@@ -340,31 +357,48 @@ export default {
             height: 500,
             cut: false
           })
-        })
-        // 播放对方声音
-        netcall.on('remoteTrack', obj => {
-          console.log(obj)
           // 开启本地音频播放
           netcall.startDevice({
-            type: that.Netcall.DEVICE_TYPE_AUDIO_OUT_CHAT
+            type: WebRTC.DEVICE_TYPE_AUDIO_OUT_CHAT
           }).catch(err => {
             console.log('播放对方的声音失败')
             console.log(err)
           })
           // 开启远程视频预览
-          netcall.startRemoteStream({
-            account: obj.account,
-            // node: that.$refs.remoteContainer
-            // poster: 'http://dev.netease.im/images/logo2.png'
-          })
-          // 设置对端视频画面大小
-          netcall.setVideoViewRemoteSize({
-            account: obj.account,
-            width: 500,
-            height: 500,
-            cut: false
-          })
+          // netcall.startRemoteStream({
+          //   account: obj.account,
+          //   node: obj.node || that.$refs.remoteContainer
+          //   // poster: 'http://dev.netease.im/images/logo2.png'
+          // })
+          // // 设置对端视频画面大小
+          // netcall.setVideoViewRemoteSize({
+          //   width: 500,
+          //   height: 500,
+          //   cut: false
+          // })
         })
+      netcall.on('remoteTrack', obj => {
+        console.log(obj)
+        // 播放对方声音
+        netcall.startDevice({
+          type: WebRTC.DEVICE_TYPE_AUDIO_OUT_CHAT
+        }).catch(function(err) {
+          console.log('播放对方的声音失败')
+          console.error(err)
+        })
+        // 预览对方视频
+        netcall.startRemoteStream({
+          account: obj.account,
+          node: that.$refs.remoteContainer
+        })
+        // 设置对端视频画面大小
+        netcall.setVideoViewRemoteSize({
+          account: obj.account,
+          width: 500,
+          height: 500,
+          cut: false
+        })
+      })
     },
     // 通话过程中的挂断按钮
     hangupbtnaccepted () {
@@ -409,10 +443,10 @@ export default {
         })
       }
       this.initNim()
-      this.Netcall = WebRTC
+      WebRTC = WebRTC
       this.sessionConfig = {
-        videoQuality: this.Netcall.CHAT_VIDEO_QUALITY_HIGH,
-        videoFrameRate: this.Netcall.CHAT_VIDEO_FRAME_RATE_15,
+        videoQuality: WebRTC.CHAT_VIDEO_QUALITY_HIGH,
+        videoFrameRate: WebRTC.CHAT_VIDEO_FRAME_RATE_15,
         videoBitrate: 0,
         recordVideo: false,
         recordAudio: false,
@@ -420,7 +454,7 @@ export default {
         bypassRtmp: false,
         rtmpUrl: '',
         rtmpRecord: false,
-        splitMode: this.Netcall.LAYOUT_SPLITLATTICETILE
+        splitMode: WebRTC.LAYOUT_SPLITLATTICETILE
       }
     }
   },
@@ -484,14 +518,6 @@ export default {
         // display: none;
         .el-input {
           width: 200px;
-        }
-      }
-      .video_contanier {
-        > div {
-          // width: 500px;
-          // height: 500px;
-          // border: 1px solid red;
-          // display: inline-block;
         }
       }
       .accept_wrapper {

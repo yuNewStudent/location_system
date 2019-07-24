@@ -4,7 +4,7 @@
       <span class="name">智慧社区康养系统</span>
       <app-menu class="menu" :menus='menus[currentPage].group' :mode='mode.row'></app-menu>
       <div class="header_right">
-        <span class="user_name" @click='handleResetPassword'>{{user.administratorAccount}}</span>
+        <!-- <span class="user_name" @click='handleResetPassword'>{{user.administratorAccount}}</span> -->
         <span class="dividing_line"></span>
         <span class="exit" @click="handleExit">退出</span>
       </div>
