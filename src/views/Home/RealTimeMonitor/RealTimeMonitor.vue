@@ -56,7 +56,6 @@
 
 <script>
 import MD5 from '@/assets/js/md5.js'
-// import SDK from 'NIM_Web_SDK.js'
 export default {
   data () {
     return {
@@ -104,7 +103,7 @@ export default {
         // debug:true,
         appKey: '45c6af3c98409b18a84451215d0bdd6e', // 1664477a1216e189119905d3e752f86b
         account: this.account,
-        token: MD5(this.password), // this.password
+        token: MD5(this.password), // this.password 
         onconnect: onConnect,
         onwillreconnect: onWillReconnect,
         ondisconnect: onDisconnect,
@@ -333,7 +332,7 @@ export default {
         })
         .then(() => {
           // 设置采集音量
-          // netcall.setCaptureVolume(255)
+          netcall.setCaptureVolume(255)
           // 开启摄像头
           return netcall.startDevice({
             type: WebRTC.DEVICE_TYPE_VIDEO
@@ -443,7 +442,6 @@ export default {
         })
       }
       this.initNim()
-      WebRTC = WebRTC
       this.sessionConfig = {
         videoQuality: WebRTC.CHAT_VIDEO_QUALITY_HIGH,
         videoFrameRate: WebRTC.CHAT_VIDEO_FRAME_RATE_15,
