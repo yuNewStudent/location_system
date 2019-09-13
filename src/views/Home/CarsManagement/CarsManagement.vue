@@ -2,78 +2,77 @@
   <div class="CarsManagement">
     <el-row class="header">
       <div class="search">
-        <input
-          type="text"
-          placeholder="车辆编号"
-          class="searchInput"
-          v-model="carQuery">
-        <span class="searchBtn" @click='handleSearch'><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
+        <input type="text"
+               placeholder="车辆编号"
+               class="searchInput"
+               v-model="carQuery">
+        <span class="searchBtn"
+              @click='handleSearch'><img src="@/assets/img/icon/搜索IC.png"
+               alt=""></span>
       </div>
       <div class="legends">
         <span @click='handleAddCar'>
-          <img src="@/assets/img/icon/新增IC.png" alt="">
+          <img src="@/assets/img/icon/新增IC.png"
+               alt="">
           新增
         </span>
       </div>
     </el-row>
     <el-main>
-      <el-table
-        :data="paginationData"
-        border
-        style="width: 100%"
-        :row-style="tableRowStyle"
-        :header-cell-style="tableHeaderColor"
-        size='mini'>
-        <el-table-column
-          align='center'
-          prop="vehiclesTypeof"
-          label="车辆型号">
+      <el-table :data="paginationData"
+                border
+                style="width: 100%"
+                :row-style="tableRowStyle"
+                :header-cell-style="tableHeaderColor"
+                size='mini'>
+        <el-table-column align='center'
+                         prop="vehiclesTypeof"
+                         label="车辆型号">
         </el-table-column>
-        <el-table-column
-          align='center'
-          prop="vehiclesNumBering"
-          label="车辆编号">
+        <el-table-column align='center'
+                         prop="vehiclesNumBering"
+                         label="车辆编号">
         </el-table-column>
-        <el-table-column
-          align='center'
-          prop="vehiclesUseunit"
-          label="使用单位">
+        <el-table-column align='center'
+                         prop="vehiclesUseunit"
+                         label="使用单位">
         </el-table-column>
-        <el-table-column
-          align='center'
-          prop="vehiclesNsumber"
-          label="紧急电话">
+        <el-table-column align='center'
+                         prop="vehiclesNsumber"
+                         label="紧急电话">
         </el-table-column>
-        <el-table-column
-          align='center' label="操作">
+        <el-table-column align='center'
+                         label="操作">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleEditorCar(scope.$index, scope.row)">编辑</el-button>
-            <el-button
-              size="mini"
-              @click="handleDeleteCar(scope.$index, scope.row)">删除</el-button>
+            <img src="@/assets/img/icon/修改IC.png"
+                 @click="handleEditorCar(scope.$index, scope.row)"
+                 class="editor_img"
+                 alt="">
+            <img src="@/assets/img/icon/删除IC.png"
+                 @click="handleDeleteCar(scope.$index, scope.row)"
+                 class="del_img"
+                 alt="">
+            <!-- <el-button size="mini"
+                       @click="handleEditorCar(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="mini"
+                       @click="handleDeleteCar(scope.$index, scope.row)">删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-count='cars.length/5'
-        :page-size='pageSize'
-        layout="total, prev, pager, next, jumper"
-        :total="cars.length"
-      ></el-pagination>
+      <el-pagination @current-change="handleCurrentChange"
+                     :current-page="currentPage"
+                     :page-count='cars.length/5'
+                     :page-size='pageSize'
+                     layout="total, prev, pager, next, jumper"
+                     :total="cars.length"></el-pagination>
     </el-main>
-    <change-car
-      :type='type.add'
-      v-if='isShowAddCar'
-      @addCar='addCar'></change-car>
-    <change-car
-      :type='type.editor'
-      :selectCar='selectCar.row'
-      v-if='isShowEditorCar'
-      @editorCar='editorCar'></change-car>
+    <change-car :type='type.add'
+                v-if='isShowAddCar'
+                @addCar='addCar'></change-car>
+    <change-car :type='type.editor'
+                :selectCar='selectCar.row'
+                v-if='isShowEditorCar'
+                @editorCar='editorCar'></change-car>
   </div>
 </template>
 
@@ -134,13 +133,17 @@ export default {
       })
     },
     // 修改table tr行的背景色
-    tableRowStyle (row, rowIndex) {
-      return 'background-color: black;'
+    tableRowStyle ({ row, rowIndex }) {
+      if (rowIndex % 2 === 0) {
+        return 'background-color: rgb(47,141,213); color: black'
+      } else {
+        return 'background-color: rgb(0,94,167); color:white'
+      }
     },
     // 修改table header的背景色
-    tableHeaderColor ({row, column, rowIndex, columnIndex}) {
+    tableHeaderColor ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return 'background-color: black; color: white'
+        return 'background-color: rgb(0,94,167); color: white'
       }
     },
     // 新增车辆
@@ -279,13 +282,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.CarsManagement{
+.CarsManagement {
   .header {
     padding: 0 20px;
-    >div {
+    > div {
       display: inline-block;
     }
     .searchInput {
+      border: 1px solid rgba(54, 153, 255, 1);
+      border-radius: 40px;
       box-sizing: border-box;
       font-size: 16px;
       width: 250px;
@@ -293,8 +298,7 @@ export default {
       border-radius: 40px;
       outline: none;
       background: transparent;
-      border: 2px solid #313131;
-      padding: 0 10px;
+      padding: 0 15px;
       color: white;
     }
     .searchBtn {
@@ -302,11 +306,10 @@ export default {
       width: 50px;
       line-height: 40px;
       text-align: center;
-      border-radius: 0 40px 40px 0;
-      color: red;
-      background: #313131;
+      background: rgba(0, 123, 201, 1);
       vertical-align: top;
       margin-left: -50px;
+      border-radius: 0 40px 40px 0;
       img {
         width: 24px;
         height: 20px;
@@ -316,16 +319,16 @@ export default {
     }
     .total {
       font-size: 14px;
-      color: #7E7E7E;
-      >span {
+      color: #7e7e7e;
+      > span {
         color: white;
       }
     }
     .legends {
       float: right;
-      >span {
+      > span {
         display: inline-block;
-        background: #F8BF12;
+        background: #f8bf12;
         padding: 0 20px;
         width: 60px;
         height: 40px;
@@ -350,6 +353,15 @@ export default {
     .el-table {
       color: #fff;
       font-size: 13px;
+      .editor_img {
+        width: 20px;
+        height: 17px;
+      }
+      .del_img {
+        margin-left: 10px;
+        width: 14px;
+        height: 17px;
+      }
     }
   }
 }

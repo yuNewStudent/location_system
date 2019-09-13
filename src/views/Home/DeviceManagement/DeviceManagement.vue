@@ -2,93 +2,92 @@
   <div class="DeviceManagement">
     <el-row class="header">
       <div class="search">
-        <input
-          type="text"
-          placeholder="请输入人名设备ID"
-          class="searchInput"
-          v-model='deviceQuery'>
-        <span class="searchBtn" @click='handleSearchDevice'><img src="@/assets/img/icon/搜索IC.png" alt=""></span>
+        <input type="text"
+               placeholder="请输入人名设备ID"
+               class="searchInput"
+               v-model='deviceQuery'>
+        <span class="searchBtn"
+              @click='handleSearchDevice'><img src="@/assets/img/icon/搜索IC.png"
+               alt=""></span>
       </div>
       <div class="radio">
-        <div
-          v-for='(item, index) in selects'
-          :key='index'
-          :class="{active:currentStatu===index+1}"
-          @click='handleSelect(item.statu, index)'>
+        <div v-for='(item, index) in selects'
+             :key='index'
+             :class="{active:currentStatu===index+1}"
+             @click='handleSelect(item.statu, index)'>
           <span class="radius"></span>
           <span class="title all">{{item.title}}</span>
         </div>
       </div>
       <div class="legends">
         <span @click='handleAddDevice'>
-          <img src="@/assets/img/icon/新增IC.png" alt="">
+          <img src="@/assets/img/icon/新增IC.png"
+               alt="">
           新增
         </span>
       </div>
     </el-row>
     <el-main>
-      <el-table
-        :data="paginationData"
-        border
-        style="width: 100%"
-        :row-style="tableRowStyle"
-        :header-cell-style="tableHeaderColor"
-        size='mini'><el-table-column
-          align='center'
-          prop="userName"
-          label="佩戴人">
+      <el-table :data="paginationData"
+                border
+                style="width: 100%"
+                :row-style="tableRowStyle"
+                :header-cell-style="tableHeaderColor"
+                size='mini'>
+        <el-table-column align='center'
+                         prop="userName"
+                         label="佩戴人">
         </el-table-column>
-        <el-table-column
-          align='center'
-          prop="userDeviceId"
-          label="设备ID">
+        <el-table-column align='center'
+                         prop="userDeviceId"
+                         label="设备ID">
         </el-table-column>
-        <el-table-column
-          align='center'
-          prop="userActivationtime"
-          label="激活时间">
+        <el-table-column align='center'
+                         prop="userActivationtime"
+                         label="激活时间">
         </el-table-column>
-        <el-table-column
-          align='center'
-          prop="userNumber"
-          label="联系电话">
+        <el-table-column align='center'
+                         prop="userNumber"
+                         label="联系电话">
         </el-table-column>
-        <el-table-column
-          align='center'
-          label="状态">
+        <el-table-column align='center'
+                         label="状态">
           <template slot-scope="scope">
             <span>{{scope.row.userStatus==0?'离线':'在线'}}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          align='center' label="操作">
+        <el-table-column align='center'
+                         label="操作">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleEditorDevice(scope.$index, scope.row)">编辑</el-button>
-            <el-button
-              size="mini"
-              @click="handleDeleteDevice(scope.$index, scope.row.userDeviceId)">删除</el-button>
+            <img src="@/assets/img/icon/修改IC.png"
+                 @click="handleEditorCar(scope.$index, scope.row)"
+                 class="editor_img"
+                 alt="">
+            <img src="@/assets/img/icon/删除IC.png"
+                 @click="handleDeleteCar(scope.$index, scope.row)"
+                 class="del_img"
+                 alt="">
+            <!-- <el-button size="mini"
+                       @click="handleEditorDevice(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="mini"
+                       @click="handleDeleteDevice(scope.$index, scope.row.userDeviceId)">删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-count='devices.length/5'
-        :page-size='pageSize'
-        layout="total, prev, pager, next, jumper"
-        :total="devices.length"></el-pagination>
+      <el-pagination @current-change="handleCurrentChange"
+                     :current-page="currentPage"
+                     :page-count='devices.length/5'
+                     :page-size='pageSize'
+                     layout="total, prev, pager, next, jumper"
+                     :total="devices.length"></el-pagination>
     </el-main>
-    <change-device
-      :type='type.add'
-      v-if='isShowAddDevice'
-      @addDevice='addDevice'></change-device>
-    <change-device
-      :type='type.editor'
-      v-if='isShowEditorDevice'
-      :selectDevice='selectDevice'
-      @editorDevice='editorDevice'></change-device>
+    <change-device :type='type.add'
+                   v-if='isShowAddDevice'
+                   @addDevice='addDevice'></change-device>
+    <change-device :type='type.editor'
+                   v-if='isShowEditorDevice'
+                   :selectDevice='selectDevice'
+                   @editorDevice='editorDevice'></change-device>
   </div>
 </template>
 
@@ -200,6 +199,12 @@ export default {
               showClose: true,
               type: 'success',
               message: '添加设备成功!'
+            })
+          } else if (res.code === 210) {
+            this.$message({
+              showClose: true,
+              type: 'error',
+              message: '对不起，设备id已经存在!'
             })
           }
         })
@@ -323,13 +328,17 @@ export default {
       // })
     },
     // 修改table tr行的背景色
-    tableRowStyle (row, rowIndex) {
-      return 'background-color: black;'
+    tableRowStyle ({ row, rowIndex }) {
+      if (rowIndex % 2 === 0) {
+        return 'background-color: rgb(47,141,213); color: black'
+      } else {
+        return 'background-color: rgb(0,94,167); color:white'
+      }
     },
     // 修改table header的背景色
-    tableHeaderColor ({row, column, rowIndex, columnIndex}) {
+    tableHeaderColor ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return 'background-color: black; color: white'
+        return 'background-color: rgb(0,94,167); color: white'
       }
     },
     // 分页
@@ -351,11 +360,13 @@ export default {
 .DeviceManagement {
   .header {
     padding: 0 20px;
-    >div {
+    > div {
       display: inline-block;
     }
     .search {
       .searchInput {
+        border: 1px solid rgba(54, 153, 255, 1);
+        border-radius: 40px;
         box-sizing: border-box;
         font-size: 16px;
         width: 250px;
@@ -363,8 +374,7 @@ export default {
         border-radius: 40px;
         outline: none;
         background: transparent;
-        border: 2px solid #313131;
-        padding: 0 10px;
+        padding: 0 15px;
         color: white;
       }
       .searchBtn {
@@ -372,11 +382,10 @@ export default {
         width: 50px;
         line-height: 40px;
         text-align: center;
-        border-radius: 0 40px 40px 0;
-        color: red;
-        background: #313131;
+        background: rgba(0, 123, 201, 1);
         vertical-align: top;
         margin-left: -50px;
+        border-radius: 0 40px 40px 0;
         img {
           width: 24px;
           height: 20px;
@@ -394,7 +403,7 @@ export default {
         cursor: pointer;
       }
       .active {
-        background: #F8BF12;
+        background: #f8bf12;
         border-radius: 20px;
         color: black;
         .radius {
@@ -406,7 +415,7 @@ export default {
           background: white;
         }
       }
-      >div {
+      > div {
         width: 90px;
         height: 40px;
         line-height: 40px;
@@ -415,9 +424,9 @@ export default {
     }
     .legends {
       float: right;
-      >span {
+      > span {
         display: inline-block;
-        background: #F8BF12;
+        background: #f8bf12;
         padding: 0 20px;
         width: 60px;
         height: 40px;
@@ -438,6 +447,15 @@ export default {
     .el-table {
       color: white;
       font-size: 13px;
+      .editor_img {
+        width: 20px;
+        height: 17px;
+      }
+      .del_img {
+        margin-left: 10px;
+        width: 14px;
+        height: 17px;
+      }
     }
     .el-pagination {
       text-align: right;

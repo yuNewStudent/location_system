@@ -2,7 +2,8 @@
   <div class='MessageBox'>
     <div class='add_user_wrapper'>
       <div class="user">
-        <header><img src="@/assets/img/icon/人员信息IC.png" alt=""> 人员信息</header>
+        <header><img src="@/assets/img/icon/人员信息IC.png"
+               alt=""> 人员信息</header>
         <div class="userInfo">
           <p>
             <span>姓名: {{person.userName}}</span>
@@ -24,7 +25,8 @@
           <div class="img">
             <div class="action_track">
               <span @click='handleShowLine'>
-                <img src="@/assets/img/icon/行动轨迹IC.png" alt="">
+                <img src="@/assets/img/icon/行动轨迹IC.png"
+                     alt="">
               </span>
               <p>行动轨迹</p>
             </div>
@@ -36,8 +38,10 @@
             </div> -->
           </div>
         </div>
-        <header><img src="@/assets/img/icon/人员信息IC.png" alt=""> 紧急联系人</header>
-        <div class="contact" v-if='person.emergencycs'>
+        <header><img src="@/assets/img/icon/人员信息IC.png"
+               alt=""> 紧急联系人</header>
+        <div class="contact"
+             v-if='person.emergencycs'>
           <p>
             <span>姓名: {{person.emergencycs[0].emergencycsName}}</span>
             <span>关系: {{person.emergencycs[0].emergencycsRelationShip}}</span>
@@ -48,15 +52,20 @@
       </div>
       <div class="map">
         <div id="container"></div>
-        <el-button type='warning' size='mini' @click="hnadleRanging">测距</el-button>
+        <el-button type='warning'
+                   size='mini'
+                   @click="hnadleRanging">测距</el-button>
       </div>
-      <el-button @click='handleClose' type="danger" icon="el-icon-close" circle></el-button>
+      <el-button @click='handleClose'
+                 type="danger"
+                 icon="el-icon-close"
+                 circle></el-button>
     </div>
-    <person-line
-      v-if='isPersonLine'
-      @close='close'
-      :userDeviceId='currentDeviceId'></person-line>
-    <div ref='carInfo' class='windowinfo'>
+    <person-line v-if='isPersonLine'
+                 @close='close'
+                 :userDeviceId='currentDeviceId'></person-line>
+    <div ref='carInfo'
+         class='windowinfo'>
       <h1>车辆信息</h1>
       <p>车辆型号：{{currentcarinfo.vehiclesTypeof}}</p>
       <p>车辆编号：{{currentcarinfo.vehiclesNumBering}}</p>
@@ -292,7 +301,7 @@ export default {
     background: black;
     padding: 20px 10px;
     display: flex;
-    >.el-button {
+    > .el-button {
       position: absolute;
       top: 3px;
       right: -7px;
@@ -303,18 +312,18 @@ export default {
       color: white;
       font-size: 14px;
       width: 400px;
-      background-color: rgb(84, 92, 100);
+      background: rgba(85, 111, 175, 0.5);
       padding: 5px 10px 0;
       .userInfo {
         padding: 10px 50px 20px 20px;
-        border-bottom: 2px solid #3F3F3F;
+        border-bottom: 2px solid #3f3f3f;
         p {
           display: flex;
           line-height: 30px;
-          span:first-child  {
-            flex: 1
+          span:first-child {
+            flex: 1;
           }
-          span:last-child  {
+          span:last-child {
             width: 100px;
           }
         }
@@ -334,21 +343,21 @@ export default {
               border-radius: 50%;
             }
             &.action_track {
-              color: #3393A3;
+              color: #3393a3;
               span {
-                border: 1px solid #3393A3;
+                border: 1px solid #3393a3;
               }
             }
             &.warning_num {
-             color: #F23D3D;
+              color: #f23d3d;
               span {
-                border: 1px solid #F23D3D;
+                border: 1px solid #f23d3d;
               }
             }
             &.nearby_cars {
-              color: #1E92E0;
+              color: #1e92e0;
               span {
-                border: 1px solid #1E92E0;
+                border: 1px solid #1e92e0;
               }
             }
             img {
@@ -364,10 +373,10 @@ export default {
         p {
           line-height: 30px;
           display: flex;
-          span:first-child  {
-            flex: 1
+          span:first-child {
+            flex: 1;
           }
-          span:last-child  {
+          span:last-child {
             width: 100px;
           }
         }
@@ -375,7 +384,7 @@ export default {
       header {
         padding-top: 5px;
         font-size: 16px;
-        color: #FFBF05;
+        color: #ffbf05;
         line-height: 30px;
         img {
           width: 14px;
@@ -403,7 +412,7 @@ export default {
     z-index: 6;
     h1 {
       font-size: 18px;
-      color: #FFBF05;
+      color: #ffbf05;
       line-height: 30px;
       margin-bottom: 10px;
     }
@@ -412,13 +421,13 @@ export default {
     }
     .icon {
       text-align: right;
-      >span {
+      > span {
         display: inline-block;
         text-align: center;
         width: 30px;
         height: 30px;
         border-radius: 50%;
-        border: 1px solid #3393A3;
+        border: 1px solid #3393a3;
         img {
           margin-top: 7px;
           width: 12px;

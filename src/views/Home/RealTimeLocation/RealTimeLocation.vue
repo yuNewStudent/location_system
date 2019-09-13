@@ -2,15 +2,14 @@
   <div class="RealTimeLocation">
     <el-row class="header">
       <div class="search">
-        <input
-          type="text"
-          v-model="filterQuery"
-          placeholder="请输入人名或车辆编号"
-          class="searchInput">
-        <span
-          class="searchBtn"
-          @click='handleFilter'>
-          <img src="@/assets/img/icon/搜索IC.png" alt="">
+        <input type="text"
+               v-model="filterQuery"
+               placeholder="请输入人名或车辆编号"
+               class="searchInput">
+        <span class="searchBtn"
+              @click='handleFilter'>
+          <img src="@/assets/img/icon/搜索IC.png"
+               alt="">
         </span>
       </div>
       <div class="legends">
@@ -25,17 +24,15 @@
       </div>
     </el-row>
     <el-main>
-      <map-page
-        @showPersonLine='showPersonLine'
-        :center='currentCenter'
-        :persons='persons'
-        :cars='cars'></map-page>
+      <map-page @showPersonLine='showPersonLine'
+                :center='currentCenter'
+                :persons='persons'
+                :cars='cars'></map-page>
     </el-main>
-    <person-line
-      v-if='isPersonLine'
-      @close='closePersonLine'
-      :userDeviceId='userDeviceId'
-      :center='currentCenter'></person-line>
+    <person-line v-if='isPersonLine'
+                 @close='closePersonLine'
+                 :userDeviceId='userDeviceId'
+                 :center='currentCenter'></person-line>
   </div>
 </template>
 
@@ -126,8 +123,12 @@ export default {
   height: 100%;
   .header {
     padding: 0px;
-    >div {
+    > div {
       display: inline-block;
+    }
+    .search {
+      border: 1px solid rgba(54, 153, 255, 1);
+      border-radius: 40px;
     }
     .searchInput {
       box-sizing: border-box;
@@ -137,7 +138,6 @@ export default {
       border-radius: 35px;
       outline: none;
       background: transparent;
-      border: 2px solid #313131;
       padding: 0 10px;
       color: white;
     }
@@ -146,11 +146,10 @@ export default {
       width: 50px;
       line-height: 35px;
       text-align: center;
-      border-radius: 0 40px 40px 0;
-      color: red;
-      background: #313131;
+      background: rgba(0, 123, 201, 1);
       vertical-align: top;
       margin-left: -50px;
+      border-radius: 0 40px 40px 0;
       img {
         width: 24px;
         height: 20px;
@@ -163,22 +162,22 @@ export default {
       color: white;
       .old_man {
         display: inline-block;
-        >span {
+        > span {
           display: inline-block;
           width: 16px;
           height: 16px;
-          background: #0C4F62;
+          background: #0c4f62;
         }
       }
       .car {
         margin-left: 30px;
         display: inline-block;
         line-height: 19px;
-        >span {
+        > span {
           display: inline-block;
           width: 16px;
           height: 16px;
-          background: #F06749;
+          background: #f06749;
         }
       }
     }
@@ -192,12 +191,12 @@ export default {
     left: 0;
     right: 0px;
   }
-  .information{
-    width:300px;
-    height:50px;
-    position:absolute;
+  .information {
+    width: 300px;
+    height: 50px;
+    position: absolute;
     top: 10px;
-    background:rgba(14,73,118,1);
+    background: rgba(14, 73, 118, 1);
   }
 }
 </style>

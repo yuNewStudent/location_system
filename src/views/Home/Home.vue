@@ -2,30 +2,33 @@
   <el-container>
     <el-header>
       <span class="name">智慧社区康养系统</span>
-      <app-menu class="menu" :menus='menus[currentPage].group' :mode='mode.row'></app-menu>
+      <app-menu class="menu"
+                :menus='menus[currentPage].group'
+                :mode='mode.row'></app-menu>
       <div class="header_right">
-        <!-- <span class="user_name" @click='handleResetPassword'>{{user.administratorAccount}}</span> -->
+        <span class="user_name"
+              @click='handleResetPassword'>{{user.administratorAccount}}</span>
         <span class="dividing_line"></span>
-        <span class="exit" @click="handleExit">退出</span>
+        <span class="exit"
+              @click="handleExit">退出</span>
       </div>
     </el-header>
     <el-container>
       <div class="nav">
-        <p
-          v-for='(item, index) in menus'
-          :key='index'
-          class="nav_item"
-          :class='{active:index===currentPage}'
-          @click='changeMenu(index)'><img :src="item.icon" alt=""><span>{{item.title}}</span></p>
+        <p v-for='(item, index) in menus'
+           :key='index'
+           class="nav_item"
+           :class='{active:index===currentPage}'
+           @click='changeMenu(index)'><img :src="item.icon"
+               alt=""><span>{{item.title}}</span></p>
       </div>
       <el-main>
-        <router-view/>
+        <router-view />
       </el-main>
     </el-container>
-    <reset-password
-      :type='type'
-      v-if='isShowResetPassword'
-      @resetPassword='resetPassword'></reset-password>
+    <reset-password :type='type'
+                    v-if='isShowResetPassword'
+                    @resetPassword='resetPassword'></reset-password>
     <!-- <footer>
       <p>崇州市大雨村</p>
       <p>版权所有©成都棋照科技有限公司</p>
@@ -128,45 +131,54 @@ export default {
     background-color: #313131;
     justify-content: space-between;
     font-size: 16px;
+    box-shadow: 0px 3px 13px 0px rgba(43, 98, 213, 0.6) inset;
+    background: rgba(6, 30, 81, 1);
+    border: 1px solid rgba(62, 109, 218, 1);
     .name {
       vertical-align: top;
       color: white;
       font-size: 24px;
+      position: absolute;
+      left: 0;
+      width: 280px;
+      padding-left: 40px;
+      box-sizing: border-box;
+      background: rgba(17, 50, 122, 1);
+      border-bottom: 1px solid rgba(62, 109, 218, 1);
+      border-right: none;
+      box-shadow: 0px 5px 20px 0px rgba(43, 98, 213, 0.6) inset;
+      border-radius: 0 0 60px 0;
+      line-height: 58px;
     }
     .menu {
       align-items: center;
+      margin-left: 250px;
     }
     .header_right {
       float: right;
       line-height: 60px;
       height: 60px;
-      color: white;
-      // img {
-      //   width: 65px;
-      //   height: 60px;
-      //   border-radius: 50%;
-      //   vertical-align: top;
-      //   cursor:pointer
-      // }
+      color: rgb(120, 187, 255);
       .dividing_line {
         display: inline-block;
         width: 2px;
         height: 25px;
-        background: #A0A0A0;
+        background: rgb(120, 187, 255);
         position: relative;
         top: 6px;
         margin: 0 2px;
       }
-      .user_name{
-        cursor: pointer
+      .user_name {
+        cursor: pointer;
       }
-      .exit{
-        cursor: pointer
+      .exit {
+        cursor: pointer;
       }
     }
   }
   .el-container {
     position: relative;
+    background: rgba(6, 30, 81, 1);
     .nav {
       display: none;
       position: absolute;
@@ -194,7 +206,7 @@ export default {
         }
       }
       .active:after {
-        content: '';
+        content: "";
         position: absolute;
         display: inline-block;
         border: 10px solid transparent;
@@ -206,15 +218,15 @@ export default {
       // padding-left: 200px;
       width: 100vw;
       height: 100%;
-      background: #010101;
+      background: rgba(6, 30, 81, 1);
       padding-top: 10px;
     }
   }
   footer {
     background: black;
     text-align: center;
-    color: #FFFFFF;
-    border-top: 3px solid #7B7B7B;
+    color: #ffffff;
+    border-top: 3px solid #7b7b7b;
     padding: 10px 0;
     p {
       margin: 10px;

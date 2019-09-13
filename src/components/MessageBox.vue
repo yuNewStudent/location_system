@@ -3,13 +3,23 @@
     <div class='add_user_wrapper'>
       <el-row class='header'>
         {{type}}
-        <span @click='handleCancel' v-if='btns.reset'>X</span>
+        <span @click='handleCancel'
+              v-if='btns.reset'>X</span>
       </el-row>
       <slot></slot>
       <el-row class='footer'>
-        <el-button size='mini ' type='primary' v-if='btns.reset' @click='handleReset'>重置</el-button>
-        <el-button size='mini ' type='primary' v-if='!btns.reset' @click='handleCancel'>取消</el-button>
-        <el-button size='mini ' type='primary' @click='handleSetting' ref='close'>确定</el-button>
+        <el-button size='mini '
+                   type='primary'
+                   v-if='btns.reset'
+                   @click='handleReset'>重置</el-button>
+        <el-button size='mini '
+                   type='primary'
+                   v-if='!btns.reset'
+                   @click='handleCancel'>取消</el-button>
+        <el-button size='mini '
+                   type='primary'
+                   @click='handleSetting'
+                   ref='close'>确定</el-button>
       </el-row>
     </div>
   </div>
@@ -72,7 +82,7 @@ export default {
       color: black;
       padding: 15px 40px 15px;
       border-radius: 10px 10px 0 0;
-      background: rgb(242, 242, 242);
+      background: rgba(143, 199, 255, 1);
       span {
         float: right;
         cursor: pointer;
@@ -84,8 +94,9 @@ export default {
       margin-right: 20px;
       padding: 0 30px;
       .el-button {
-        background: transparent;
-        border: 1px solid #F8BF12;
+        background: rgba(186, 221, 255, 1);
+        border: 2px solid rgba(29, 132, 234, 1);
+        border-radius: 4px;
         color: black;
         font-size: 16px;
       }

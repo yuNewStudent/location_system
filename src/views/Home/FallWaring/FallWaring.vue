@@ -2,89 +2,87 @@
   <div class="FallWaring">
     <div>
       <el-header>
-        <el-input clearable class="name" placeholder="请输入设备ID" v-model="query.id"></el-input>
-        <el-select v-model="query.type" clearable placeholder="请选择报警类型">
-          <el-option
-            v-for="item in Warningtypes"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+        <el-input clearable
+                  class="name"
+                  placeholder="请输入设备ID"
+                  v-model="query.id"></el-input>
+        <el-select v-model="query.type"
+                   clearable
+                   placeholder="请选择报警类型">
+          <el-option v-for="item in Warningtypes"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value">
           </el-option>
         </el-select>
-        <el-date-picker
-          v-model="query.date"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          align="right"
-          class="date_picker">
+        <el-date-picker v-model="query.date"
+                        type="datetimerange"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        align="right"
+                        class="date_picker">
         </el-date-picker>
         <el-button @click='handleSearch'>搜索</el-button>
       </el-header>
       <el-main>
-        <el-table
-          :data="fallWarnings"
-          border
-          style="width: 100%"
-          @row-click='handleRow'
-          :row-style="tableRowStyle"
-          :header-cell-style="tableHeaderColor"
-          size='mini'>
-          <el-table-column
-            align='center'
-            label="报警人"
-            width='150'>
+        <el-table :data="fallWarnings"
+                  border
+                  style="width: 100%"
+                  @row-click='handleRow'
+                  :row-style="tableRowStyle"
+                  :header-cell-style="tableHeaderColor"
+                  size='mini'>
+          <el-table-column align='center'
+                           label="报警人"
+                           width='150'>
             <template slot-scope="scope">
               {{scope.row.alarminformationName||'无报警人信息'}}
             </template>
           </el-table-column>
-          <el-table-column
-            align='center'
-            prop="alarminformationWearid"
-            label="设备ID"
-            width='140'>
+          <el-table-column align='center'
+                           prop="alarminformationWearid"
+                           label="设备ID"
+                           width='140'>
           </el-table-column>
-          <el-table-column
-            align='center'
-            prop="fall_message"
-            label="报警类型"
-            width='130'>
+          <el-table-column align='center'
+                           prop="fall_message"
+                           label="报警类型"
+                           width='130'>
             <template slot-scope="scope">
               <span>{{getType(scope.row.alarminformationType)}}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            align='center'
-            prop="alarminformationDate"
-            label="报警时间"
-            width='170'>
+          <el-table-column align='center'
+                           prop="alarminformationDate"
+                           label="报警时间"
+                           width='170'>
           </el-table-column>
-          <el-table-column
-            align='center'
-            label="联系电话"
-            width='120'>
+          <el-table-column align='center'
+                           label="联系电话"
+                           width='120'>
             <template slot-scope="scope">
               {{scope.row.alarminformationNumber||'无联系电话'}}
             </template>
           </el-table-column>
-          <el-table-column
-            align='center'
-            prop='alarminformationLatandlong'
-            label="报警地点">
+          <el-table-column align='center'
+                           prop='alarminformationLatandlong'
+                           label="报警地点">
           </el-table-column>
         </el-table>
-        <el-pagination
-          v-if='fallWarnings.length'
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-count='fallsInfo.pageSize'
-          :page-size='pageSize'
-          layout="total, prev, pager, next, jumper"
-          :total="fallsInfo.count"></el-pagination>
+        <el-pagination v-if='fallWarnings.length'
+                       @current-change="handleCurrentChange"
+                       :current-page="currentPage"
+                       :page-count='fallsInfo.pageSize'
+                       :page-size='pageSize'
+                       layout="total, prev, pager, next, jumper"
+                       :total="fallsInfo.count"></el-pagination>
       </el-main>
     </div>
-    <waring-info :center='center' :currentDeviceId='currentDeviceId' @close='isShowWarningInfo = !isShowWarningInfo' v-if='isShowWarningInfo'></waring-info>
+    <waring-info :center='center'
+                 :currentDeviceId='currentDeviceId'
+                 @close='isShowWarningInfo = !isShowWarningInfo'
+                 v-if='isShowWarningInfo'></waring-info>
   </div>
 </template>
 
@@ -207,13 +205,17 @@ export default {
       this.getFallWarnings(data)
     },
     // 修改table tr行的背景色
-    tableRowStyle (row, rowIndex) {
-      return 'background-color: black;'
+    tableRowStyle ({ row, rowIndex }) {
+      if (rowIndex % 2 === 0) {
+        return 'background-color: rgb(47,141,213); color: black'
+      } else {
+        return 'background-color: rgb(0,94,167); color:white'
+      }
     },
     // 修改table header的背景色
-    tableHeaderColor ({row, column, rowIndex, columnIndex}) {
+    tableHeaderColor ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return 'background-color: black; color: white'
+        return 'background-color: rgb(0,94,167); color: white'
       }
     },
     // 跳转至对应分页
@@ -245,7 +247,6 @@ export default {
       const lnglat = [lng, lat]
       return new Promise((resolve, reject) => {
         this.geocoder.getAddress(lnglat, (status, result) => {
-          console.log(2)
           if (status === 'complete' && result.regeocode) {
             resolve(result.regeocode.formattedAddress)
           } else {
@@ -259,7 +260,6 @@ export default {
       const gps = [lng, lat]
       return new Promise((resolve, reject) => {
         AMap.convertFrom(gps, 'gps', (status, result) => {
-          console.log(1)
           if (result.info === 'ok') {
             resolve(result.locations)
           }

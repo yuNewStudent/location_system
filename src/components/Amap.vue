@@ -1,70 +1,102 @@
 <template>
   <div class="amap">
     <div id="container"></div>
+    <div class="layer">
+      <button @click='handleSatelliteLayer'
+              :class="{active: isSatelliteLayer}">卫星地图</button>
+      <!-- <button @click='handleStandLayer'>标准图层</button>
+      <button @click='handleSetSafe'>设置安全区域</button>-->
+    </div>
     <!--个人信息人员信息-->
-    <div class="information" v-if="informationx">
+    <div class="information"
+         v-if="informationx">
       <div class="information_h">
         <div class="information_hl">
           <h1><img src="@/assets/img/人员信息详情_IC.png">人员信息</h1>
         </div>
       </div>
       <div class="information_c">
-        <el-table
-          :data="tableData"
-          :row-style="carInqwqwfo"
-          height="250"
-          width="250"
-          size="mini"
-          style="background: transparent;"
-          :header-cell-style="tableHeaderColor"
-          @row-click='personRowClick'
-          >
-          <el-table-column align='center' prop="userName" label="姓名"></el-table-column>
-          <el-table-column :filters="[{ text: '男', value: '1' }, { text: '女', value: '0' }]" :filter-method="filterSex" label="性别" prop="userGender" align="center">
+        <el-table :data="tableData"
+                  :row-style="carInqwqwfo"
+                  height="250"
+                  width="250"
+                  size="mini"
+                  style="background: transparent;"
+                  :header-cell-style="tableHeaderColor"
+                  @row-click='personRowClick'>
+          <el-table-column align='center'
+                           prop="userName"
+                           label="姓名"></el-table-column>
+          <el-table-column :filters="[{ text: '男', value: '1' }, { text: '女', value: '0' }]"
+                           :filter-method="filterSex"
+                           label="性别"
+                           prop="userGender"
+                           align="center">
             <template slot-scope="scope">
-              <span type="success" v-if="scope.row.userGender==1">男</span>
-              <span type="success" v-if="scope.row.userGender==0">女</span>
+              <span type="success"
+                    v-if="scope.row.userGender==1">男</span>
+              <span type="success"
+                    v-if="scope.row.userGender==0">女</span>
             </template>
           </el-table-column>
-          <el-table-column align='center' :filters="ages" :filter-method="filterAge" prop="userBirth" label="年龄">
+          <el-table-column align='center'
+                           :filters="ages"
+                           :filter-method="filterAge"
+                           prop="userBirth"
+                           label="年龄">
             <template slot-scope="scope">
               <span type="success">{{getAge(scope.row.userBirth)}}</span>
             </template>
           </el-table-column>
-          <el-table-column align='center' :filters="[{ text: '在线', value: 1 }, { text: '离线', value: 0 }]" :filter-method="filterStatus"  prop="userStatus" label="状态">
+          <el-table-column align='center'
+                           :filters="[{ text: '在线', value: 1 }, { text: '离线', value: 0 }]"
+                           :filter-method="filterStatus"
+                           prop="userStatus"
+                           label="状态">
             <template slot-scope="scope">
-              <span type="success" v-if="scope.row.userStatus==1">在线</span>
-              <span type="success" v-if="scope.row.userStatus==0">离线</span>
+              <span type="success"
+                    v-if="scope.row.userStatus==1">在线</span>
+              <span type="success"
+                    v-if="scope.row.userStatus==0">离线</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
     <!--个人信息车辆信息-->
-    <div class="Vinformation" v-if="vinformationx">
+    <div class="Vinformation"
+         v-if="vinformationx">
       <div class="Vinformation_h">
         <div class="Vinformation_hl">
           <h1><img src="@/assets/img/车辆信息—IC.png">车辆信息</h1>
         </div>
       </div>
       <div class="Vinformation_c">
-        <el-table
-          :data="tableData1"
-          :row-style="carInqwqwfo"
-          height="250"
-          width="250"
-          size="mini"
-          style="background: transparent;"
-          :header-cell-style="tableHeaderColor"
-          :default-sort="{prop: 'date', order: 'descending'}"
-        >
-          <el-table-column align='center' prop="vehiclesTypeof" label="型号" show-overflow-tooltip></el-table-column>
-          <el-table-column align='center' prop="vehiclesUseunit" label="使用单位" show-overflow-tooltip></el-table-column>
-          <el-table-column align='center' prop="vehiclesNsumber" label="联系电话" show-overflow-tooltip></el-table-column>
+        <el-table :data="tableData1"
+                  :row-style="carInqwqwfo"
+                  height="250"
+                  width="250"
+                  size="mini"
+                  style="background: transparent;"
+                  :header-cell-style="tableHeaderColor"
+                  :default-sort="{prop: 'date', order: 'descending'}">
+          <el-table-column align='center'
+                           prop="vehiclesTypeof"
+                           label="型号"
+                           show-overflow-tooltip></el-table-column>
+          <el-table-column align='center'
+                           prop="vehiclesUseunit"
+                           label="使用单位"
+                           show-overflow-tooltip></el-table-column>
+          <el-table-column align='center'
+                           prop="vehiclesNsumber"
+                           label="联系电话"
+                           show-overflow-tooltip></el-table-column>
         </el-table>
       </div>
     </div>
-    <div class="dinformation" v-if="dinformationx">
+    <div class="dinformation"
+         v-if="dinformationx">
       <div class="dinformation_h">
         <div class="dinformation_hl">
           <h1><img src="@/assets/img/人员信息—IC.png">人员信息详情</h1>
@@ -90,8 +122,10 @@
               <span class="right">联系电话:{{personInfo.userNumber}}</span>
             </li>
             <li>
-              <span class="left">是否有病历:是<font @click="open4" style="border-bottom: 1px solid;cursor:pointer;color: #ff6500;margin-left: 10px;">查看</font></span>
-              <span class="right">是否存在过敏原:<font @click="open4" style="border-bottom: 1px solid;cursor:pointer;color: #ff6500;margin-left: 10px;">查看</font></span>
+              <span class="left">是否有病历:是<font @click="open4"
+                      style="border-bottom: 1px solid;cursor:pointer;color: #ff6500;margin-left: 10px;">查看</font></span>
+              <span class="right">是否存在过敏原:<font @click="open4"
+                      style="border-bottom: 1px solid;cursor:pointer;color: #ff6500;margin-left: 10px;">查看</font></span>
             </li>
             <li>家庭地址:{{personInfo.address}}</li>
             <!-- <li>
@@ -102,15 +136,18 @@
         </div>
       </div>
     </div>
-    <div class="pinformation" v-if="pinformationx">
+    <div class="pinformation"
+         v-if="pinformationx">
       <div class="pinformation_h">
         <div class="pinformation_hl">
           <h1><img src="@/assets/img/报警信息_IC.png">报警信息</h1>
         </div>
       </div>
       <div class="pinformation_c">
-        <ul class="pinformation_cl" v-if="fallWarnings.length>0">
-          <li v-for="(item, index) in fallWarnings" :key="index">
+        <ul class="pinformation_cl"
+            v-if="fallWarnings.length>0">
+          <li v-for="(item, index) in fallWarnings"
+              :key="index">
             {{item.alarminformationDate}}
             <span>{{item.alarminformationName || '无人员信息'}}进行{{getType(item.alarminformationType)}}</span>
             {{item.alarminformationLatandlong}}
@@ -139,24 +176,22 @@
         </li>
       </ul>
     </div>
-    <div v-if="!isSetSafe">
-      <!-- <button @click='handleSatelliteLayer'>卫星图层</button>
-      <button @click='handleStandLayer'>标准图层</button>
-      <button @click='handleSetSafe'>设置安全区域</button>-->
-    </div>
-    <div ref="personInfo" class="windowinfo">
+    <div ref="personInfo"
+         class="windowinfo">
       <h1>人员信息</h1>
       <!-- <p>姓名：{{personInfo.name}}</p> -->
       <!-- <p>年龄：{{personInfo.age}}</p> -->
       <!-- <p>所在时长：2h20min</p> -->
       <p>所在位置：{{personInfo.address}}</p>
       <p class="icon">
-        <span style="margin-right: 10px" @click="getLngLat(personInfo.userDeviceId)">
+        <span style="margin-right: 10px"
+              @click="getLngLat(personInfo.userDeviceId)">
           <img src="@/assets/img/icon/行动轨迹IC.png">
         </span>
       </p>
     </div>
-    <div ref="carInfo" class="windowinfo">
+    <div ref="carInfo"
+         class="windowinfo">
       <h1>车辆信息</h1>
       <p>车辆型号：{{carInfo.carModel}}</p>
       <p>车辆编号：{{carInfo.carNum}}</p>
@@ -188,7 +223,7 @@ export default {
       // 路网图层
       roadNetLayer: null,
       geocoder: null,
-      isSetSafe: false,
+      isSatelliteLayer: false,
       personInfo: {
         name: '',
         age: '',
@@ -216,6 +251,7 @@ export default {
         { text: '71 - 80 岁', value: [71, 80] },
         { text: '81 岁及以上', value: [81] }
       ]
+      // satellite: null
     }
   },
   components: {
@@ -313,6 +349,10 @@ export default {
         // 地图显示范围
         zoom: 15
       })
+      // 添加卫星地图层
+      this.satellite = new AMap.TileLayer.Satellite()
+      this.satellite.setMap(this.map)
+      this.satellite.hide()
       // 添加缩放标尺控件
       AMap.plugin(['AMap.Scale'], () => {
         this.map.addControl(new AMap.Scale())
@@ -486,6 +526,17 @@ export default {
     },
     personRowClick (row, column, event) {
       console.log(row, column, event)
+    },
+    // 切换卫星图层
+    handleSatelliteLayer () {
+      console.log(this.isSatelliteLayer)
+      if (this.isSatelliteLayer) {
+        this.satellite.hide()
+        this.isSatelliteLayer = false
+      } else {
+        this.satellite.show()
+        this.isSatelliteLayer = true
+      }
     }
   },
   watch: {
@@ -573,14 +624,14 @@ export default {
     z-index: 3;
     .information_hl {
       width: 250px;
-      line-height:50px;
+      line-height: 50px;
       line-height: 50px;
       text-align: center;
       float: left;
       color: #ffffff;
       background: rgba(14, 73, 118, 1);
     }
-    .information_hl h1 img{
+    .information_hl h1 img {
       margin-right: 5px;
       height: 15px;
       width: 15px;
@@ -621,7 +672,7 @@ export default {
       float: left;
       color: #ffffff;
       background: rgba(14, 73, 118, 1);
-      h1 img{
+      h1 img {
         margin-right: 5px;
         height: 15px;
         width: 15px;
@@ -654,7 +705,7 @@ export default {
       float: left;
       color: #ffffff;
       background: rgba(14, 73, 118, 1);
-      h1 img{
+      h1 img {
         margin-right: 5px;
         height: 15px;
         width: 15px;
@@ -684,7 +735,7 @@ export default {
         .userinfo {
           // display: flex;
           // justify-content: space-between;
-          >span {
+          > span {
             display: inline-block;
             width: 24%;
             // margin-right: 20px;
@@ -715,7 +766,7 @@ export default {
       float: left;
       color: #ffffff;
       background: rgba(14, 73, 118, 1);
-      img{
+      img {
         margin-right: 5px;
         height: 15px;
         width: 15px;
@@ -738,8 +789,8 @@ export default {
           width: 95%;
           white-space: nowrap;
           overflow: hidden;
-          text-overflow:ellipsis;
-          margin:  5px 0;
+          text-overflow: ellipsis;
+          margin: 5px 0;
           line-height: 20px;
         }
       }
@@ -748,12 +799,27 @@ export default {
   .informationx {
     width: 50px;
     bottom: 10px;
-    right: 0px;
+    right: 10px;
     position: absolute;
     z-index: 3;
   }
-  .informationx li{
-    cursor:pointer;
+  .informationx li {
+    cursor: pointer;
+  }
+}
+.layer {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: red;
+  z-index: 2;
+  // button {
+  //   background: white;
+  //   outline: none;
+  //   border: none;
+  // }
+  button.active {
+    color: #009cf9;
   }
 }
 </style>

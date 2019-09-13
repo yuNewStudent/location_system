@@ -17,14 +17,14 @@ Vue.prototype.moment = Moment
 Vue.use(ElementUI)
 
 // 路由拦截
-// router.beforeEach((to, from, next) => {
-//   // 如果未登录， 只能跳转至登录页面或者注册页面
-//   const loginUser = JSON.parse(VueCookie.get('user'))
-//   if (!loginUser && to.name !== 'Login') {
-//     return next({ name: 'Login' })
-//   }
-//   next()
-// })
+router.beforeEach((to, from, next) => {
+  // 如果未登录， 只能跳转至登录页面或者注册页面
+  const loginUser = JSON.parse(VueCookie.get('user'))
+  if (!loginUser && to.name !== 'Login') {
+    return next({ name: 'Login' })
+  }
+  next()
+})
 // 设置请求token
 Axios.interceptors.request.use(config => {
   const user = JSON.parse(VueCookie.get('user'))

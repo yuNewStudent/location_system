@@ -5,13 +5,19 @@
         <div class="login">
           <header>智慧社区康养系统</header>
           <h3>欢迎回来</h3>
-          <el-input placeholder="请输入账号" v-model="user.administratorAccount">
-            <template slot="prepend"><img src="@/assets/img/icon/账号IC.png" alt=""></template>
+          <el-input placeholder="请输入账号"
+                    v-model="user.administratorAccount">
+            <template slot="prepend"><img src="@/assets/img/icon/账号IC.png"
+                   alt=""></template>
           </el-input>
-          <el-input placeholder="请输入密码" v-model="user.administratorPassword" type='password'>
-            <template slot="prepend"><img src="@/assets/img/icon/矢量智能对象.png" alt=""></template>
+          <el-input placeholder="请输入密码"
+                    v-model="user.administratorPassword"
+                    type='password'>
+            <template slot="prepend"><img src="@/assets/img/icon/矢量智能对象.png"
+                   alt=""></template>
           </el-input>
-          <el-button type="warning" @click='handleLogin'>登录</el-button>
+          <el-button type="warning"
+                     @click='handleLogin'>登录</el-button>
         </div>
       </div>
     </div>
@@ -101,7 +107,7 @@ export default {
 .login_page {
   width: 100vw;
   height: 100vh;
-  background: url('../assets/img/icon/bg.png') no-repeat;
+  background: url("../assets/img/icon/bg.png") no-repeat;
   background-size: cover;
   position: relative;
   .login_wrapper {
@@ -110,25 +116,25 @@ export default {
     top: 50%;
     transform: translate(-50%, -50%);
     .login_box {
-      background:rgba(66, 94, 212, .8);
+      background: rgba(66, 94, 212, 0.8);
       width: 408px;
       border-radius: 10px;
       padding: 10px;
       .login {
         opacity: 1;
-        background: #324FC7;
+        background: #324fc7;
         border-radius: 10px;
         padding: 20px 30px 30px;
         position: relative;
         header {
           position: absolute;
           top: -40px;
-          color: #E6EBFE;
+          color: #e6ebfe;
           right: 20px;
           font-size: 20px;
         }
         h3 {
-          color: #F8BF12;
+          color: #f8bf12;
           font-size: 22px;
           text-align: center;
           margin: 15px 0;

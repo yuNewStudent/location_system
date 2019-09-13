@@ -1,8 +1,10 @@
 <template>
   <div class="home">
     <div class="bg">
-      <div class="enter" @click='enter'>
-        <img src="@/assets/img/enter.png" alt="">
+      <div class="enter"
+           @click='enter'>
+        <img src="@/assets/img/enter.png"
+             alt="">
       </div>
     </div>
   </div>
@@ -37,7 +39,7 @@ export default {
   .bg {
     width: 100%;
     height: 1820px;
-    background: url('../assets/img/homeB.png') no-repeat;
+    background: url("../assets/img/homeB.png") no-repeat;
     background-size: 100% 100%;
     .enter {
       position: absolute;

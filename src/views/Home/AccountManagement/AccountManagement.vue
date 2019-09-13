@@ -3,62 +3,54 @@
     <el-header>
       <div class="legends">
         <span @click='handleAddAccount'>
-          <img src="@/assets/img/icon/新增IC.png" alt="">
+          <img src="@/assets/img/icon/新增IC.png"
+               alt="">
           新增
         </span>
       </div>
     </el-header>
     <el-main>
-      <el-table
-        :data="accounts"
-        border
-        style="width: 100%"
-        :row-style="tableRowStyle"
-        :header-cell-style="tableHeaderColor"
-        size='mini'>
-        <el-table-column
-          align='center'
-          type='index'
-          label="序号">
+      <el-table :data="accounts"
+                border
+                style="width: 100%"
+                :row-style="tableRowStyle"
+                :header-cell-style="tableHeaderColor"
+                size='mini'>
+        <el-table-column align='center'
+                         type='index'
+                         label="序号">
         </el-table-column>
-        <el-table-column
-          align='center'
-          prop="administratorName"
-          label="姓名"
-          width="180">
+        <el-table-column align='center'
+                         prop="administratorName"
+                         label="姓名"
+                         width="180">
         </el-table-column>
-        <el-table-column
-          align='center'
-          prop="administratorAccount"
-          label="电话号码"
-          width="180">
+        <el-table-column align='center'
+                         prop="administratorAccount"
+                         label="电话号码"
+                         width="180">
         </el-table-column>
-        <el-table-column
-          align='center'
-          label="操作">
+        <el-table-column align='center'
+                         label="操作">
           <template slot-scope="scope">
             <!-- <el-button
               size='mini'
               @click="handleEditorAccount(scope.row, scope.$index)">修改</el-button> -->
-            <el-button
-              size='mini'
-              @click="handleDelAccount(scope.row.administratorAccount, scope.$index)">删除</el-button>
-            <el-button
-              size='mini'
-              @click="handleResetPassword(scope.row, scope.$index)">重置密码</el-button>
+            <el-button size='mini'
+                       @click="handleDelAccount(scope.row.administratorAccount, scope.$index)">删除</el-button>
+            <el-button size='mini'
+                       @click="handleResetPassword(scope.row, scope.$index)">重置密码</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-main>
-    <change-account
-      :type='type.add'
-      v-if='isShowAddAccount'
-      @addAccount='addAccount'></change-account>
-    <change-account
-      :type='type.editor'
-      :selectAccount='selectAccount.row'
-      v-if='isShowEditorAccount'
-      @editorAccount='editorAccount'></change-account>
+    <change-account :type='type.add'
+                    v-if='isShowAddAccount'
+                    @addAccount='addAccount'></change-account>
+    <change-account :type='type.editor'
+                    :selectAccount='selectAccount.row'
+                    v-if='isShowEditorAccount'
+                    @editorAccount='editorAccount'></change-account>
   </div>
 </template>
 
@@ -176,13 +168,17 @@ export default {
       })
     },
     // 修改table tr行的背景色
-    tableRowStyle (row, rowIndex) {
-      return 'background-color: black;'
+    tableRowStyle ({ row, rowIndex }) {
+      if (rowIndex % 2 === 0) {
+        return 'background-color: rgb(47,141,213); color: black'
+      } else {
+        return 'background-color: rgb(0,94,167); color:white'
+      }
     },
     // 修改table header的背景色
-    tableHeaderColor ({row, column, rowIndex, columnIndex}) {
+    tableHeaderColor ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return 'background-color: black; color: white'
+        return 'background-color: rgb(0,94,167); color: white'
       }
     },
     // 重置密码
@@ -229,9 +225,9 @@ export default {
   .el-header {
     .legends {
       float: right;
-      >span {
+      > span {
         display: inline-block;
-        background: #F8BF12;
+        background: #f8bf12;
         padding: 0 20px;
         width: 60px;
         height: 40px;
