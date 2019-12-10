@@ -60,11 +60,11 @@
                          label="操作">
           <template slot-scope="scope">
             <img src="@/assets/img/icon/修改IC.png"
-                 @click="handleEditorCar(scope.$index, scope.row)"
+                 @click="handleEditorDevice(scope.$index, scope.row)"
                  class="editor_img"
                  alt="">
             <img src="@/assets/img/icon/删除IC.png"
-                 @click="handleDeleteCar(scope.$index, scope.row)"
+                 @click="handleDeleteDevice(scope.$index, scope.row.userDeviceId)"
                  class="del_img"
                  alt="">
             <!-- <el-button size="mini"
@@ -227,15 +227,15 @@ export default {
       if (!bol) {
         return
       }
-      for (let k in deviceInfo) {
-        if (!deviceInfo[k]) {
-          return this.$message({
-            showClose: true,
-            type: 'error',
-            message: '所填信息不能为空!'
-          })
-        }
-      }
+      // for (let k in deviceInfo) {
+      //   if (!deviceInfo[k]) {
+      //     return this.$message({
+      //       showClose: true,
+      //       type: 'error',
+      //       message: '所填信息不能为空!'
+      //     })
+      //   }
+      // }
       this.$http.post(`${config.httpBaseUrl}/user/update`, deviceInfo)
         .then(res => {
           if (res.code === 200) {

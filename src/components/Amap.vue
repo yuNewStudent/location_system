@@ -423,6 +423,7 @@ export default {
           let hh = this.creatInfo(type, index, data)
           hh.open(this.map, marker.getPosition())
         })
+        this.dinformationx = true
       })
     },
     // 生成信息窗体
@@ -430,7 +431,13 @@ export default {
       var infoWindow
       if (type === 'person') {
         // 获取用户信息
-        const info = this.tableData[index]
+        // const info = this.tableData[index]
+        var info
+        this.tableData.forEach(item => {
+          if (item.userDeviceId === this.persons[index].user.userDeviceId) {
+            info = item
+          }
+        })
         this.personInfo = {
           name: info.userName,
           age: this.getAge(info.userBirth),

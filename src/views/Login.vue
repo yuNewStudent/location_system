@@ -95,6 +95,7 @@ export default {
   computed: {
   },
   mounted () {
+    console.log(process)
   },
   destroyed () {
     console.log(this.timer)
